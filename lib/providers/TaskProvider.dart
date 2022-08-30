@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:todo_emp/controller/TaskDbController.dart';
 import 'package:todo_emp/model/taskModel.dart';
@@ -7,59 +9,73 @@ import '../main.dart';
 class TaskProvider extends ChangeNotifier {
   List<taskModel> tasks = <taskModel>[];
   List<taskModel> taskss = <taskModel>[];
-  List<taskModel> isDeletedTasks = <taskModel>[];
+  // List<taskModel> isDeletedTasks = <taskModel>[];
   List<taskModel> completeTasks = <taskModel>[];
   List<taskModel> asyncTasks= <taskModel>[];
 
   TaskDbController _taskDbController = TaskDbController();
 
   TaskProvider() {
+    print('TaskProvider');
+    //print(jsonEncode(taskss));
+
     read();
     read2();
     // readCounter(counter);
   }
 
-  fillTasksLists(List<taskModel> taasks) {
-    //    tasks = tasks;
-    //   int i=0;
-    //   int index  = tasks.where((element) => !element.isDeleted);
-    //   if (index != -1) {
-    //     tasks.removeAt(index);
-    //     notifyListeners();
-    //     return true;
-    //
-    //   }
-    //    // completeTasks.add(taasks);
-    //   // isDeletedTasks = taasks.where((element) => !element.counter).toList();
-    //   notifyListeners();
-    //   int index = tasks.indexWhere((element) => element.counter == 2);
-    //   if (index != -1)
-    //     tasks.removeAt(index);
-    //     notifyListeners();
-    //     return true;
-    //
-    //   }
+  Future<bool> readAll() async {
+
+    taskss.clear();
+    taskss = await _taskDbController.read();
+
+    notifyListeners();
+    //============================
+    completeTasks.clear();
+    completeTasks = await _taskDbController.read2();
+print(jsonEncode(completeTasks));
+    notifyListeners();
+
+    //====================
+    asyncTasks.clear();
+    asyncTasks = await _taskDbController.readTaskAsync();
+    notifyListeners();
+
+    return true;
+
   }
+
+  // fillTasksLists(List<taskModel> tasks) {
+  //   taskss = tasks;
+  //   completeTasks = tasks.where((element) => element.counter==2).toList();
+  //   asyncTasks = tasks.where((element) => element.async==0).toList();
+  //   notifyListeners();
+  // }
 
   Future<bool> create({required taskModel task}) async {
     //  taskModel task = taskModel()
     int id = await _taskDbController.create(task);
-    if (id != 0) {
-      task.id = id;
-      tasks.add(task);
-      notifyListeners();
-      return true;
-    }
+    taskss.clear();
+    taskss = await _taskDbController.read();
+
+    notifyListeners();
     return true;
+
   }
 
   Future<List<taskModel>?> read() async {
-    tasks = await _taskDbController.read();
+    taskss.clear();
+
+    taskss = await _taskDbController.read();
+    // fillTasksLists(tasks);
+     print(jsonEncode(taskss));
     notifyListeners();
-    return tasks;
+    return taskss;
   }
   Future<List<taskModel>?> read2() async {
+    print('completeTasks');
     completeTasks = await _taskDbController.read2();
+
     notifyListeners();
     return completeTasks;
   }
@@ -76,11 +92,10 @@ class TaskProvider extends ChangeNotifier {
     bool updated = await _taskDbController.update(task!);
     if (updated) {
       int index = tasks.indexWhere((contact) => contact.id == task.id);
-      tasks[index] = task;
+      //taskss[index] = task;
       notifyListeners();
     }
     notifyListeners();
-
     return updated;
   }
 
@@ -88,10 +103,11 @@ class TaskProvider extends ChangeNotifier {
     bool updated = await _taskDbController.update1(task);
     if (updated) {
       int index = tasks.indexWhere((contact) => contact.id == task.id);
-      tasks[index] = task;
+      //taskss[index] = task;
       notifyListeners();
     }
     notifyListeners();
+    read();
 
     return updated;
   }
@@ -100,7 +116,7 @@ class TaskProvider extends ChangeNotifier {
     bool updated = await _taskDbController.update(task);
     if (updated) {
       int index = tasks.indexWhere((contact) => contact.id == task.id);
-      tasks[index] = task;
+      //taskss[index] = task;
       notifyListeners();
     }
     return updated;
@@ -111,7 +127,8 @@ class TaskProvider extends ChangeNotifier {
 
     int index = tasks.indexWhere((element) => element.id == id);
     if (index != -1) {
-      tasks.removeAt(index);
+      //completeTasks.removeAt(index);
+      readAll();
       notifyListeners();
       return true;
     }

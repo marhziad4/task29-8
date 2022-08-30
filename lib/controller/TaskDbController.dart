@@ -55,6 +55,7 @@ class TaskDbController extends DbOperations<taskModel> {
     if (rows.isNotEmpty ) {
       return rows.map((rowMap) => taskModel.fromJson(rowMap)).toList();
     }
+
     return [];
   }
   @override

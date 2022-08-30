@@ -29,7 +29,7 @@ List<Location>? totalDistance;
 List<double>? listDistance;
 List<taskModel>? tasks;
 List<taskModel>? completeTasks ;
-List<taskModel>? asyncTasks ;
+List<taskModel>? asyncTasks;
 List<Location>? Location1;
  late int task_id;
 // taskModel get taskss {

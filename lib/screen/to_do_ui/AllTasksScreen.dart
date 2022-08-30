@@ -22,22 +22,27 @@ bool isLoading = false;
 
   @override
   void initState() {
+    print('9999');
+
     // TODO: implement initState
     super.initState();
 
-    refreshTasks();
+     refreshTasks();
   }
-Future refreshTasks()async{
-    setState(() {
-      isLoading =true;
-    });
-    // tasks=await TaskProvider().read();
-    setState(() {
-      isLoading =false;
-    });
-}
+ Future refreshTasks()async{
+
+   await Provider.of<TaskProvider>(context, listen: false).readAll();
+
+   setState(() {
+       isLoading =true;
+     });
+     setState(() {
+       isLoading =false;
+     });
+ }
   @override
   Widget build(BuildContext context) {
+    //Provider.of<TaskProvider>(context, listen: false).readAll();
     // TODO: implement build
     return Container(
 
@@ -47,14 +52,15 @@ Future refreshTasks()async{
           TaskProvider provider,
           Widget? child,
             ) {
-          if (provider.tasks.isNotEmpty) {
+          if (provider.taskss.isNotEmpty) {
+           // ListView.clear();
             return ListView.builder(
-                itemCount: provider.tasks.length,
+                itemCount: provider.taskss.length,
                 itemBuilder: (context, index) {
-                  taskModel task = provider.tasks[index];
+                  taskModel task = provider.taskss[index];
 
                   return TaskWidget(
-                    provider.tasks.toList()[index],
+                    provider.taskss.toList()[index],
                   );
                 });
           } else {

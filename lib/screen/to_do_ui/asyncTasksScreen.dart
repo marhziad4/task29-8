@@ -16,27 +16,22 @@ class _CompleteTasksScreenState extends State<CompleteTasksScreen>  with Helpers
   bool chek = true;
   @override
   void initState() {
-    print('ctini 123');
     // TODO: implement initState
     super.initState();
 
     refreshTasks();
   }
   Future refreshTasks()async{
-    print('ctini 456');
-    await Provider.of<TaskProvider>(context, listen: false).readAll();
-    //completeTasks=await TaskProvider().read2();
     setState(() {
       isLoading =true;
     });
-
+    // completeTasks=await TaskProvider().read2();
     setState(() {
       isLoading =false;
     });
   }
   @override
   Widget build(BuildContext context) {
-    Provider.of<TaskProvider>(context, listen: false).readAll();
     // TODO: implement build
     return Container(
 
@@ -46,16 +41,14 @@ class _CompleteTasksScreenState extends State<CompleteTasksScreen>  with Helpers
             TaskProvider provider,
             Widget? child,
             ) {
-          if (provider.completeTasks.isNotEmpty) {
+          if (asyncTasks!.isNotEmpty) {
             return ListView.builder(
-              itemCount: provider.completeTasks.length,
-              itemBuilder: (context, index) {
-                return TaskWidget(
-                provider.completeTasks.toList()[index],
-               //    completeTasks![index],
-
-                );
-              });
+                itemCount: asyncTasks!.length,
+                itemBuilder: (context, index) {
+                  return TaskWidget(
+                    asyncTasks!.toList()[index],
+                  );
+                });
           } else {
             return Center(
               child: Column(

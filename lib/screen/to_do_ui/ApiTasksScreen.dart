@@ -37,7 +37,7 @@ class _ApiTasksScreenState extends State<ApiTasksScreen> {
         //     child: CircularProgressIndicator(),
         //   );
         // } else
-       if (TaskProvider.tasks.isNotEmpty) {
+       if (TaskProvider.completeTasks.isNotEmpty) {
           return ListView.builder(
             itemBuilder: (context, index) {
               return InkWell(
@@ -46,12 +46,12 @@ class _ApiTasksScreenState extends State<ApiTasksScreen> {
                 },
                 child: ListTile(
                   leading: Icon(Icons.task),
-                  title: Text(TaskProvider.tasks[index].title),
-                  subtitle: Text(TaskProvider.tasks[index].description),
+                  title: Text(TaskProvider.completeTasks[index].title),
+                  subtitle: Text(TaskProvider.completeTasks[index].description),
                 ),
               );
             },
-            itemCount: TaskProvider.tasks.length,
+            itemCount: TaskProvider.completeTasks.length,
           );
         } else {
           return Center(
@@ -130,8 +130,3 @@ class _ApiTasksScreenState extends State<ApiTasksScreen> {
 // }
 // },
 // );
-// git init
-// git commit -m "first commit"
-// git branch -M main
-// git remote add origin https://github.com/marhziad4/task29-8.git
-// git push -u origin main

@@ -110,19 +110,19 @@ class _TaskWidgetState extends State<TaskWidget> with Helpers {
                               //             ' title ${completeTasks![i].title}');
                               //   }
                               // }
-
-                                    tasks = await TaskProvider().read();
-                              if (tasks!.isEmpty) {
+                              asyncTasks = await TaskProvider().readAsync();
+                              // asyncTasks =Provider.of<TaskProvider>(context, listen: false).asyncTasks;
+                              if (asyncTasks!.isEmpty) {
                                 print('null');
                               } else {
-                                for (int i = 0; i < tasks!.length; i++) {
+                                for (int i = 0; i < asyncTasks!.length; i++) {
                                   print(
-                                      'index ${i} id ${tasks![i].id} details ${tasks![i].details}'
-                                          'image ${tasks![i].image} isDeleted ${tasks![i].isDeleted}  '
-                                          ' status ${tasks![i].status} '
-                                          ' counter ${tasks![i].counter} '
-                                          ' async ${tasks![i].async} '
-                                          ' title ${tasks![i].title}');
+                                      'index ${i} id ${asyncTasks![i].id} details ${asyncTasks![i].details}'
+                                          'image ${asyncTasks![i].image} isDeleted ${asyncTasks![i].isDeleted}  '
+                                          ' status ${asyncTasks![i].status} '
+                                          ' counter ${asyncTasks![i].counter} '
+                                          ' async ${asyncTasks![i].async} '
+                                          ' title ${asyncTasks![i].title}');
                                 }
                               }
 
@@ -174,7 +174,8 @@ class _TaskWidgetState extends State<TaskWidget> with Helpers {
                                       .delete(widget.task.id);
                                   widget.task.isDeleted = true;
                                   // TaskProvider().update(task: widget.task);
-                                  Provider.of<TaskProvider>(context, listen: false).update(task: widget.task);
+                                  await Provider.of<TaskProvider>(context, listen: false).update(task: widget.task);
+                                  await Provider.of<TaskProvider>(context, listen: false).readAll();
 
                                   showSnackBar(
                                       context: context,
@@ -202,13 +203,13 @@ class _TaskWidgetState extends State<TaskWidget> with Helpers {
                               // print('-2${UserPreferences().chek}');
 
                               print(widget.task.counter);
-                              completeTasks = await TaskProvider().read2();
+                              // completeTasks = await TaskProvider().read2();
                               task_id = widget.task.id;
                               //status false => شغال
                               tasks = (await TaskProvider().read())!;
                               for (int i = 0; i < tasks!.length; i++) {
                                 //&& tasks![i].status ==false && chek==false&&widget.task.counter ==1
-                                if ( tasks![i].status ==false&&  tasks![i].id!=widget.task.id&& UserPreferences().chek == true) {
+                                if ( UserPreferences().chek == true&&widget.task.counter ==0) {
                                   print('object');
                                   showSnackBar(
                                       context: context,
@@ -221,6 +222,7 @@ class _TaskWidgetState extends State<TaskWidget> with Helpers {
                                   () async {
                                 readLocation();
                               });
+                              // completeTasks = await TaskProvider().read2();
 
                               setState(() {
 
@@ -232,6 +234,8 @@ class _TaskWidgetState extends State<TaskWidget> with Helpers {
                                   print('object');
                                   widget.task.counter = 1;
                                   Provider.of<TaskProvider>(context, listen: false).update(task: widget.task);
+
+
                                   //       status = tasks[i].status;
 
                                 } else if (widget.task.counter == 1 &&
@@ -241,17 +245,17 @@ class _TaskWidgetState extends State<TaskWidget> with Helpers {
                                   print('2${UserPreferences().chek}');
                                   widget.task.status = true;
                                   widget.task.counter = 2;
+
                                   Provider.of<TaskProvider>(context, listen: false).update(task: widget.task);
 
                                 } else {
                                    // UserPreferences().setChek('true');
                                   print('3${UserPreferences().chek}');
-                                  showSnackBar(
-                                      context: context,
-                                      content: 'تم انجاز المهمة',
-                                      error: false);
+
                                 }
                               });
+                            //  await Provider.of<TaskProvider>(context, listen: false).readAll();
+
                             },
                             child: Container(
                               alignment: Alignment.center,

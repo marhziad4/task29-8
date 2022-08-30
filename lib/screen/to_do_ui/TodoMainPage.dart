@@ -7,7 +7,6 @@ import 'package:todo_emp/model/tasks.dart';
 import 'package:todo_emp/preferences/user_pref.dart';
 import 'package:todo_emp/providers/TaskProvider.dart';
 import 'package:todo_emp/screen/to_do_ui/AllTasksScreen.dart';
-import 'package:todo_emp/screen/to_do_ui/ApiTasksScreen.dart';
 import 'package:todo_emp/screen/to_do_ui/CompleteTasksScreen.dart';
 import 'package:todo_emp/screen/to_do_ui/control/NewTaskScreen.dart';
 import 'package:todo_emp/utils/helpers.dart';
@@ -23,7 +22,7 @@ class _TodoMainPageState extends State<TodoMainPage>
   late TabController tabController;
   bool async=false;
   initTabController() {
-    tabController = TabController(length: 3, vsync: this);
+    tabController = TabController(length: 4, vsync: this);
     // tabController.animateTo(2);
   }
 
@@ -108,6 +107,10 @@ class _TodoMainPageState extends State<TodoMainPage>
             Tab(
               icon: Icon(Icons.task_rounded),
               text: 'المنجز ',
+            ),
+            Tab(
+              icon: Icon(Icons.task_rounded),
+              text: 'تم ترحيلها',
             ),
             // Tab(
             //   icon: Icon(Icons.done),
@@ -291,8 +294,9 @@ class _TodoMainPageState extends State<TodoMainPage>
         controller: tabController,
         children: [
           AllTasksScreen(),
-          ApiTasksScreen(),
-          // CompleteTasksScreen(),
+          // ApiTasksScreen(),
+          CompleteTasksScreen(),
+          CompleteTasksScreen(),
           CompleteTasksScreen(),
         ],
       ),

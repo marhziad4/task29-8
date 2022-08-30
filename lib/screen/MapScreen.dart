@@ -348,9 +348,9 @@ class _MapScreenState extends State<MapScreen> with Helpers {
             //     : BitmapDescriptor.defaultMarkerWithHue(
             //         BitmapDescriptor.hueGreen),
 
-            icon:  locationas![i]==0 ? BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueCyan)
-            :BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
-
+             icon:BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
+            // locationas![i]==0 ? BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueCyan)
+            //     :BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
           ),
         );
       }

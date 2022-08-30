@@ -9,8 +9,6 @@ import 'package:todo_emp/mixins/helpersApi.dart';
 import 'package:todo_emp/model/location.dart';
 import 'package:todo_emp/model/taskModel.dart';
 import 'package:http/http.dart' as http;
-import 'package:todo_emp/model/tasks.dart';
-import 'package:todo_emp/preferences/user_pref.dart';
 import 'package:todo_emp/providers/TaskProvider.dart';
 import 'package:todo_emp/providers/location_provider.dart';
 
@@ -36,25 +34,34 @@ class TaskApiController with ApiMixin, HelpersApi {
     //
      List<Map> newList= [] ;
 
-     if(asyncTasks!.isNotEmpty){
-       for (int i = 0; i < asyncTasks!.length; i++) {
-         var taskid = asyncTasks![i].id;
+     if(completeTasks!.isNotEmpty){
+       for (int i = 0; i < completeTasks!.length; i++) {
+         var taskid = completeTasks![i].id;
          print(taskid);
          List<Location>? Location1 = await LocationProvider().readByTask(taskid);
 
          if(Location1!.length>0)
-           newList.add({"info":asyncTasks![i],"locations":Location1});
-         else newList.add({"info":asyncTasks![i],"locations":null});
+           newList.add({"info":completeTasks![i],"locations":Location1});
+         else newList.add({"info":completeTasks![i],"locations":null});
+         print('completeTasks');
 
-         // for (int j = 0; j < Location1.length; j++) {
-         //   print( jsonEncode(Location1[j]));
-         // }
-         // for (int j = 0; j < completeTasks!.length; j++) {
-         //   print( jsonEncode(completeTasks![j]));
+         for (int j = 0; j < Location1.length; j++) {
+           print( jsonEncode(Location1[j]));
+         }
+
+         print('completeTasks');
+
+         for (int j = 0; j < completeTasks!.length; j++) {
+           print( jsonEncode(completeTasks![j]));
+         }
+         // print('asyncTasks');
+         // for (int j = 0; j < asyncTasks!.length; j++) {
+         //   print( jsonEncode(asyncTasks![j]));
          // }
        }
      }else{
        print('no data');
+
      }
 
     var body = jsonEncode({"tasks": newList});
