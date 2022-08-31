@@ -5,12 +5,12 @@ import 'package:todo_emp/providers/TaskProvider.dart';
 import 'package:todo_emp/utils/helpers.dart';
 import 'package:todo_emp/widgets/task_widget.dart';
 
-class CompleteTasksScreen extends StatefulWidget {
+class AsyncTasksScreen extends StatefulWidget {
   @override
-  State<CompleteTasksScreen> createState() => _CompleteTasksScreenState();
+  State<AsyncTasksScreen> createState() => _AsyncTasksScreenState();
 }
 
-class _CompleteTasksScreenState extends State<CompleteTasksScreen>  with Helpers {
+class _AsyncTasksScreenState extends State<AsyncTasksScreen>  with Helpers {
   bool isLoading = false;
   bool visible = true;
   bool chek = true;
@@ -41,12 +41,12 @@ class _CompleteTasksScreenState extends State<CompleteTasksScreen>  with Helpers
             TaskProvider provider,
             Widget? child,
             ) {
-          if (asyncTasks!.isNotEmpty) {
+          if (provider.doneAsync.isNotEmpty) {
             return ListView.builder(
-                itemCount: asyncTasks!.length,
+                itemCount: provider.doneAsync.length,
                 itemBuilder: (context, index) {
                   return TaskWidget(
-                    asyncTasks!.toList()[index],
+                    provider.doneAsync.toList()[index],
                   );
                 });
           } else {

@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:cron/cron.dart';
 import 'package:flutter/material.dart';
 import 'package:todo_emp/api/api_settings.dart';
 import 'package:todo_emp/model/login.dart';
@@ -24,6 +25,25 @@ class UserApiController with Helpers {
       var user = await UserPreferences().save(users);
       var token =
           await UserPreferences().setToken(jsonResponse['access_token']);
+      Cron cron = Cron();
+      cron.schedule(Schedule.parse('* */24 * * *'), () async {
+        print('Cron');
+        print(UserPreferences().token);
+
+        var url = Uri.parse(ApiSettings.refresh);
+
+        var response1 = await http.post(url, headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ' + UserPreferences().token,
+        });
+        var jsonResponse1 = jsonDecode(response1.body);
+        print(jsonResponse1);
+        await UserPreferences().setToken(jsonResponse1['access_token']);
+        print(UserPreferences().token);
+      });
+
+      var time;
       // print('${token}');
       // List<loginapi> userlist=[];
       // userlist.add(users);

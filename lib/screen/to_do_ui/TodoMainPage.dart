@@ -8,6 +8,7 @@ import 'package:todo_emp/preferences/user_pref.dart';
 import 'package:todo_emp/providers/TaskProvider.dart';
 import 'package:todo_emp/screen/to_do_ui/AllTasksScreen.dart';
 import 'package:todo_emp/screen/to_do_ui/CompleteTasksScreen.dart';
+import 'package:todo_emp/screen/to_do_ui/asyncTasksScreen.dart';
 import 'package:todo_emp/screen/to_do_ui/control/NewTaskScreen.dart';
 import 'package:todo_emp/utils/helpers.dart';
 import 'package:todo_emp/widgets/drawer_list_tile.dart';
@@ -297,7 +298,7 @@ class _TodoMainPageState extends State<TodoMainPage>
           // ApiTasksScreen(),
           CompleteTasksScreen(),
           CompleteTasksScreen(),
-          CompleteTasksScreen(),
+          AsyncTasksScreen(),
         ],
       ),
     );

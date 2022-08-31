@@ -11,7 +11,8 @@ class TaskProvider extends ChangeNotifier {
   List<taskModel> taskss = <taskModel>[];
   // List<taskModel> isDeletedTasks = <taskModel>[];
   List<taskModel> completeTasks = <taskModel>[];
-  List<taskModel> asyncTasks= <taskModel>[];
+  List<taskModel> doneAsync= <taskModel>[];
+  List<taskModel> NotAsync= <taskModel>[];
 
   TaskDbController _taskDbController = TaskDbController();
 
@@ -28,7 +29,7 @@ class TaskProvider extends ChangeNotifier {
 
     taskss.clear();
     taskss = await _taskDbController.read();
-
+    // taskss.reversed
     notifyListeners();
     //============================
     completeTasks.clear();
@@ -37,8 +38,8 @@ print(jsonEncode(completeTasks));
     notifyListeners();
 
     //====================
-    asyncTasks.clear();
-    asyncTasks = await _taskDbController.readTaskAsync();
+    doneAsync.clear();
+    doneAsync = await _taskDbController.doneAsync();
     notifyListeners();
 
     return true;
@@ -64,11 +65,13 @@ print(jsonEncode(completeTasks));
   }
 
   Future<List<taskModel>?> read() async {
-    taskss.clear();
-
+    completeTasks.clear();
+    // completeTasks = await _taskDbController.read2();
     taskss = await _taskDbController.read();
-    // fillTasksLists(tasks);
-     print(jsonEncode(taskss));
+
+    print(jsonEncode(completeTasks));
+    print(jsonEncode(taskss));
+    notifyListeners();
     notifyListeners();
     return taskss;
   }
@@ -80,9 +83,14 @@ print(jsonEncode(completeTasks));
     return completeTasks;
   }
   Future<List<taskModel>?> readAsync() async {
-    asyncTasks = await _taskDbController.readTaskAsync();
+    doneAsync = await _taskDbController.doneAsync();
     notifyListeners();
-    return asyncTasks;
+    return doneAsync;
+  }
+  Future<List<taskModel>?> NotAsync1() async {
+    NotAsync = await _taskDbController.TaskNotAsync();
+    notifyListeners();
+    return NotAsync;
   }
 
 

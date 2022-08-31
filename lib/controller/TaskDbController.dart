@@ -51,7 +51,7 @@ class TaskDbController extends DbOperations<taskModel> {
   }
   @override
   Future<List<taskModel>> read2() async {
-    List<Map<String, dynamic>> rows = await _database.query('tasks',where: 'counter = 2',orderBy:'time ASC');//,where: 'counter = 2'
+    List<Map<String, dynamic>> rows = await _database.query('tasks',where: 'counter = 2 and async = 0 ',orderBy:'time ASC');//,where: 'counter = 2'
     if (rows.isNotEmpty ) {
       return rows.map((rowMap) => taskModel.fromJson(rowMap)).toList();
     }
@@ -59,7 +59,16 @@ class TaskDbController extends DbOperations<taskModel> {
     return [];
   }
   @override
-  Future<List<taskModel>> readTaskAsync() async {
+  Future<List<taskModel>> doneAsync() async {
+    List<Map<String, dynamic>> rows = await _database.query('tasks',where: 'async = 1 and counter = 2',orderBy:'time DESC');
+    if (rows.isNotEmpty ) {
+      return rows.map((rowMap) => taskModel.fromJson(rowMap)).toList();
+    }
+    return [];
+  }
+
+  @override
+  Future<List<taskModel>> TaskNotAsync() async {
     List<Map<String, dynamic>> rows = await _database.query('tasks',where: 'async = 0 and counter = 2',orderBy:'time DESC');
     if (rows.isNotEmpty ) {
       return rows.map((rowMap) => taskModel.fromJson(rowMap)).toList();

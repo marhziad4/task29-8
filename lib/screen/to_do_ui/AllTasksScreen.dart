@@ -22,8 +22,6 @@ bool isLoading = false;
 
   @override
   void initState() {
-    print('9999');
-
     // TODO: implement initState
     super.initState();
 

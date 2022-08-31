@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:provider/provider.dart';
@@ -22,16 +23,16 @@ import 'model/taskModel.dart';
 String? longitude;
 String? latitude;
 List<Location>? locations;
-List<Location>? locationas= <Location>[];
+List<Location>? locationas = <Location>[];
 bool status = true;
 List<Location>? lastLocations;
 List<Location>? totalDistance;
 List<double>? listDistance;
 List<taskModel>? tasks;
-List<taskModel>? completeTasks ;
-List<taskModel>? asyncTasks;
+// List<taskModel>? completeTasks ;
+// List<taskModel>? asyncTasks;
 List<Location>? Location1;
- late int task_id;
+late int task_id;
 // taskModel get taskss {
 //   taskModel task = taskModel();
 //   task.title = Provider.of<TaskProvider>(context).details.text;
@@ -66,63 +67,28 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await DbProvider().initDatabase();
   await UserPreferences().initPreferences();
-  // TaskProvider().show();
-  // getCurrentLocation();
-  // await LocationProvider().addLocation(location: locationUser);
-  tasks=await TaskProvider().read();
-  completeTasks=await TaskProvider().read2();
 
-  // getDistanceFromGPSPointsInRoute(locations);
-  //customCronJob();
-
-  // for (int i = 0; i < locations!.length; i++) {
-  //   print(
-  //       'index ${i} location ${locations![i].latitude}  time ${locations![i].time}  updatetime ${locations![i].updatetime}');
-  // }
-  runApp( MultiProvider(
-    providers: [
-      ChangeNotifierProvider<TaskProvider>(create: (_) => TaskProvider()),
-      ChangeNotifierProvider<UserProvider>(create: (_) => UserProvider()),
-      ChangeNotifierProvider<LocationProvider>(
-          create: (_) => LocationProvider()),
-      ChangeNotifierProvider<TasksApiProvider>(
-          create: (_) => TasksApiProvider()),
-    ],
-    builder: (BuildContext context, Widget? child) {
-      return MyMaterialApp();
-    },
-      child:MyMaterialApp(),
-  ),
- );
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider<TaskProvider>(create: (_) => TaskProvider()),
+        ChangeNotifierProvider<UserProvider>(create: (_) => UserProvider()),
+        ChangeNotifierProvider<LocationProvider>(
+            create: (_) => LocationProvider()),
+        ChangeNotifierProvider<TasksApiProvider>(
+            create: (_) => TasksApiProvider()),
+      ],
+      builder: (BuildContext context, Widget? child) {
+        return MyMaterialApp();
+      },
+      child: MyMaterialApp(),
+    ),
+  );
 }
 
-/*void customCronJob() {
- Timer? timer;
-  timer = Timer.periodic(Duration(seconds: 10), (Timer t) => readLocation());
-}*/
+
 
 void readLocation() async {
-  tasks =await TaskProvider().read();
-  completeTasks =await TaskProvider().read2();
-
-  // StreamSubscription<ServiceStatus> serviceStatusStream =
-  // Geolocator.getServiceStatusStream().listen((ServiceStatus status) {
-  //   print(status);
-  // });
-  //
-  // getLocationUpdates() {
-  //   final LocationSettings locationSettings =
-  //   LocationSettings(accuracy: LocationAccuracy.best, distanceFilter: 0);
-  //
-  //   StreamSubscription<ServiceStatus> serviceStatusStream =
-  //   Geolocator.getServiceStatusStream().listen((ServiceStatus status) {
-  //     print(status);
-  //   });
-  // }
-  tasks =
-  (await TaskProvider().read())!;
-  completeTasks =
-  (await TaskProvider().read2())!;
   print('readLocation');
   final position = await CurrentLocation.fetch();
   latitude = (position.latitude).toString();
@@ -130,67 +96,41 @@ void readLocation() async {
   print('every one minutes latitude ${position.latitude}');
   print('every one minutes longitude ${position.longitude}');
   lastLocations = await LocationProvider().lastRow();
+  tasks = await TaskProvider().read();
+  List taskss =  await TaskProvider().taskss;
+  print('tasks${jsonEncode(taskss)}');
+  print('lastLocations${jsonEncode(lastLocations)}');
   for (int i = 0; i < tasks!.length; i++) {
+    print('start read');
 
-  print('start read');
+    if (lastLocations!.length > 0) {
+      print(
+          'latitude >> ${lastLocations![0].latitude} == ${latitude.toString()}');
+      print(
+          'longitude >> ${lastLocations![0].longitude} == ${longitude.toString()}');
 
-  if (lastLocations!.length > 0) {
-    print(
-        'latitude >> ${lastLocations![0].latitude} == ${latitude.toString()}');
-    print('longitude >> ${lastLocations![0].longitude} == ${longitude
-        .toString()}');
+      print(
+          'longitude >> ${lastLocations![0].longitude} == ${longitude.toString()}');
 
+      double distanceInMeters = Geolocator.distanceBetween(
+          double.parse('${lastLocations![0].latitude}'),
+          double.parse('${lastLocations![0].longitude}'),
+          double.parse('${latitude.toString()}'),
+          double.parse('${longitude.toString()}'));
+      print('distanceInMeters ${distanceInMeters}');
+      listDistance?.add(distanceInMeters);
 
-    print(
-        'longitude >> ${lastLocations![0].longitude} == ${longitude.toString()}');
-    // var p = 0.017453292519943295;
-    // var a = 0.5 -
-    //     cos((double.parse('${lastLocations![0].latitude}') -
-    //                 double.parse('${latitude.toString()}')) *
-    //             p) /
-    //         2 +
-    //     cos((double.parse('${lastLocations![0].latitude}') * p) *
-    //             cos(double.parse('${latitude.toString()}') * p) *
-    //             (1 -
-    //                 cos((double.parse('${longitude.toString()}') -
-    //                     (double.parse('${lastLocations![0].longitude}')) *
-    //                         p)))) /
-    //         2;
-    // print('distance2: ${12742 * asin(sqrt(a))}');
-    // return 12742 * asin(sqrt(a));
-    // GeoCode geoCode = GeoCode();
-    //
-    // try {
-    //   Address coordinates = await geoCode.reverseGeocoding(latitude: 31.4908867,longitude:34.4472317);
-    //
-    //   print("Latitude1: ${coordinates}");
-    //   // print("Longitude1: ${coordinates.longitude}");
-    // } catch (e) {
-    //   print('Latitude1 $e');
-    // }
-  //   Latitude1: GEOCODE: elevation=44.0, timezone=Asia/Gaza, geoNumber=8438465606587,
-  // streetNumber=null, streetAddress=Totah, city=Gaza, countryCode=PS,
-  // countryName=Palestinian Territory, region=Gaza, PS, postal=972, distance=0.154
-    double distanceInMeters = Geolocator.distanceBetween(
-        double.parse('${lastLocations![0].latitude}'),
-        double.parse('${lastLocations![0].longitude}'),
-        double.parse('${latitude.toString()}'),
-        double.parse('${longitude.toString()}'));
-    print('distanceInMeters ${distanceInMeters}');
-    listDistance?.add(distanceInMeters);
-
-
-    if ((lastLocations![0].latitude == latitude.toString() &&
-        lastLocations![0].longitude == longitude.toString()) ||
-        distanceInMeters <= 1) {
-      lastLocations![0].updatetime = DateTime.now().toString();
-      await LocationProvider().update(location: lastLocations![0]);
-      print('nothing todo');
+      if ((lastLocations![0].latitude == latitude.toString() &&
+              lastLocations![0].longitude == longitude.toString()) ||
+          distanceInMeters <= 1) {
+        lastLocations![0].updatetime = DateTime.now().toString();
+        await LocationProvider().update(location: lastLocations![0]);
+        print('nothing todo');
+      } else
+        await LocationProvider().addLocation(location: locationUser);
     } else
       await LocationProvider().addLocation(location: locationUser);
-  } else
-    await LocationProvider().addLocation(location: locationUser);
-}
+  }
   print('material');
   print('every one minutes latitude ${position.latitude}');
   print('every one minutes longitude ${position.longitude}');
@@ -202,14 +142,12 @@ void readLocation() async {
   }
 }
 
-
-
 Location get locationUser {
   Location location = Location();
   location.longitude = longitude.toString();
   location.latitude = latitude.toString();
   location.time;
-  location.task_id=task_id;
+  location.task_id = task_id;
   return location;
 }
 
@@ -239,7 +177,6 @@ class MyMaterialApp extends StatelessWidget {
   Widget build(BuildContext context) {
     // TODO: implement build
     return MaterialApp(
-
         debugShowCheckedModeBanner: false,
         builder: (context, child) {
           return Directionality(
@@ -323,7 +260,6 @@ class CurrentLocation {
 //     .update(task: tasks[i]);
 // status = tasks[i].status;
 
-
 // GeoCode geoCode = GeoCode();
 //
 // try {
@@ -338,20 +274,10 @@ class CurrentLocation {
 // streetNumber=null, streetAddress=Totah, city=Gaza, countryCode=PS,
 // countryName=Palestinian Territory, region=Gaza, PS, postal=972, distance=0.154
 
-
-
-
-
-
-
-
 // TaskProvider.postUpdateDriverLocarionRequset(
 //     latitude: position.latitude, longitude: position.longitude);
 // bool saved = await Provider.of<UserProvider>(context, listen: false)
 //     .addLocation(location: locationUser);
-
-
-
 
 // StreamSubscription<ServiceStatus> serviceStatusStream =
 // Geolocator.getServiceStatusStream().listen((ServiceStatus status) {
@@ -366,4 +292,75 @@ class CurrentLocation {
 //   Geolocator.getServiceStatusStream().listen((ServiceStatus status) {
 //     print(status);
 //   });
+// }
+//_______________________________________________________
+// tasks =await TaskProvider().read();
+// completeTasks =await TaskProvider().read2();
+
+// StreamSubscription<ServiceStatus> serviceStatusStream =
+// Geolocator.getServiceStatusStream().listen((ServiceStatus status) {
+//   print(status);
+// });
+//
+// getLocationUpdates() {
+//   final LocationSettings locationSettings =
+//   LocationSettings(accuracy: LocationAccuracy.best, distanceFilter: 0);
+//
+//   StreamSubscription<ServiceStatus> serviceStatusStream =
+//   Geolocator.getServiceStatusStream().listen((ServiceStatus status) {
+//     print(status);
+//   });
+// }
+// tasks =
+// (await TaskProvider().read())!;
+// completeTasks =
+// (await TaskProvider().read2())!;
+//_________________________________________________________________
+//destinase
+// var p = 0.017453292519943295;
+// var a = 0.5 -
+//     cos((double.parse('${lastLocations![0].latitude}') -
+//                 double.parse('${latitude.toString()}')) *
+//             p) /
+//         2 +
+//     cos((double.parse('${lastLocations![0].latitude}') * p) *
+//             cos(double.parse('${latitude.toString()}') * p) *
+//             (1 -
+//                 cos((double.parse('${longitude.toString()}') -
+//                     (double.parse('${lastLocations![0].longitude}')) *
+//                         p)))) /
+//         2;
+// print('distance2: ${12742 * asin(sqrt(a))}');
+// return 12742 * asin(sqrt(a));
+// GeoCode geoCode = GeoCode();
+//
+// try {
+//   Address coordinates = await geoCode.reverseGeocoding(latitude: 31.4908867,longitude:34.4472317);
+//
+//   print("Latitude1: ${coordinates}");
+//   // print("Longitude1: ${coordinates.longitude}");
+// } catch (e) {
+//   print('Latitude1 $e');
+// }
+//   Latitude1: GEOCODE: elevation=44.0, timezone=Asia/Gaza, geoNumber=8438465606587,
+// streetNumber=null, streetAddress=Totah, city=Gaza, countryCode=PS,
+// countryName=Palestinian Territory, region=Gaza, PS, postal=972, distance=0.154
+//________________________________________________________
+/*void customCronJob() {
+ Timer? timer;
+  timer = Timer.periodic(Duration(seconds: 10), (Timer t) => readLocation());
+}*/
+//___________________________________________
+// TaskProvider().show();
+// getCurrentLocation();
+// await LocationProvider().addLocation(location: locationUser);
+// tasks=await TaskProvider().read();
+// completeTasks=await TaskProvider().read2();
+
+// getDistanceFromGPSPointsInRoute(locations);
+//customCronJob();
+
+// for (int i = 0; i < locations!.length; i++) {
+//   print(
+//       'index ${i} location ${locations![i].latitude}  time ${locations![i].time}  updatetime ${locations![i].updatetime}');
 // }

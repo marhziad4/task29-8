@@ -1,10 +1,14 @@
+import 'dart:convert';
+
 import 'package:cron/cron.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:todo_emp/main.dart';
+import 'package:todo_emp/model/location.dart';
 import 'package:todo_emp/model/taskModel.dart';
 import 'package:todo_emp/preferences/user_pref.dart';
 import 'package:todo_emp/providers/TaskProvider.dart';
+import 'package:todo_emp/providers/location_provider.dart';
 import 'package:todo_emp/screen/MapScreen.dart';
 import 'package:todo_emp/screen/to_do_ui/control/EditTaskScreen.dart';
 import 'package:todo_emp/utils/helpers.dart';
@@ -110,19 +114,20 @@ class _TaskWidgetState extends State<TaskWidget> with Helpers {
                               //             ' title ${completeTasks![i].title}');
                               //   }
                               // }
+                           List<taskModel>? asyncTasks;
                               asyncTasks = await TaskProvider().readAsync();
                               // asyncTasks =Provider.of<TaskProvider>(context, listen: false).asyncTasks;
                               if (asyncTasks!.isEmpty) {
                                 print('null');
                               } else {
-                                for (int i = 0; i < asyncTasks!.length; i++) {
+                                for (int i = 0; i < asyncTasks.length; i++) {
                                   print(
-                                      'index ${i} id ${asyncTasks![i].id} details ${asyncTasks![i].details}'
-                                          'image ${asyncTasks![i].image} isDeleted ${asyncTasks![i].isDeleted}  '
-                                          ' status ${asyncTasks![i].status} '
-                                          ' counter ${asyncTasks![i].counter} '
-                                          ' async ${asyncTasks![i].async} '
-                                          ' title ${asyncTasks![i].title}');
+                                      'index ${i} id ${asyncTasks[i].id} details ${asyncTasks[i].details}'
+                                          'image ${asyncTasks[i].image} isDeleted ${asyncTasks[i].isDeleted}  '
+                                          ' status ${asyncTasks[i].status} '
+                                          ' counter ${asyncTasks[i].counter} '
+                                          ' async ${asyncTasks[i].async} '
+                                          ' title ${asyncTasks[i].title}');
                                 }
                               }
 
@@ -201,6 +206,13 @@ class _TaskWidgetState extends State<TaskWidget> with Helpers {
                               // print('-1${UserPreferences().chek}');
                               // await UserPreferences().setChek(true);
                               // print('-2${UserPreferences().chek}');
+                              // List<Location>? Location1 = await LocationProvider().readByTask(1);
+                              //
+                              //
+                              // for (int j = 0; j < Location1!.length; j++) {
+                              //   print('jsonEncode${ jsonEncode(Location1[j])}');
+                              // }
+                              // print('jsonEncode${ jsonEncode(Location1)}');
 
                               print(widget.task.counter);
                               // completeTasks = await TaskProvider().read2();
@@ -218,10 +230,13 @@ class _TaskWidgetState extends State<TaskWidget> with Helpers {
                                   break;
                                 }
                               }
-                              cron.schedule(Schedule.parse('*/2 * * * *'),
+                              cron.schedule(Schedule.parse('* * * * *'),
                                   () async {
-                                readLocation();
+                                    print('Cron readLocation');
+
+                                    readLocation();
                               });
+
                               // completeTasks = await TaskProvider().read2();
 
                               setState(() {
