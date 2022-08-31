@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:todo_emp/api/api_settings.dart';
 import 'package:todo_emp/controller/TaskDbController.dart';
-import 'package:todo_emp/controller/UserApiController.dart';
-import 'package:todo_emp/main.dart';
 import 'package:todo_emp/mixins/api_mixin.dart';
 import 'package:todo_emp/mixins/helpersApi.dart';
 import 'package:todo_emp/model/location.dart';
@@ -34,44 +32,42 @@ class TaskApiController with ApiMixin, HelpersApi {
 
   Future createTask({required BuildContext context}) async {
     //
-     List<Map> newList= [] ;
-     List<taskModel>? completeTasks;
-     completeTasks = await TaskProvider().read2();
-     if(completeTasks!.isNotEmpty){
-       for (int i = 0; i < completeTasks.length; i++) {
-         var taskid = completeTasks[i].id;
-         print('taskid   :$taskid');
-         List<Location>? Location1 = await LocationProvider().readByTask(taskid);
+    List<Map> newList = [];
+    List<taskModel>? completeTasks;
+    completeTasks = await TaskProvider().read2();
+    if (completeTasks!.isNotEmpty) {
+      for (int i = 0; i < completeTasks.length; i++) {
+        var taskid = completeTasks[i].id;
+        print('taskid   :$taskid');
+        List<Location>? Location1 = await LocationProvider().readByTask(taskid);
 
-         if(Location1!.length>0)
-           newList.add({"info":completeTasks[i],"locations":Location1});
-         else newList.add({"info":completeTasks[i],"locations":null});
-         print('Location1');
+        if (Location1!.length > 0)
+          newList.add({"info": completeTasks[i], "locations": Location1});
+        else
+          newList.add({"info": completeTasks[i], "locations": null});
+        print('Location1');
 
-         for (int j = 0; j < Location1.length; j++) {
-           print( jsonEncode(Location1[j]));
-         }
+        for (int j = 0; j < Location1.length; j++) {
+          print(jsonEncode(Location1[j]));
+        }
+        print(UserPreferences().token);
 
-         print('completeTasks');
-         print(UserPreferences().token);
-
-         for (int j = 0; j < completeTasks.length; j++) {
-           print( jsonEncode(completeTasks[j]));
-         }
-         List<taskModel>? NotAsync;
-         NotAsync = await TaskProvider().NotAsync1();
-         print('NotAsync');
-         for (int j = 0; j < NotAsync!.length; j++) {
-           print( jsonEncode(NotAsync[j]));
-         }
-       }
-     }else{
-       print('no data');
-
-     }
+        for (int j = 0; j < completeTasks.length; j++) {
+          print(jsonEncode(completeTasks[j]));
+        }
+        List<taskModel>? NotAsync;
+        NotAsync = await TaskProvider().NotAsync1();
+        print('NotAsync');
+        for (int j = 0; j < NotAsync!.length; j++) {
+          print(jsonEncode(NotAsync[j]));
+        }
+      }
+    } else {
+      print('no data');
+    }
 
     var body = jsonEncode({"tasks": newList});
-     print(body);
+    print(body);
     var url = Uri.parse(ApiSettings.ADDTASKS);
 
     var response = await http.post(url, body: body, headers: requestHeaders);
@@ -86,20 +82,19 @@ class TaskApiController with ApiMixin, HelpersApi {
         for (int i = 0; i < completeTasks.length; i++) {
           print('here');
           completeTasks[i].async = 1;
-          Provider.of<TaskProvider>(context, listen: false).update(task: completeTasks[i]);
+          Provider.of<TaskProvider>(context, listen: false)
+              .update(task: completeTasks[i]);
           // TaskProvider().update(task: completeTasks![i]);
           print('async');
         }
       }
-
     } else if (response.statusCode == 401) {
       print("no ${response.statusCode}");
 
       showSnackBar(
-          context: context, message: 'خطا في تسجيل الدخول',  error: true);
-         // await UserApiController().logout(context: context);
-     // Navigator.pushReplacementNamed(context, '/Login_screen');
-
+          context: context, message: 'خطا في تسجيل الدخول', error: true);
+      // await UserApiController().logout(context: context);
+      // Navigator.pushReplacementNamed(context, '/Login_screen');
 
     } else {
       print("no ${response.statusCode}");
@@ -153,24 +148,6 @@ class TaskApiController with ApiMixin, HelpersApi {
 //  print("hhhh>>${jsonResponse}");
 // var jsonObject = jsonResponse['tasks'];
 // return Tasks.fromJson(jsonResponse);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // newList.add({
 //   'title':title,/*

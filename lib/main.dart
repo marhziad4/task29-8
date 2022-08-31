@@ -206,13 +206,11 @@ class CurrentLocation {
   /// When the location services are not enabled or permissions
   /// are denied the `Future` will return an error.
   static Future<Position> fetch() async {
-    print('fetch');
     bool serviceEnabled;
     LocationPermission permission;
 
     // Test if location services are enabled.
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    print('fetch1');
     if (!serviceEnabled) {
       //false
       // Location services are not enabled don't continue
@@ -242,7 +240,6 @@ class CurrentLocation {
 
     // When we reach here, permissions are granted and we can
     // continue accessing the position of the device.
-    print('fetch3');
     return await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high);
   }
