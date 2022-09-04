@@ -14,7 +14,7 @@ import 'package:todo_emp/screen/to_do_ui/control/EditTaskScreen.dart';
 import 'package:todo_emp/utils/helpers.dart';
 
 class TaskWidget extends StatefulWidget {
-    taskModel task;
+  taskModel task;
 
   TaskWidget(this.task);
 
@@ -24,7 +24,7 @@ class TaskWidget extends StatefulWidget {
 
 class _TaskWidgetState extends State<TaskWidget> with Helpers {
   // bool visible = true;
-  bool chek = false;
+  String chek = 'false';
 
   final cron = Cron();
 
@@ -71,6 +71,13 @@ class _TaskWidgetState extends State<TaskWidget> with Helpers {
                       child: Row(
                         children: [
                           Text(
+                            widget.task.id.toString() + ") ",
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 25,
+                                color: Colors.black87),
+                          ),
+                          Text(
                             widget.task.title,
                             style: TextStyle(
                                 fontWeight: FontWeight.bold,
@@ -114,20 +121,21 @@ class _TaskWidgetState extends State<TaskWidget> with Helpers {
                               //             ' title ${completeTasks![i].title}');
                               //   }
                               // }
-                           List<taskModel>? asyncTasks;
-                              asyncTasks = await TaskProvider().readAsync();
+                              List<taskModel>? Tasks;
+                              Tasks = await TaskProvider().read();
                               // asyncTasks =Provider.of<TaskProvider>(context, listen: false).asyncTasks;
-                              if (asyncTasks!.isEmpty) {
+                              if (Tasks!.isEmpty) {
                                 print('null');
                               } else {
-                                for (int i = 0; i < asyncTasks.length; i++) {
+                                for (int i = 0; i < Tasks.length; i++) {
                                   print(
-                                      'index ${i} id ${asyncTasks[i].id} details ${asyncTasks[i].details}'
-                                          'image ${asyncTasks[i].image} isDeleted ${asyncTasks[i].isDeleted}  '
-                                          ' status ${asyncTasks[i].status} '
-                                          ' counter ${asyncTasks[i].counter} '
-                                          ' async ${asyncTasks[i].async} '
-                                          ' title ${asyncTasks[i].title}');
+                                      'index ${i} id ${Tasks[i].id} details ${Tasks[i].details}'
+                                      'image ${Tasks[i].image} isDeleted ${Tasks[i].isDeleted}  '
+                                      ' status ${Tasks[i].status} '
+                                      ' counter ${Tasks[i].counter} '
+                                      ' async ${Tasks[i].async} '
+                                   //   ' img ${Tasks[i].image} '
+                                      ' title ${Tasks[i].title}');
                                 }
                               }
 
@@ -177,10 +185,14 @@ class _TaskWidgetState extends State<TaskWidget> with Helpers {
                                   await Provider.of<TaskProvider>(context,
                                           listen: false)
                                       .delete(widget.task.id);
-                                  widget.task.isDeleted = true;
+                                  widget.task.isDeleted = 1;
                                   // TaskProvider().update(task: widget.task);
-                                  await Provider.of<TaskProvider>(context, listen: false).update(task: widget.task);
-                                  await Provider.of<TaskProvider>(context, listen: false).readAll();
+                                  await Provider.of<TaskProvider>(context,
+                                          listen: false)
+                                      .update(task: widget.task);
+                                  await Provider.of<TaskProvider>(context,
+                                          listen: false)
+                                      .readAll();
 
                                   showSnackBar(
                                       context: context,
@@ -215,13 +227,21 @@ class _TaskWidgetState extends State<TaskWidget> with Helpers {
                               // print('jsonEncode${ jsonEncode(Location1)}');
 
                               print(widget.task.counter);
+                              print(widget.task.id);
+                              print(widget.task.status);
+                              print(UserPreferences().chek);
                               // completeTasks = await TaskProvider().read2();
                               task_id = widget.task.id;
                               //status false => شغال
-                              tasks = (await TaskProvider().read())!;
+                              List<taskModel>? tasks;
+
+                              tasks = await TaskProvider().read();
+                              print('jsonEncode${jsonEncode(tasks)}');
+
                               for (int i = 0; i < tasks!.length; i++) {
                                 //&& tasks![i].status ==false && chek==false&&widget.task.counter ==1
-                                if ( UserPreferences().chek == true&&widget.task.counter ==0) {
+                                if (UserPreferences().chek == true &&
+                                    widget.task.counter == 0) {
                                   print('object');
                                   showSnackBar(
                                       context: context,
@@ -230,47 +250,53 @@ class _TaskWidgetState extends State<TaskWidget> with Helpers {
                                   break;
                                 }
                               }
-                              cron.schedule(Schedule.parse('* * * * *'),
-                                  () async {
-                                    print('Cron readLocation');
+                              cron.schedule(Schedule.parse('*/1 * * * *'),
+                                      () async {
+                                    //  print('Cron readLocation');
 
                                     readLocation();
-                              });
+                                  });
 
                               // completeTasks = await TaskProvider().read2();
 
                               setState(() {
-
-                                if (widget.task.counter == 0 && UserPreferences().chek == false) {
-                                  chek=true;
-                                   UserPreferences().setChek(chek);
+                                if (widget.task.counter == 0 &&
+                                    UserPreferences().chek == 'false') {
+                                  print("first");
+                                  chek = 'true';
+                                  UserPreferences().setChek(chek);
                                   print('1${UserPreferences().chek}');
-                                  widget.task.status = false;
+                                  widget.task.status = 1;
                                   print('object');
                                   widget.task.counter = 1;
-                                  Provider.of<TaskProvider>(context, listen: false).update(task: widget.task);
-
+                                  Provider.of<TaskProvider>(context,
+                                          listen: false)
+                                      .update(task: widget.task);
 
                                   //       status = tasks[i].status;
-
+                                  TaskProvider().read();
                                 } else if (widget.task.counter == 1 &&
-                                    UserPreferences().chek == true) {
-                                  chek=false;
-                                   UserPreferences().setChek(chek);
+                                    UserPreferences().chek == 'true') {
+                                  print("sec");
+
+                                  chek = 'false';
+                                  UserPreferences().setChek(chek);
                                   print('2${UserPreferences().chek}');
-                                  widget.task.status = true;
+                                  widget.task.status = 0;
                                   widget.task.counter = 2;
 
-                                  Provider.of<TaskProvider>(context, listen: false).update(task: widget.task);
+                                  Provider.of<TaskProvider>(context,
+                                          listen: false)
+                                      .update(task: widget.task);
 
                                 } else {
-                                   // UserPreferences().setChek('true');
-                                  print('3${UserPreferences().chek}');
+                                  print("th");
 
+                                  // UserPreferences().setChek('true');
+                                  print('3 ${UserPreferences().chek}');
                                 }
                               });
-                            //  await Provider.of<TaskProvider>(context, listen: false).readAll();
-
+                              //  await Provider.of<TaskProvider>(context, listen: false).readAll();
                             },
                             child: Container(
                               alignment: Alignment.center,
@@ -285,7 +311,7 @@ class _TaskWidgetState extends State<TaskWidget> with Helpers {
                                       style: TextStyle(
                                           color: Colors.white, fontSize: 20),
                                     ))
-                                  : widget.task.status
+                                  : widget.task.status == 0
                                       ? Text(
                                           'بدء المهمة',
                                           style: TextStyle(
@@ -299,7 +325,7 @@ class _TaskWidgetState extends State<TaskWidget> with Helpers {
                                               fontSize: 20),
                                         ),
                               decoration: BoxDecoration(
-                                  color: widget.task.status
+                                  color: widget.task.status == 0
                                       ? Color(0xff1A6FD1)
                                       : Color(0xff338f2f),
                                   borderRadius: BorderRadius.circular(15)),

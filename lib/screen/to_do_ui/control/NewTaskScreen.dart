@@ -37,7 +37,6 @@ class _NewTaskScreenState extends State<NewTaskScreen> with Helpers {
     dateTextController = TextEditingController();
     timeTextController = TextEditingController();
     TaskProvider().read();
-
   }
 
   @override
@@ -113,7 +112,6 @@ class _NewTaskScreenState extends State<NewTaskScreen> with Helpers {
                       showTimePicker(
                         context: context,
                         initialTime: TimeOfDay.now(),
-                        
                       ).then((value) {
                         timeTextController.text =
                             value!.format(context).toString();
@@ -127,7 +125,7 @@ class _NewTaskScreenState extends State<NewTaskScreen> with Helpers {
                       }
                       return null;
                     },
-                    label:"${ TimeOfDay.now().format(context).toString()}",
+                    label: "${TimeOfDay.now().format(context).toString()}",
                     prefix: Icons.watch_later_outlined,
                   ),
                   SizedBox(
@@ -153,7 +151,7 @@ class _NewTaskScreenState extends State<NewTaskScreen> with Helpers {
                       }
                       return null;
                     },
-                    label: "${ DateFormat.yMMMd().format(DateTime.now())}",
+                    label: "${DateFormat.yMMMd().format(DateTime.now())}",
                     prefix: Icons.calendar_today,
                   ),
                   SizedBox(
@@ -273,7 +271,7 @@ class _NewTaskScreenState extends State<NewTaskScreen> with Helpers {
 
   bool checkData() {
     if (titleTextController.text.trim().isNotEmpty &&
-        descriptionTextController.text.trim().isNotEmpty  ) {
+        descriptionTextController.text.trim().isNotEmpty) {
       return true;
     }
     showSnackBar(context: context, content: 'يرجى ادخال البيانات', error: true);
@@ -296,18 +294,16 @@ class _NewTaskScreenState extends State<NewTaskScreen> with Helpers {
     taskModel task = taskModel();
     // task.id=0;
     task.title = titleTextController.text;
-    task.userId=UserPreferences().IdUser;
+    task.userId = UserPreferences().IdUser;
     task.description = descriptionTextController.text;
-     task.status ;
-     task.counter ;
-    task.isDeleted = false;
-    // task.date = _dateTextController.text;
-    // task.time = _timeTextController.text;
-    // task.isComplete=false;
+    task.status = 0;
+    task.counter = 0;
+    task.isDeleted = 0;
+    task.chek = UserPreferences().chek;
     task.date = dateTextController.text.toString();
     task.time = timeTextController.text.toString();
     task.details = 'التفاصيل';
-    task.image=null;
+    task.image = null;
     return task;
   }
 }

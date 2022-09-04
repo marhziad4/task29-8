@@ -17,7 +17,7 @@ class TaskProvider extends ChangeNotifier {
   TaskDbController _taskDbController = TaskDbController();
 
   TaskProvider() {
-    print('TaskProvider');
+    // print('TaskProvider');
     //print(jsonEncode(taskss));
 
     read();
@@ -29,12 +29,13 @@ class TaskProvider extends ChangeNotifier {
 
     taskss.clear();
     taskss = await _taskDbController.read();
-    // taskss.reversed
+     taskss.reversed;
     notifyListeners();
     //============================
     completeTasks.clear();
     completeTasks = await _taskDbController.read2();
-print(jsonEncode(completeTasks));
+    completeTasks.reversed;
+// print(jsonEncode(completeTasks));
     notifyListeners();
 
     //====================
@@ -69,14 +70,14 @@ print(jsonEncode(completeTasks));
     // completeTasks = await _taskDbController.read2();
     taskss = await _taskDbController.read();
 
-    print(jsonEncode(completeTasks));
-    print(jsonEncode(taskss));
+    // print(jsonEncode(completeTasks));
+    // print(jsonEncode(taskss));
     notifyListeners();
     notifyListeners();
     return taskss;
   }
   Future<List<taskModel>?> read2() async {
-    print('completeTasks');
+    // print('completeTasks');
     completeTasks = await _taskDbController.read2();
 
     notifyListeners();
@@ -98,14 +99,17 @@ print(jsonEncode(completeTasks));
 
   Future<bool> update({required taskModel? task}) async {
     bool updated = await _taskDbController.update(task!);
-    if (updated) {
-      int index = tasks.indexWhere((contact) => contact.id == task.id);
-      //taskss[index] = task;
+
+    int index = tasks.indexWhere((element) => element.id == task.id);
+    if (index != -1) {
+      //completeTasks.removeAt(index);
+      readAll();
       notifyListeners();
+      return true;
     }
-    notifyListeners();
-    return updated;
+    return false;
   }
+
 
   Future<bool> update1({required taskModel task}) async {
     bool updated = await _taskDbController.update1(task);
@@ -115,8 +119,7 @@ print(jsonEncode(completeTasks));
       notifyListeners();
     }
     notifyListeners();
-    read();
-
+    readAll();
     return updated;
   }
 

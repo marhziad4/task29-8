@@ -27,7 +27,7 @@ class UserApiController with Helpers {
           await UserPreferences().setToken(jsonResponse['access_token']);
       Cron cron = Cron();
       cron.schedule(Schedule.parse('* */23 * * *'), () async {
-        print('Cron');
+      //  print('Cron');
         print(UserPreferences().token);
 
         var url = Uri.parse(ApiSettings.refresh);

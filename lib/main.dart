@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:todo_emp/data/DbProvider.dart';
 import 'package:todo_emp/model/location.dart';
@@ -28,7 +29,7 @@ bool status = true;
 List<Location>? lastLocations;
 List<Location>? totalDistance;
 List<double>? listDistance;
-List<taskModel>? tasks;
+// List<taskModel>? tasks;
 // List<taskModel>? completeTasks ;
 // List<taskModel>? asyncTasks;
 List<Location>? Location1;
@@ -67,7 +68,13 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await DbProvider().initDatabase();
   await UserPreferences().initPreferences();
-
+  final position = await CurrentLocation.fetch();
+  latitude = (position.latitude).toString();
+  longitude = (position.longitude).toString();
+  var status = await Permission.storage.status;
+  if (!status.isGranted) {
+    await Permission.storage.request();
+  }
   runApp(
     MultiProvider(
       providers: [
@@ -89,57 +96,60 @@ void main() async {
 
 
 void readLocation() async {
-  print('readLocation');
-  final position = await CurrentLocation.fetch();
-  latitude = (position.latitude).toString();
-  longitude = (position.longitude).toString();
-  print('every one minutes latitude ${position.latitude}');
-  print('every one minutes longitude ${position.longitude}');
+  // print('readLocation');
+
+  // print('every one minutes latitude ${position.latitude}');
+  // print('every one minutes longitude ${position.longitude}');
   lastLocations = await LocationProvider().lastRow();
-  tasks = await TaskProvider().read();
+  // tasks = await TaskProvider().read();
   List taskss =  await TaskProvider().taskss;
-  print('tasks${jsonEncode(taskss)}');
-  print('lastLocations${jsonEncode(lastLocations)}');
-  for (int i = 0; i < tasks!.length; i++) {
+  // print('tasks${jsonEncode(taskss)}');
+  // print('lastLocations${jsonEncode(lastLocations)}');
+  List<taskModel>? Tasks;
+  Tasks = await TaskProvider().read();
+
+  for (int i = 0; i < Tasks!.length; i++) {
     print('start read');
+    if(Tasks[i].counter==1){
+      if (lastLocations!.length > 0) {
+        // print(
+        //     'latitude >> ${lastLocations![0].latitude} == ${latitude.toString()}');
+        // print(
+        //     'longitude >> ${lastLocations![0].longitude} == ${longitude.toString()}');
 
-    if (lastLocations!.length > 0) {
-      print(
-          'latitude >> ${lastLocations![0].latitude} == ${latitude.toString()}');
-      print(
-          'longitude >> ${lastLocations![0].longitude} == ${longitude.toString()}');
 
-      print(
-          'longitude >> ${lastLocations![0].longitude} == ${longitude.toString()}');
+        double distanceInMeters = Geolocator.distanceBetween(
+            double.parse('${lastLocations![0].latitude}'),
+            double.parse('${lastLocations![0].longitude}'),
+            double.parse('${latitude.toString()}'),
+            double.parse('${longitude.toString()}'));
+        print('distanceInMeters ${distanceInMeters}');
+        listDistance?.add(distanceInMeters);
 
-      double distanceInMeters = Geolocator.distanceBetween(
-          double.parse('${lastLocations![0].latitude}'),
-          double.parse('${lastLocations![0].longitude}'),
-          double.parse('${latitude.toString()}'),
-          double.parse('${longitude.toString()}'));
-      print('distanceInMeters ${distanceInMeters}');
-      listDistance?.add(distanceInMeters);
-
-      if ((lastLocations![0].latitude == latitude.toString() &&
-              lastLocations![0].longitude == longitude.toString()) ||
-          distanceInMeters <= 1) {
-        lastLocations![0].updatetime = DateTime.now().toString();
-        await LocationProvider().update(location: lastLocations![0]);
-        print('nothing todo');
+        if ((lastLocations![0].latitude == latitude.toString() &&
+            lastLocations![0].longitude == longitude.toString()) ||
+            distanceInMeters <= 30) {
+          lastLocations![0].updatetime = DateTime.now().toString();
+          await LocationProvider().update(location: lastLocations![0]);
+          print('nothing todo');
+        } else
+          await LocationProvider().addLocation(location: locationUser);
       } else
         await LocationProvider().addLocation(location: locationUser);
-    } else
-      await LocationProvider().addLocation(location: locationUser);
-  }
-  print('material');
-  print('every one minutes latitude ${position.latitude}');
-  print('every one minutes longitude ${position.longitude}');
+    }else{
+      print('لا يوجد مهام قيد التنفيذ');
+    }
 
-  locations = await LocationProvider().read();
-  for (int i = 0; i < locations!.length; i++) {
-    print(
-        'index ${i} location ${locations![i].latitude} longitude ${locations![i].longitude}  time ${locations![i].time}  updatetime ${locations![i].updatetime}task_id ${locations![i].task_id}');
   }
+  // print('material');
+  // print('every one minutes latitude ${position.latitude}');
+  // print('every one minutes longitude ${position.longitude}');
+
+  // locations = await LocationProvider().read();
+  // for (int i = 0; i < locations!.length; i++) {
+  //   print(
+  //       'index ${i} location ${locations![i].latitude} longitude ${locations![i].longitude}  time ${locations![i].time}  updatetime ${locations![i].updatetime}task_id ${locations![i].task_id}');
+  // }
 }
 
 Location get locationUser {
@@ -148,6 +158,8 @@ Location get locationUser {
   location.latitude = latitude.toString();
   location.time;
   location.task_id = task_id;
+  location.users_id =UserPreferences().IdUser;
+
   return location;
 }
 

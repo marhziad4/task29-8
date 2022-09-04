@@ -26,12 +26,12 @@ class UserPreferences {
     await _sharedPreferences.setString('IdUser', IdUser);
   }
 
-  Future<bool>setChek(bool chek) async {
-   return await _sharedPreferences.setBool('chek', chek);
+  Future<void>setChek(String chek) async {
+    await _sharedPreferences.setString('chek', chek);
   }
   String get token => _sharedPreferences.getString('token') ?? '';
   String get IdUser => _sharedPreferences.getString('IdUser') ?? '';
-  bool? get chek => _sharedPreferences.getBool('chek') ?? false;
+  String? get chek => _sharedPreferences.getString('chek') ?? 'false';
 
   bool? get isLoggedIn => _sharedPreferences.getBool('logged_in')??false;
   Future<void> setPlace(String place) async {

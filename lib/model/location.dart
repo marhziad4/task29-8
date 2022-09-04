@@ -1,6 +1,6 @@
 class Location {
   late int id;
-  int? users_id;
+  String ? users_id;
   int? task_id;
   String? latitude='0';
   String? longitude='0';

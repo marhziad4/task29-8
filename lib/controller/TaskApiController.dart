@@ -1,5 +1,10 @@
+import 'package:path/path.dart';
+import 'package:async/async.dart';
+import 'dart:io';
+import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:todo_emp/api/api_settings.dart';
 import 'package:todo_emp/controller/TaskDbController.dart';
@@ -11,8 +16,10 @@ import 'package:http/http.dart' as http;
 import 'package:todo_emp/preferences/user_pref.dart';
 import 'package:todo_emp/providers/TaskProvider.dart';
 import 'package:todo_emp/providers/location_provider.dart';
+import 'package:todo_emp/utils/helpers.dart';
 
 class TaskApiController with ApiMixin, HelpersApi {
+
   Future<List<taskModel>> getTasks({required BuildContext context}) async {
     var url = Uri.parse(ApiSettings.TASKS);
     var response = await http.get(url, headers: requestHeaders);
@@ -29,7 +36,15 @@ class TaskApiController with ApiMixin, HelpersApi {
     }
     return [];
   }
+  Future<String> get _localPath async {
+    final directory = await getApplicationDocumentsDirectory();
 
+    return directory.path;
+  }
+  Future<File> get _localFile async {
+    final path = await _localPath;
+    return File('$path/Pictures/pla_todo/text.txt');
+  }
   Future createTask({required BuildContext context}) async {
     //
     List<Map> newList = [];
@@ -39,12 +54,17 @@ class TaskApiController with ApiMixin, HelpersApi {
       for (int i = 0; i < completeTasks.length; i++) {
         var taskid = completeTasks[i].id;
         print('taskid   :$taskid');
+        File imageFile= File('/storage/emulated/0/Pictures/pla_todo/${completeTasks[i].image}');
+        // print('Directory ${directory.path}');
+        Directory directory = await getApplicationDocumentsDirectory();
+        print('Directory${directory.path}');
         List<Location>? Location1 = await LocationProvider().readByTask(taskid);
-
         if (Location1!.length > 0)
-          newList.add({"info": completeTasks[i], "locations": Location1});
+          newList.add({"info": completeTasks[i], "locations": Location1,  'photo': imageFile != null ? 'data:image/png;base64,' +
+              base64Encode(imageFile.readAsBytesSync()) : ''});
         else
-          newList.add({"info": completeTasks[i], "locations": null});
+          newList.add({"info": completeTasks[i], "locations": null,'photo': imageFile != null ? 'data:image/png;base64,' +
+              base64Encode(imageFile.readAsBytesSync()) : ''});
         print('Location1');
 
         for (int j = 0; j < Location1.length; j++) {
@@ -52,56 +72,55 @@ class TaskApiController with ApiMixin, HelpersApi {
         }
         print(UserPreferences().token);
 
-        for (int j = 0; j < completeTasks.length; j++) {
-          print(jsonEncode(completeTasks[j]));
-        }
-        List<taskModel>? NotAsync;
-        NotAsync = await TaskProvider().NotAsync1();
-        print('NotAsync');
-        for (int j = 0; j < NotAsync!.length; j++) {
-          print(jsonEncode(NotAsync[j]));
-        }
+        // for (int j = 0; j < completeTasks.length; j++) {
+        //   print(jsonEncode(completeTasks[j]));
+        // }
+        // List<taskModel>? NotAsync;
+        // NotAsync = await TaskProvider().NotAsync1();
+        // print('NotAsync');
+        // for (int j = 0; j < NotAsync!.length; j++) {
+        //   print(jsonEncode(NotAsync[j]));
+        // }
       }
-    } else {
-      print('no data');
-    }
+      var body = jsonEncode({"tasks": newList});
+      print(body);
+      var url = Uri.parse(ApiSettings.ADDTASKS);
 
-    var body = jsonEncode({"tasks": newList});
-    print(body);
-    var url = Uri.parse(ApiSettings.ADDTASKS);
+      var response = await http.post(url, body: body, headers: requestHeaders);
+      print("no");
+      print("$response");
 
-    var response = await http.post(url, body: body, headers: requestHeaders);
-    print("no");
-    print("$response");
-
-    if (isSuccessRequest(response.statusCode)) {
-      print("no ${response.statusCode}");
-      print('${response.body}');
-      if (response.statusCode == 200) {
-        print('async');
-        for (int i = 0; i < completeTasks.length; i++) {
-          print('here');
-          completeTasks[i].async = 1;
-          Provider.of<TaskProvider>(context, listen: false)
-              .update(task: completeTasks[i]);
-          // TaskProvider().update(task: completeTasks![i]);
+      if (isSuccessRequest(response.statusCode)) {
+        print("no ${response.statusCode}");
+        print('${response.body}');
+        if (response.statusCode == 200) {
           print('async');
+          for (int i = 0; i < completeTasks.length; i++) {
+            print('here');
+            completeTasks[i].async = 1;
+            Provider.of<TaskProvider>(context, listen: false)
+                .update(task: completeTasks[i]);
+            // TaskProvider().update(task: completeTasks![i]);
+            print('async');
+          }
         }
+      } else if (response.statusCode == 401) {
+        print("no ${response.statusCode}");
+
+        showSnackBar(
+            context: context, message: 'خطا في تسجيل الدخول', error: true);
+        // await UserApiController().logout(context: context);
+        // Navigator.pushReplacementNamed(context, '/Login_screen');
+
+      } else {
+        print("no ${response.statusCode}");
+
+        handleServerError(context);
       }
-    } else if (response.statusCode == 401) {
-      print("no ${response.statusCode}");
-
-      showSnackBar(
-          context: context, message: 'خطا في تسجيل الدخول', error: true);
-      // await UserApiController().logout(context: context);
-      // Navigator.pushReplacementNamed(context, '/Login_screen');
-
     } else {
-      print("no ${response.statusCode}");
-
-      handleServerError(context);
+      showSnackBar(
+          context: context, message: 'لا يوجد مهام لترحيلها', error: true);
     }
-
     return null;
   }
 

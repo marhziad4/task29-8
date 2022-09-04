@@ -18,9 +18,9 @@ class taskModel implements BackupModel {
   late String date=DateTime.now().toString();
   late String details ;
    String? image;
-   bool  status= true;
-  late bool isDeleted;
-  late bool chek;
+  int?  status= 0;
+   int? isDeleted= 0;
+   String? chek;
   // bool async = false;
    int counter= 0;
    int async= 0;
@@ -47,8 +47,8 @@ class taskModel implements BackupModel {
     this.async = rowMap['async'];
     // this.status = rowMap['counter'];
     // this.status = rowMap['status'] == 1 ? true : false;
-    this.isDeleted = rowMap['isDeleted'] == 1 ? true : false;
-    this.chek = rowMap['chek'] == 1 ? true : false;
+    this.isDeleted = rowMap['isDeleted'];
+    this.chek = rowMap['chek'];
 
     // time_created = rowMap["time_created"].toDate();
     // this.isComplete = rowMap['isComplete'] == 1 ? true : false;
@@ -69,8 +69,9 @@ class taskModel implements BackupModel {
      map['status'] = this.status;
      map['counter'] = this.counter;
      map['async'] = this.async;
+     map['chek'] = this.chek;
     // map['status'] = this.status ? 1 : 0;    // map['users_id'] = users_id;
-    map['isDeleted'] = this.isDeleted ? 1 : 0;    // map['users_id'] = users_id;
+    map['isDeleted'];   // map['users_id'] = users_id;
     // map['chek'] = this.chek ? 1 : 0;    // map['users_id'] = users_id;
     // map['async'] = this.async ? 1 : 0;    // map['users_id'] = users_id;
     // map["time_created"] = time_created;
@@ -83,8 +84,7 @@ class taskModel implements BackupModel {
     map['id'] = this.id;
     map['details'] = this.details;
     map['image'] = this.image;
-    map['status'] = this.status;
-    map['async'] = this.async;
+
 
     return map;
   }

@@ -21,6 +21,7 @@ class DbProvider {
 
   Future<void> initDatabase() async {
     Directory directory = await getApplicationDocumentsDirectory();
+    print('${directory.path}');
     String path = join(directory.path, 'app_database.db');
     _database = await openDatabase(
       path,
@@ -33,13 +34,14 @@ class DbProvider {
             'description TEXT,'
             'time TEXT,'
             'date TEXT,'
-            'isDeleted bool,'
+            'isDeleted INTEGER,'
             'image TEXT,'
             'details TEXT,'
-            'status bool,'
+            'status INTEGER,'
             'counter INTEGER,'
             'userId TEXT,'
-            'async INTEGER'
+            'async INTEGER,'
+            'chek TEXT'
 
             ')');
         // 'isComplete INTEGER,'
@@ -55,7 +57,7 @@ class DbProvider {
             'longitude TEXT,'
             'time TEXT,'
             'updatetime TEXT,'
-            'users_id INTEGER,'
+            'users_id TEXT,'
             'task_id INTEGER'
             ')');
 

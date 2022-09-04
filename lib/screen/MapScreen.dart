@@ -2,11 +2,13 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+import 'package:gallery_saver/gallery_saver.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
+import 'package:todo_emp/preferences/user_pref.dart';
 import 'package:todo_emp/main.dart';
 import 'package:todo_emp/model/taskModel.dart';
 import 'package:todo_emp/providers/TaskProvider.dart';
@@ -33,10 +35,11 @@ class _MapScreenState extends State<MapScreen> with Helpers {
   late GoogleMapController googleMapController;
   late CameraPosition _cameraPosition;
   late GoogleMap googleMap;
+  //Image imageFile= Image.file(File('/storage/emulated/0/Pictures/pla_todo'));
 
   late Position position;
   final ImagePicker imagePicker = ImagePicker();
-    File? FileImage;
+  File? FileImage;
   late String addressLocation;
   late String country;
   late String cl;
@@ -45,7 +48,6 @@ class _MapScreenState extends State<MapScreen> with Helpers {
   var firstAddress;
   var tapped;
   late TextEditingController details;
-
 
   // _timeTextController = TextEditingController(text: widget.task.time);
 
@@ -105,7 +107,8 @@ class _MapScreenState extends State<MapScreen> with Helpers {
             padding: const EdgeInsets.only(left: 20),
             child: IconButton(
               onPressed: () {
-                _getFromCamera();
+                // _getFromCamera();
+                pickImageCamera();
               },
               icon: Icon(
                 Icons.camera_alt,
@@ -164,33 +167,33 @@ class _MapScreenState extends State<MapScreen> with Helpers {
                   SizedBox(
                     height: 10,
                   ),
-                // widget.task.image
-                Container(
-                  child: widget.task.image != null
-                      ? Container(
-              width: 200,
-              height: 200,
-              child:  Utility.imageFromBase64String(widget.task.image!),
-            ):  Container(
-                      child: FileImage == null
-                          ? Text(' ')
-                          : Container(
-                        width: 200,
-                        height: 200,
-                        child: Image.file(
-                          FileImage!,
-                          fit: BoxFit.cover,
-                        ),
-                      )),
-                ),
+                  // widget.task.image
+                  Container(
+                    child: widget.task.image != null
+                        ? Container(
+                            width: 200,
+                            height: 200,
+                            child: Image.file(File('/data/user/0/com.example.todo_emp/cache/${widget.task.image}')),
+                          )
+                        : Container(
+                            child: FileImage == null
+                                ? Text(' ')
+                                : Container(
+                              width: 200,
+                              height: 200,
+                              child: Utility.imageFromBase64String(
+                                  widget.task.image!),
+                            )),
+                  ),
 
                   SizedBox(
                     height: 10,
                   ),
                   AppButtonMain(
                     onPressed: () async {
-                      await Provider.of<TaskProvider>(context, listen: false)
-                          .update1(task: task);
+                       await Provider.of<TaskProvider>(context, listen: false)
+                           .update1(task: task);
+                      // TaskDbController().alterTable('TABLE_CUSTOMER', 'Country');
                       Navigator.pop(context);
                     },
                     title: 'حفظ',
@@ -341,14 +344,14 @@ class _MapScreenState extends State<MapScreen> with Helpers {
             // onTap: () => _onTap(locations),
             draggable: false,
 
-
             // icon: locationas![i] == 0
             //     ? BitmapDescriptor.defaultMarkerWithHue(
             //         BitmapDescriptor.hueCyan)
             //     : BitmapDescriptor.defaultMarkerWithHue(
             //         BitmapDescriptor.hueGreen),
 
-             icon:BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
+            icon:
+                BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
             // locationas![i]==0 ? BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueCyan)
             //     :BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
           ),
@@ -358,24 +361,34 @@ class _MapScreenState extends State<MapScreen> with Helpers {
       // googleMap=createMapOptions();
     });
   }
-    Uint8List? imageRaw;
+
+  Uint8List? imageRaw;
+  String? photoName;
+
   Future<void> pickImageCamera() async {
     print('FileImage');
-    var photo = (await imagePicker.pickImage(source: ImageSource.camera))!;
+    var photo = await imagePicker.pickImage(source: ImageSource.camera);
+
     setState(() {
-      FileImage = File(photo.path);
-      print(FileImage);
+      FileImage = File(photo!.path);
+
+      GallerySaver.saveImage(photo.path, albumName: 'pla_todo'); //
+      print('pla_todo');
+      photoName = photo.name;
+      print(photo.name);
     });
-     // imageRaw = await FileImage.readAsBytes();
+    // imageRaw = await FileImage.readAsBytes();
 
     // pickedImage = (await imagePicker.pickImage(
     //     source: ImageSource.camera, imageQuality: 25))!;
     setState(() {});
   }
+
   /// Get from Camera
-    late String imgString;
+  late String imgString;
+
   _getFromCamera() async {
-    var photo= await imagePicker.pickImage(
+    var photo = await imagePicker.pickImage(
       source: ImageSource.camera,
       maxWidth: 1800,
       maxHeight: 1800,
@@ -383,8 +396,7 @@ class _MapScreenState extends State<MapScreen> with Helpers {
     if (photo != null) {
       setState(() {
         FileImage = File(photo.path);
-        imgString = Utility.base64String(FileImage!.readAsBytesSync());
-
+        //  imgString = Utility.base64String(FileImage!.readAsBytesSync());
       });
     }
   }
@@ -428,12 +440,13 @@ class _MapScreenState extends State<MapScreen> with Helpers {
 
   taskModel get task {
     taskModel task = widget.task;
-
+    print('photo_pla$photoName');
     task.details = details.text;
-    task.image = imgString;
+    task.image = photoName.toString();
+    task.chek = UserPreferences().chek;
+    task.counter = 1;
     return task;
   }
-
 }
 /*
   void getLocation() async {
