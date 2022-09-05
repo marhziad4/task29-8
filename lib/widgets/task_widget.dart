@@ -134,7 +134,7 @@ class _TaskWidgetState extends State<TaskWidget> with Helpers {
                                       ' status ${Tasks[i].status} '
                                       ' counter ${Tasks[i].counter} '
                                       ' async ${Tasks[i].async} '
-                                   //   ' img ${Tasks[i].image} '
+                                      //   ' img ${Tasks[i].image} '
                                       ' title ${Tasks[i].title}');
                                 }
                               }
@@ -235,27 +235,31 @@ class _TaskWidgetState extends State<TaskWidget> with Helpers {
                               //status false => شغال
                               List<taskModel>? tasks;
 
-                              tasks = await TaskProvider().read2();
+                              tasks = await TaskProvider().read();
                               print('jsonEncode${jsonEncode(tasks)}');
 
-                              for (int i = 0; i < tasks!.length; i++) {
-                                //&& tasks![i].status ==false && chek==false&&widget.task.counter ==1
-                                if (UserPreferences().chek == true &&
-                                    widget.task.counter == 0) {
-                                  print('object');
-                                  showSnackBar(
-                                      context: context,
-                                      content: 'هناك مهمة قيد العمل',
-                                      error: true);
-                                  break;
-                                }
+                              //&& tasks![i].status ==false && chek==false&&widget.task.counter ==1
+                              if (widget.task.counter == 0 &&
+                                  UserPreferences().chek == 'true') {
+                                print('object');
+                                showSnackBar(
+                                    context: context,
+                                    content: 'هناك مهمة قيد العمل',
+                                    error: true);
+                              } else if (widget.task.counter == 1 &&
+                                  UserPreferences().chek == 'true') {
+                                showSnackBar(
+                                    context: context,
+                                    content: 'تم انجاز المهمة',
+                                    error: false);
                               }
-                              cron.schedule(Schedule.parse('*/1 * * * *'),
-                                      () async {
-                                    //  print('Cron readLocation');
 
-                                    readLocation();
-                                  });
+                              cron.schedule(Schedule.parse('*/1 * * * *'),
+                                  () async {
+                                //  print('Cron readLocation');
+
+                                readLocation();
+                              });
 
                               // completeTasks = await TaskProvider().read2();
 
@@ -288,7 +292,6 @@ class _TaskWidgetState extends State<TaskWidget> with Helpers {
                                   Provider.of<TaskProvider>(context,
                                           listen: false)
                                       .update(task: widget.task);
-
                                 } else {
                                   print("th");
 

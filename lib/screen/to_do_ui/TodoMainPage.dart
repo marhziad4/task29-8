@@ -103,7 +103,7 @@ class _TodoMainPageState extends State<TodoMainPage>
             ),
             Tab(
               icon: Icon(Icons.task_rounded),
-              text: 'المهام من قبل المدير ',
+              text: 'مهام المدير ',
             ),
             Tab(
               icon: Icon(Icons.task_rounded),

@@ -53,25 +53,34 @@ class TaskApiController with ApiMixin, HelpersApi {
     if (completeTasks!.isNotEmpty) {
       for (int i = 0; i < completeTasks.length; i++) {
         var taskid = completeTasks[i].id;
+        File ?imageFile;
         print('taskid   :$taskid');
-        File imageFile= File('/storage/emulated/0/Pictures/pla_todo/${completeTasks[i].image}');
-        // print('Directory ${directory.path}');
-        Directory directory = await getApplicationDocumentsDirectory();
-        print('Directory${directory.path}');
+        print('taskimage   :${completeTasks[i].image}');
+        if(completeTasks[i].image != null){
+          final path = '/storage/emulated/0/Pictures/pla_todo/${completeTasks[i].image}';
+          final checkPathExistence = await Directory(path).exists();
+          print(checkPathExistence);
+           imageFile= File('/storage/emulated/0/Pictures/pla_todo/${completeTasks[i].image}');
+          // print(imageFile);
+          // print('${  base64Encode(imageFile.readAsBytesSync())}');
+          // print(imageFile);
+        }
+
+
+
         List<Location>? Location1 = await LocationProvider().readByTask(taskid);
         if (Location1!.length > 0)
-          newList.add({"info": completeTasks[i], "locations": Location1,  'photo': imageFile != null ? 'data:image/png;base64,' +
+          newList.add({"info": completeTasks[i], "locations": Location1,  'photo': imageFile != null ?
               base64Encode(imageFile.readAsBytesSync()) : ''});
         else
-          newList.add({"info": completeTasks[i], "locations": null,'photo': imageFile != null ? 'data:image/png;base64,' +
+          newList.add({"info": completeTasks[i], "locations": null,'photo': imageFile != null ?
               base64Encode(imageFile.readAsBytesSync()) : ''});
         print('Location1');
-        print('${base64Encode(imageFile.readAsBytesSync())}');
 
         for (int j = 0; j < Location1.length; j++) {
           print(jsonEncode(Location1[j]));
         }
-        print(UserPreferences().token);
+       // print(UserPreferences().token);
 
         // for (int j = 0; j < completeTasks.length; j++) {
         //   print(jsonEncode(completeTasks[j]));
@@ -88,14 +97,15 @@ class TaskApiController with ApiMixin, HelpersApi {
       var url = Uri.parse(ApiSettings.ADDTASKS);
 
       var response = await http.post(url, body: body, headers: requestHeaders);
-      print("no");
-      print("$response");
+      print("no ${response.statusCode}");
 
       if (isSuccessRequest(response.statusCode)) {
         print("no ${response.statusCode}");
         print('${response.body}');
         if (response.statusCode == 200) {
           print('async');
+          print('${response.body}');
+
           for (int i = 0; i < completeTasks.length; i++) {
             print('here');
             completeTasks[i].async = 1;
@@ -122,6 +132,7 @@ class TaskApiController with ApiMixin, HelpersApi {
       showSnackBar(
           context: context, message: 'لا يوجد مهام لترحيلها', error: true);
     }
+
     return null;
   }
 

@@ -131,7 +131,7 @@ class _LoginScreenState extends State<LoginScreen> with Helpers {
 
                         // performLogin();
                          _checkConnectivityState();
-                        // Navigator.pushNamed(context, '/TodoMainPage');
+                        //  Navigator.pushNamed(context, '/TodoMainPage');
                       },
                       child: Container(
                         alignment: Alignment.center,

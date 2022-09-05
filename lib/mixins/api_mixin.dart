@@ -19,7 +19,7 @@ mixin ApiMixin implements HelpersApi {
   void handleServerError(BuildContext context) {
     showSnackBar(
         context: context,
-        message: 'Unable to perform your request now!',
+        message: 'حدث خطأ بالترحيل',
         error: true);
   }
 
