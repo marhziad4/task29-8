@@ -8,23 +8,24 @@ import 'package:todo_emp/preferences/user_pref.dart';
 //     List<taskModel>.from(json.decode(str).map((x) => taskModel.fromJson(x)));
 //
 
-
 class taskModel implements BackupModel {
   late int id;
-   late String userId ;
+  late String userId;
+
   late String title;
   late String description;
-   String time=TimeOfDay.now().toString();
-  late String date=DateTime.now().toString();
-  late String details ;
-   String? image;
-  int?  status= 0;
-   int? isDeleted= 0;
-   String? chek;
-  // bool async = false;
-   int counter= 0;
-   int async= 0;
+  String time = TimeOfDay.now().toString();
+  late String date = DateTime.now().toString();
+  late String details;
 
+  String? image;
+  int status = 0;
+  int? isDeleted = 0;
+  String? chek;
+
+  // bool async = false;
+  int counter = 0;
+  int async = 0;
 
   // late bool isComplete
 
@@ -34,6 +35,7 @@ class taskModel implements BackupModel {
   // taskModel({required this.id,required this.title,required this.description,required this.time,required this.time});
   // taskModel({required String title});
   taskModel();
+
   taskModel.fromJson(Map<dynamic, dynamic> rowMap) {
     this.id = rowMap['id'];
     this.userId = rowMap['userId'];
@@ -45,7 +47,7 @@ class taskModel implements BackupModel {
     this.image = rowMap['image'];
     this.counter = rowMap['counter'];
     this.async = rowMap['async'];
-    // this.status = rowMap['counter'];
+    this.status = rowMap['status'];
     // this.status = rowMap['status'] == 1 ? true : false;
     this.isDeleted = rowMap['isDeleted'];
     this.chek = rowMap['chek'];
@@ -65,13 +67,13 @@ class taskModel implements BackupModel {
     map['time'] = this.time;
     map['date'] = this.date;
     map['details'] = this.details;
-     map['image'] = this.image;
-     map['status'] = this.status;
-     map['counter'] = this.counter;
-     map['async'] = this.async;
-     map['chek'] = this.chek;
+    map['image'] = this.image;
+    map['status'] = this.status;
+    map['counter'] = this.counter;
+    map['async'] = this.async;
+    map['chek'] = this.chek;
     // map['status'] = this.status ? 1 : 0;    // map['users_id'] = users_id;
-    map['isDeleted'];   // map['users_id'] = users_id;
+    map['isDeleted']= this.isDeleted; // map['users_id'] = users_id;
     // map['chek'] = this.chek ? 1 : 0;    // map['users_id'] = users_id;
     // map['async'] = this.async ? 1 : 0;    // map['users_id'] = users_id;
     // map["time_created"] = time_created;
@@ -85,8 +87,6 @@ class taskModel implements BackupModel {
     map['details'] = this.details;
     map['image'] = this.image;
 
-
     return map;
   }
-
 }

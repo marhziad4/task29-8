@@ -66,6 +66,7 @@ class TaskApiController with ApiMixin, HelpersApi {
           newList.add({"info": completeTasks[i], "locations": null,'photo': imageFile != null ? 'data:image/png;base64,' +
               base64Encode(imageFile.readAsBytesSync()) : ''});
         print('Location1');
+        print('${base64Encode(imageFile.readAsBytesSync())}');
 
         for (int j = 0; j < Location1.length; j++) {
           print(jsonEncode(Location1[j]));

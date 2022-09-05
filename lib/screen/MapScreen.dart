@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 
@@ -35,6 +36,7 @@ class _MapScreenState extends State<MapScreen> with Helpers {
   late GoogleMapController googleMapController;
   late CameraPosition _cameraPosition;
   late GoogleMap googleMap;
+
   //Image imageFile= Image.file(File('/storage/emulated/0/Pictures/pla_todo'));
 
   late Position position;
@@ -167,32 +169,40 @@ class _MapScreenState extends State<MapScreen> with Helpers {
                   SizedBox(
                     height: 10,
                   ),
-                  // widget.task.image
+                 // widget.task.image
+                  //6ca5e1f6-c582-4575-9611-dd7ad8e442356687349653389249750.jpg
+                  //data/user/0/com.example.todo_emp/cache/
+                  /*
+                    //Image imageFile= Image.file(File('/storage/emulated/0/Pictures/pla_todo'));
+                  //'/data/user/0/com.example.todo_emp/cache/${widget.task.image}'
+                   */
                   Container(
                     child: widget.task.image != null
                         ? Container(
                             width: 200,
                             height: 200,
-                            child: Image.file(File('/data/user/0/com.example.todo_emp/cache/${widget.task.image}')),
+                            child: Image.file(File(
+                                '/data/user/0/com.example.todo_emp/cache/${widget.task.image}')),
                           )
-                        : Container(
-                            child: FileImage == null
-                                ? Text(' ')
-                                : Container(
-                              width: 200,
-                              height: 200,
-                              child: Utility.imageFromBase64String(
-                                  widget.task.image!),
-                            )),
-                  ),
+                        :  Text(' '),
+                            /*
+                              : Container(
+                                    width: 200,
+                                    height: 200,
+                                    child: Utility.imageFromBase64String(
+                                        widget.task.image!),
+                                  )
+                             */
+
+                 ),
 
                   SizedBox(
                     height: 10,
                   ),
                   AppButtonMain(
                     onPressed: () async {
-                       await Provider.of<TaskProvider>(context, listen: false)
-                           .update1(task: task);
+                      await Provider.of<TaskProvider>(context, listen: false)
+                          .update1(task: task);
                       // TaskDbController().alterTable('TABLE_CUSTOMER', 'Country');
                       Navigator.pop(context);
                     },
@@ -375,6 +385,7 @@ class _MapScreenState extends State<MapScreen> with Helpers {
       GallerySaver.saveImage(photo.path, albumName: 'pla_todo'); //
       print('pla_todo');
       photoName = photo.name;
+
       print(photo.name);
     });
     // imageRaw = await FileImage.readAsBytes();
@@ -443,8 +454,8 @@ class _MapScreenState extends State<MapScreen> with Helpers {
     print('photo_pla$photoName');
     task.details = details.text;
     task.image = photoName.toString();
-    task.chek = UserPreferences().chek;
-    task.counter = 1;
+    // task.chek = UserPreferences().chek;
+    // task.counter = 1;
     return task;
   }
 }

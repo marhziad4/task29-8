@@ -235,7 +235,7 @@ class _TaskWidgetState extends State<TaskWidget> with Helpers {
                               //status false => شغال
                               List<taskModel>? tasks;
 
-                              tasks = await TaskProvider().read();
+                              tasks = await TaskProvider().read2();
                               print('jsonEncode${jsonEncode(tasks)}');
 
                               for (int i = 0; i < tasks!.length; i++) {
@@ -266,9 +266,9 @@ class _TaskWidgetState extends State<TaskWidget> with Helpers {
                                   chek = 'true';
                                   UserPreferences().setChek(chek);
                                   print('1${UserPreferences().chek}');
-                                  widget.task.status = 1;
-                                  print('object');
                                   widget.task.counter = 1;
+                                  widget.task.status = 1;
+                                  print('status');
                                   Provider.of<TaskProvider>(context,
                                           listen: false)
                                       .update(task: widget.task);
@@ -311,7 +311,7 @@ class _TaskWidgetState extends State<TaskWidget> with Helpers {
                                       style: TextStyle(
                                           color: Colors.white, fontSize: 20),
                                     ))
-                                  : widget.task.status == 0
+                                  : widget.task.counter == 0
                                       ? Text(
                                           'بدء المهمة',
                                           style: TextStyle(
