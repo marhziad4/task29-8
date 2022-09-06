@@ -121,8 +121,9 @@ class _TaskWidgetState extends State<TaskWidget> with Helpers {
                               //             ' title ${completeTasks![i].title}');
                               //   }
                               // }
+                              print('chek : ${UserPreferences().chek}}');
                               List<taskModel>? Tasks;
-                              Tasks = await TaskProvider().read();
+                              Tasks = await TaskProvider().read2();
                               // asyncTasks =Provider.of<TaskProvider>(context, listen: false).asyncTasks;
                               if (Tasks!.isEmpty) {
                                 print('null');
@@ -134,6 +135,7 @@ class _TaskWidgetState extends State<TaskWidget> with Helpers {
                                       ' status ${Tasks[i].status} '
                                       ' counter ${Tasks[i].counter} '
                                       ' async ${Tasks[i].async} '
+                                      ' chek ${Tasks[i].chek} '
                                       //   ' img ${Tasks[i].image} '
                                       ' title ${Tasks[i].title}');
                                 }
@@ -272,6 +274,8 @@ class _TaskWidgetState extends State<TaskWidget> with Helpers {
                                   print('1${UserPreferences().chek}');
                                   widget.task.counter = 1;
                                   widget.task.status = 1;
+                                  widget.task.chek = UserPreferences().chek;
+
                                   print('status');
                                   Provider.of<TaskProvider>(context,
                                           listen: false)
@@ -279,8 +283,7 @@ class _TaskWidgetState extends State<TaskWidget> with Helpers {
 
                                   //       status = tasks[i].status;
                                   TaskProvider().read();
-                                } else if (widget.task.counter == 1 &&
-                                    UserPreferences().chek == 'true') {
+                                } else if (widget.task.counter == 1 ) {
                                   print("sec");
 
                                   chek = 'false';
@@ -288,16 +291,13 @@ class _TaskWidgetState extends State<TaskWidget> with Helpers {
                                   print('2${UserPreferences().chek}');
                                   widget.task.status = 0;
                                   widget.task.counter = 2;
+                                  widget.task.chek = UserPreferences().chek;
 
                                   Provider.of<TaskProvider>(context,
                                           listen: false)
                                       .update(task: widget.task);
-                                } else {
-                                  print("th");
-
-                                  // UserPreferences().setChek('true');
-                                  print('3 ${UserPreferences().chek}');
                                 }
+                                print('3 ${UserPreferences().chek}');
                               });
                               //  await Provider.of<TaskProvider>(context, listen: false).readAll();
                             },

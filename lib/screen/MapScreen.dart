@@ -401,6 +401,27 @@ class _MapScreenState extends State<MapScreen> with Helpers {
       photoName = photo.name;
       print(photo.name);
     });
+    //+++++++++++++++++++++++++++++++++++++++++++++++++++++
+    //   final ImagePicker _imagePicker = ImagePicker();
+    //   PickedFile? _pickedFile;
+    /*
+    Future pickImage() async {
+      _pickedFile = await _imagePicker.getImage(source: ImageSource.camera);
+      if (_pickedFile != null) {
+        setState(() {});
+      }
+    }
+
+    Future uploadImage() async {
+      if (_pickedFile != null) {
+        Provider.of<ImagesProvider>(context, listen: false)
+            .uploadImage(context, _pickedFile!.path);
+      }
+    }
+    */
+    // +++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
     //data/user/0/com.example.todo_emp/cache/null
     // imageRaw = await FileImage.readAsBytes();
 

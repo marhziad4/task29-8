@@ -62,6 +62,7 @@ class _TodoMainPageState extends State<TodoMainPage>
                 size: 25.0,
               ),
               onPressed: () {
+
                 Navigator.push(
                     context, MaterialPageRoute(builder: (_) => NewTaskScreen()));
               },
@@ -121,9 +122,10 @@ class _TodoMainPageState extends State<TodoMainPage>
         ),
       ),
       drawer: Drawer(
+
         backgroundColor: Colors.white,
         child: ListView(
-          padding: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+          padding: EdgeInsets.symmetric(vertical: 20, horizontal: 25),
           children: [
             SizedBox(
               height: 10,
@@ -133,23 +135,32 @@ class _TodoMainPageState extends State<TodoMainPage>
                 decoration: BoxDecoration(
                   color: Colors.white,
                 ),
-                currentAccountPicture: CircleAvatar(
-                  child: Text('O'),
+                currentAccountPicture:
+                // CircleAvatar(
+                //   child: Image.network(
+                //       '${UserPreferences().image}'),
+                // ),
+                CircleAvatar(
+                  radius: 30,
+                  backgroundImage: NetworkImage('${UserPreferences().image}'),
+
                 ),
+
                 accountName: Text(
-                  'marh',
+                  '${UserPreferences().name}',
                   style: TextStyle(
                     fontSize: 16,
                     color: Colors.black,
                   ),
                 ),
                 accountEmail: Text(
-                  'marh@gmail.com',
+                  '${UserPreferences().IdUser}',
                   style: TextStyle(
                     fontSize: 16,
                     color: Colors.black,
                   ),
-                )),
+                )
+            ),
             // leading: CircleAvatar(
             //   radius: 30,
             //         backgroundColor: Colors.blue,

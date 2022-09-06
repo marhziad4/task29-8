@@ -22,6 +22,12 @@ class UserPreferences {
   Future<void> setToken(String token) async {
     await _sharedPreferences.setString('token', token);
   }
+  Future<void> setname(String name) async {
+    await _sharedPreferences.setString('name', name);
+  }
+  Future<void> setimage(String image) async {
+    await _sharedPreferences.setString('image', image);
+  }
   Future<void> setIdUser(String IdUser) async {
     await _sharedPreferences.setString('IdUser', IdUser);
   }
@@ -31,7 +37,9 @@ class UserPreferences {
   }
   String get token => _sharedPreferences.getString('token') ?? '';
   String get IdUser => _sharedPreferences.getString('IdUser') ?? '';
-  String? get chek => _sharedPreferences.getString('chek') ?? 'false';
+  String get chek => _sharedPreferences.getString('chek') ?? 'false';
+  String get name => _sharedPreferences.getString('name') ?? '';
+  String get image => _sharedPreferences.getString('image') ?? '';
 
   bool? get isLoggedIn => _sharedPreferences.getBool('logged_in')??false;
   Future<void> setPlace(String place) async {

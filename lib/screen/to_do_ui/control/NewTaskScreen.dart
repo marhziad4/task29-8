@@ -37,6 +37,7 @@ class _NewTaskScreenState extends State<NewTaskScreen> with Helpers {
     dateTextController = TextEditingController();
     timeTextController = TextEditingController();
     TaskProvider().read();
+
   }
 
   @override
@@ -236,6 +237,7 @@ class _NewTaskScreenState extends State<NewTaskScreen> with Helpers {
             ),
             AppButtonMain(
               onPressed: () async {
+
                 await perform();
               },
               title: 'حفظ',
@@ -293,13 +295,14 @@ class _NewTaskScreenState extends State<NewTaskScreen> with Helpers {
   taskModel get tasks {
     taskModel task = taskModel();
     // task.id=0;
+    print('${UserPreferences().chek}');
     task.title = titleTextController.text;
     task.userId = UserPreferences().IdUser;
     task.description = descriptionTextController.text;
     task.status = 0;
     task.counter = 0;
     task.isDeleted = 0;
-    task.chek = UserPreferences().chek;
+    task.chek =UserPreferences().chek;
     task.date = dateTextController.text.toString();
     task.time = timeTextController.text.toString();
     task.details = 'التفاصيل';

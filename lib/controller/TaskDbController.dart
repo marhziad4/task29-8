@@ -2,6 +2,7 @@ import 'package:sqflite/sqflite.dart';
 import 'package:todo_emp/data/DbOperations.dart';
 import 'package:todo_emp/data/DbProvider.dart';
 import 'package:todo_emp/model/taskModel.dart';
+import 'package:todo_emp/preferences/user_pref.dart';
 
 class TaskDbController extends DbOperations<taskModel> {
   Database _database = DbProvider().database;
@@ -43,7 +44,7 @@ class TaskDbController extends DbOperations<taskModel> {
   }
   @override
   Future<List<taskModel>> read() async {
-    List<Map<String, dynamic>> rows = await _database.query('tasks',where: 'counter != 2',orderBy:'id DESC');
+    List<Map<String, dynamic>> rows = await _database.query('tasks',where: 'counter != 2 and userId = ${UserPreferences().IdUser}',orderBy:'id DESC');
     if (rows.isNotEmpty ) {
       return rows.map((rowMap) => taskModel.fromJson(rowMap)).toList();
     }
@@ -51,7 +52,7 @@ class TaskDbController extends DbOperations<taskModel> {
   }
   @override
   Future<List<taskModel>> read2() async {
-    List<Map<String, dynamic>> rows = await _database.query('tasks',where: 'counter = 2 and async = 0 ',orderBy:'id DESC');//,where: 'counter = 2'
+    List<Map<String, dynamic>> rows = await _database.query('tasks',where: 'counter = 2 and async = 0 and userId = ${UserPreferences().IdUser}',orderBy:'id DESC');//,where: 'counter = 2'
     if (rows.isNotEmpty ) {
       return rows.map((rowMap) => taskModel.fromJson(rowMap)).toList();
     }
@@ -60,7 +61,7 @@ class TaskDbController extends DbOperations<taskModel> {
   }
   @override
   Future<List<taskModel>> doneAsync() async {
-    List<Map<String, dynamic>> rows = await _database.query('tasks',where: 'async = 1 and counter = 2',orderBy:'id DESC');
+    List<Map<String, dynamic>> rows = await _database.query('tasks',where: 'async = 1 and counter = 2  and userId = ${UserPreferences().IdUser}',orderBy:'id DESC');
     if (rows.isNotEmpty ) {
       return rows.map((rowMap) => taskModel.fromJson(rowMap)).toList();
     }
@@ -69,7 +70,7 @@ class TaskDbController extends DbOperations<taskModel> {
 
   @override
   Future<List<taskModel>> TaskNotAsync() async {
-    List<Map<String, dynamic>> rows = await _database.query('tasks',where: 'async = 0 and counter = 2',orderBy:'time DESC');
+    List<Map<String, dynamic>> rows = await _database.query('tasks',where: 'async = 0 and counter = 2 and userId = ${UserPreferences().IdUser}',orderBy:'time DESC');
     if (rows.isNotEmpty ) {
       return rows.map((rowMap) => taskModel.fromJson(rowMap)).toList();
     }

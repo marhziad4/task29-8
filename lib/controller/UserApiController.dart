@@ -17,14 +17,16 @@ class UserApiController with Helpers {
     var response = await http
         .post(url, body: {'username': username, 'password': password});
     var jsonResponse = jsonDecode(response.body);
-    // print(jsonResponse);
+     print(jsonResponse);
     //   print('${jsonResponse['access_token']}');
 
     if (response.statusCode == 200) {
       loginUser users = loginUser.fromJson(jsonDecode(response.body));
       var user = await UserPreferences().save(users);
       var token =
-          await UserPreferences().setToken(jsonResponse['access_token']);
+          await UserPreferences().setToken(jsonResponse['token']);
+          await UserPreferences().setname(jsonResponse['name']);
+          await UserPreferences().setimage(jsonResponse['image']);
       Cron cron = Cron();
       cron.schedule(Schedule.parse('* */23 * * *'), () async {
       //  print('Cron');

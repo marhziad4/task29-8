@@ -11,6 +11,7 @@ import 'package:todo_emp/preferences/user_pref.dart';
 class taskModel implements BackupModel {
   late int id;
   late String userId;
+  late String chek;
 
   late String title;
   late String description;
@@ -21,7 +22,6 @@ class taskModel implements BackupModel {
   String? image;
   int status = 0;
   int? isDeleted = 0;
-  String? chek;
 
   // bool async = false;
   int counter = 0;
