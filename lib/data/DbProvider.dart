@@ -45,7 +45,11 @@ class DbProvider {
 
             ')');
         // 'isComplete INTEGER,'
-
+        await db.execute('CREATE TABLE IF NOT EXISTS images ('
+            'id INTEGER PRIMARY KEY AUTOINCREMENT,'
+            'image TEXT,'
+            'task_id INTEGER'
+            ')');
         await db.execute('CREATE TABLE IF NOT EXISTS users ('
             'id INTEGER PRIMARY KEY AUTOINCREMENT,'
             'email TEXT,'

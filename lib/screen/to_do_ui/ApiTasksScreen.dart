@@ -22,10 +22,15 @@ class _ApiTasksScreenState extends State<ApiTasksScreen> {
     // Provider.of<TasksApiProvider>(context, listen: false)
     //     .getTasks(context: context);
   }
-
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   Provider.of<AllGoodsViewModel>(context, listen: false).fetchAllItems(id: widget.category.id);
+  // }
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
+    //final model = Provider.of<AllGoodsViewModel>(context);
     return Consumer<TaskProvider>(
       builder: (
         BuildContext context,

@@ -129,6 +129,12 @@ class TaskDbController extends DbOperations<taskModel> {
     throw UnimplementedError();
   }
 
+  @override
+  Future<List<taskModel>> readId(int id) {
+    // TODO: implement readId
+    throw UnimplementedError();
+  }
+
   // @override
   // Future<bool> updateRow(taskModel task) async {
   //

@@ -10,6 +10,7 @@ import 'package:todo_emp/model/taskModel.dart';
 import 'package:todo_emp/preferences/user_pref.dart';
 import 'package:todo_emp/providers/TaskProvider.dart';
 import 'package:todo_emp/providers/UserProvider.dart';
+import 'package:todo_emp/providers/images_provider.dart';
 import 'package:todo_emp/providers/location_provider.dart';
 import 'package:todo_emp/providers/task_api_provider.dart';
 import 'package:todo_emp/screen/CalendarScreen.dart';
@@ -80,6 +81,7 @@ void main() async {
       providers: [
         ChangeNotifierProvider<TaskProvider>(create: (_) => TaskProvider()),
         ChangeNotifierProvider<UserProvider>(create: (_) => UserProvider()),
+        ChangeNotifierProvider<ImagesProvider>(create: (context) => ImagesProvider()),
         ChangeNotifierProvider<LocationProvider>(
             create: (_) => LocationProvider()),
         ChangeNotifierProvider<TasksApiProvider>(
@@ -163,26 +165,27 @@ Location get locationUser {
   return location;
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider<TaskProvider>(create: (_) => TaskProvider()),
-        ChangeNotifierProvider<UserProvider>(create: (_) => UserProvider()),
-        ChangeNotifierProvider<LocationProvider>(
-            create: (_) => LocationProvider()),
-        ChangeNotifierProvider<TasksApiProvider>(
-            create: (_) => TasksApiProvider()),
-      ],
-      builder: (BuildContext context, Widget? child) {
-        return MyMaterialApp();
-      },
-    );
-  }
-}
+// class MyApp extends StatelessWidget {
+//   const MyApp({Key? key}) : super(key: key);
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return MultiProvider(
+//       providers: [
+//         ChangeNotifierProvider<TaskProvider>(create: (_) => TaskProvider()),
+//         ChangeNotifierProvider<UserProvider>(create: (_) => UserProvider()),
+//         ChangeNotifierProvider<LocationProvider>(
+//             create: (_) => LocationProvider()),
+//         ChangeNotifierProvider<TasksApiProvider>(
+//             create: (_) => TasksApiProvider()),
+//
+//       ],
+//       builder: (BuildContext context, Widget? child) {
+//         return MyMaterialApp();
+//       },
+//     );
+//   }
+// }
 
 class MyMaterialApp extends StatelessWidget {
   @override

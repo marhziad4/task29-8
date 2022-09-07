@@ -62,6 +62,7 @@ class _TodoMainPageState extends State<TodoMainPage>
                 size: 25.0,
               ),
               onPressed: () {
+                print(" ${UserPreferences().chek}");
 
                 Navigator.push(
                     context, MaterialPageRoute(builder: (_) => NewTaskScreen()));

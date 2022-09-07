@@ -21,6 +21,7 @@ class UserApiController with Helpers {
     //   print('${jsonResponse['access_token']}');
 
     if (response.statusCode == 200) {
+
       loginUser users = loginUser.fromJson(jsonDecode(response.body));
       var user = await UserPreferences().save(users);
       var token =
@@ -45,14 +46,6 @@ class UserApiController with Helpers {
         print(UserPreferences().token);
       });
 
-      var time;
-      // print('${token}');
-      // List<loginapi> userlist=[];
-      // userlist.add(users);
-      //
-      // for(int i=0;i>userlist.length;i++){
-      //   print(i);
-      // }
 
       print('token:${UserPreferences().token}');
       print('user:${UserPreferences().isLoggedIn}');

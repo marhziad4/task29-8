@@ -66,6 +66,12 @@ class UserDbController implements DbOperations<User> {
     // TODO: implement read2
     throw UnimplementedError();
   }
+
+  @override
+  Future<List<User>> readId(int id) {
+    // TODO: implement readId
+    throw UnimplementedError();
+  }
   //
   // @override
   // Future<User?> show(int id) async {

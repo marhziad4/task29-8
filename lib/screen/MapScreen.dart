@@ -8,10 +8,12 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
+import 'package:todo_emp/model/taskImage.dart';
 import 'package:todo_emp/preferences/user_pref.dart';
 import 'package:todo_emp/main.dart';
 import 'package:todo_emp/model/taskModel.dart';
 import 'package:todo_emp/providers/TaskProvider.dart';
+import 'package:todo_emp/providers/images_provider.dart';
 import 'package:todo_emp/providers/location_provider.dart';
 import 'package:todo_emp/utils/helpers.dart';
 import 'package:todo_emp/widgets/Utility.dart';
@@ -35,6 +37,7 @@ class _MapScreenState extends State<MapScreen> with Helpers {
   late GoogleMapController googleMapController;
   late CameraPosition _cameraPosition;
   late GoogleMap googleMap;
+
   //Image imageFile= Image.file(File('/storage/emulated/0/Pictures/pla_todo'));
 
   late Position position;
@@ -47,6 +50,9 @@ class _MapScreenState extends State<MapScreen> with Helpers {
   var firstAddress;
   var tapped;
   late TextEditingController details;
+  final List<Map> myProducts =
+      List.generate(100000, (index) => {"id": 1, "name": "Product yy"})
+          .toList();
 
   // _timeTextController = TextEditingController(text: widget.task.time);
 
@@ -55,12 +61,14 @@ class _MapScreenState extends State<MapScreen> with Helpers {
   List<LatLng> polylineCoordinates = [];
   PolylinePoints polylinePoints = PolylinePoints();
   String googleAPiKey = "AIzaSyBFkWp36uH86gss_Wt-32YNSKjXk-UFBqM";
+  late int taskId;
 
   /////polyLine///////
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    taskId = widget.task.id;
 
     // listMarker();
     _cameraPosition =
@@ -105,7 +113,7 @@ class _MapScreenState extends State<MapScreen> with Helpers {
           Padding(
             padding: const EdgeInsets.only(left: 20),
             child: IconButton(
-              onPressed: () {
+              onPressed: () async {
                 // _getFromCamera();
                 pickImageCamera();
               },
@@ -127,169 +135,203 @@ class _MapScreenState extends State<MapScreen> with Helpers {
         backgroundColor: Color(0xffffffff),
         iconTheme: IconThemeData(color: Color(0xff0f31dc)),
       ),
-      body: SlidingUpPanel(
-        minHeight: panelHeighClosed,
-        maxHeight: panelHeighOpen,
-        parallaxOffset: .5,
-        parallaxEnabled: true,
-        panel: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(top: 15),
-              child: Container(
-                width: 30,
-                height: 5,
-                decoration: BoxDecoration(
-                    color: Colors.grey[300],
-                    borderRadius: BorderRadius.circular(12)),
+      body: Consumer<ImagesProvider>(builder: (
+        BuildContext context,
+        ImagesProvider provider,
+        Widget? child,
+      ) {
+        return SlidingUpPanel(
+          minHeight: panelHeighClosed,
+          maxHeight: panelHeighOpen,
+          parallaxOffset: .5,
+          parallaxEnabled: true,
+          panel: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(top: 15),
+                child: Container(
+                  width: 30,
+                  height: 5,
+                  decoration: BoxDecoration(
+                      color: Colors.grey[300],
+                      borderRadius: BorderRadius.circular(12)),
+                ),
               ),
-            ),
-            Container(
-              margin: EdgeInsets.symmetric(horizontal: 20, vertical: 40),
-              padding: EdgeInsets.only(right: 5),
-              child: Column(
-                children: [
-                  Text(
-                    widget.task.title,
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30),
-                  ),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 250),
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  AppTextField1(hint: "تفاصيل", controller: details),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  // widget.task.image
-                  // widget.task.image
-                  //6ca5e1f6-c582-4575-9611-dd7ad8e442356687349653389249750.jpg
-                  //data/user/0/com.example.todo_emp/cache/
-                  /*
-                    //Image imageFile= Image.file(File('/storage/emulated/0/Pictures/pla_todo'));
-                  //'/data/user/0/com.example.todo_emp/cache/${widget.task.image}'
-                   */
-                  Container(
-                      child: widget.task.image != null
-                          ? Container(
-                        width: 200,
-                        height: 200,
-                        child: Image.file(File(
-                            '/data/user/0/com.example.todo_emp/cache/${widget.task.image}')),
-                      )
-                          : photoName==null?
-                      Text(' ')
-                          :
-                      Container(
-                        width: 200,
-                        height: 200,
-                        child: Image.file(File(
-                            '/data/user/0/com.example.todo_emp/cache/${photoName}')),
-                      )
-                    /*
-                              : Container(
-                                    width: 200,
-                                    height: 200,
-                                    child: Utility.imageFromBase64String(
-                                        widget.task.image!),
+              Container(
+                margin: EdgeInsets.symmetric(horizontal: 20, vertical: 40),
+                padding: EdgeInsets.only(right: 5),
+                child: Column(
+                  children: [
+                    Text(
+                      widget.task.title,
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 30),
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 200),
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    AppTextField1(hint: "تفاصيل", controller: details),
+                    SizedBox(
+                      height: 30,
+                    ),
+                    //3f10db1e-8999-4928-9a12-152e9525ed2d140771861045873629.jpg
+                    Container(
+                      width: double.infinity,
+                      height: 220,
+                      child: ListView.builder(
+                          //  shrinkWrap: true,
+                          scrollDirection: Axis.horizontal,
+                          itemCount: provider.imageId.length,
+                          itemBuilder: (context, index) {
+                            taskImage task = provider.imageId[index];
+
+                              return Column(
+                                children: [
+                                  Container(
+                                    width: 130,
+                                    height: 170,
+                                    child: Image.file(File(
+                                        '/data/user/0/com.example.todo_emp/cache/${provider.imageId.toList()[index].image}')),
+                                  ),
+                                  SizedBox(
+                                    height: 20,
                                   )
-                             */
+                                ],
+                              );
 
-                  ),
+                            }),
+                    ),
 
+                    // widget.task.image
+                    // widget.task.image
+                    //6ca5e1f6-c582-4575-9611-dd7ad8e442356687349653389249750.jpg
+                    //data/user/0/com.example.todo_emp/cache/
+                    /*
+                      //Image imageFile= Image.file(File('/storage/emulated/0/Pictures/pla_todo'));
+                    //'/data/user/0/com.example.todo_emp/cache/${widget.task.image}'
+                     */
 
-                  SizedBox(
-                    height: 10,
-                  ),
-                  AppButtonMain(
-                    onPressed: () async {
-                       await Provider.of<TaskProvider>(context, listen: false)
-                           .update1(task: task);
-                      // TaskDbController().alterTable('TABLE_CUSTOMER', 'Country');
-                      Navigator.pop(context);
-                    },
-                    title: 'حفظ',
-                  )
-                ],
+                    // Container(
+                    //     child: widget.task.image != null
+                    //         ? Container(
+                    //       width: 200,
+                    //       height: 200,
+                    //       child: Image.file(File(
+                    //           '/data/user/0/com.example.todo_emp/cache/${widget.task.image}')),
+                    //     )
+                    //         : photoName==null?
+                    //     Text(' ')
+                    //         :
+                    //     Container(
+                    //       width: 200,
+                    //       height: 200,
+                    //       child: Image.file(File(
+                    //           '/data/user/0/com.example.todo_emp/cache/${photoName}')),
+                    //     )
+                    /*
+                                : Container(
+                                      width: 200,
+                                      height: 200,
+                                      child: Utility.imageFromBase64String(
+                                          widget.task.image!),
+                                    )
+                               */
+                    //
+                    //         ),
+                    // ),
+
+                    AppButtonMain(
+                      onPressed: () async {
+                        // await Provider.of<TaskProvider>(context, listen: false)
+                        //     .update1(task: task);
+
+                        // TaskDbController().alterTable('TABLE_CUSTOMER', 'Country');
+                        Navigator.pop(context);
+                      },
+                      title: 'حفظ',
+                    )
+                  ],
+                ),
               ),
-            ),
-          ],
-        ),
-        body: Column(
-          children: [
-            SizedBox(
-              height: 650,
-              width: 700,
-              child: GoogleMap(
-                myLocationEnabled: true,
-                myLocationButtonEnabled: true,
-                compassEnabled: true,
-                mapToolbarEnabled: true,
-                indoorViewEnabled: true,
-                // liteModeEnabled: true,
-                tiltGesturesEnabled: true,
-                buildingsEnabled: true,
-                trafficEnabled: true,
-                rotateGesturesEnabled: true,
-                scrollGesturesEnabled: true,
-                zoomGesturesEnabled: true,
-                zoomControlsEnabled: true,
-                polylines: Set<Polyline>.of(polylines.values),
-                initialCameraPosition: _cameraPosition,
-                onTap: (LatLng latLng) async {
-                  // getMarkers1(tapped.latitude, tapped.longitude);
+            ],
+          ),
+          body: Column(
+            children: [
+              SizedBox(
+                height: 650,
+                width: 700,
+                child: GoogleMap(
+                  myLocationEnabled: true,
+                  myLocationButtonEnabled: true,
+                  compassEnabled: true,
+                  mapToolbarEnabled: true,
+                  indoorViewEnabled: true,
+                  // liteModeEnabled: true,
+                  tiltGesturesEnabled: true,
+                  buildingsEnabled: true,
+                  trafficEnabled: true,
+                  rotateGesturesEnabled: true,
+                  scrollGesturesEnabled: true,
+                  zoomGesturesEnabled: true,
+                  zoomControlsEnabled: true,
+                  polylines: Set<Polyline>.of(polylines.values),
+                  initialCameraPosition: _cameraPosition,
+                  onTap: (LatLng latLng) async {
+                    // getMarkers1(tapped.latitude, tapped.longitude);
 
-                  //   List<Placemark> placemarks = await placemarkFromCoordinates(
-                  //       tapped.latitude, tapped.longitude);
-                  //   print(placemarks[0].street);
+                    //   List<Placemark> placemarks = await placemarkFromCoordinates(
+                    //       tapped.latitude, tapped.longitude);
+                    //   print(placemarks[0].street);
+                    // },
+                    // onTap: (LatLng latLng) {
+                    //   if (mounted) {
+                    //     setState(() {
+                    //       UserPreferences().setPlace(latLng.latitude.toString() +
+                    //           ',' +
+                    //           latLng.longitude.toString());
+                    //     });
+                    //   }
+                    // googleMapController.showMarkerInfoWindow(
+                    //     MarkerId('${locations![0].longitude}'));
+
+                    googleMapController.animateCamera(
+                        CameraUpdate.newCameraPosition(
+                            CameraPosition(target: latLng, zoom: 5)));
+                  },
+                  onMapCreated: _onMapCreated,
+                  // onMapCreated: (GoogleMapController controller) {
+                  //   // addMarker(LatLng(31.350556, 34.452679));
+                  //   googleMapController = controller;
+                  //
+                  //   // double lat = double.parse(widget.location!
+                  //   //     .substring(0, widget.location!.indexOf(',')));
+                  //   // double lng = double.parse(widget.location!
+                  //   //     .substring(widget.location!.indexOf(',') + 1));
+                  //
+                  //   // LatLng latLng = LatLng(lat, lng);
+                  //   // googleMapController.animateCamera(
+                  //   //     CameraUpdate.newCameraPosition(
+                  //   //         CameraPosition(target: latLng, zoom: 15)));
                   // },
-                  // onTap: (LatLng latLng) {
-                  //   if (mounted) {
-                  //     setState(() {
-                  //       UserPreferences().setPlace(latLng.latitude.toString() +
-                  //           ',' +
-                  //           latLng.longitude.toString());
-                  //     });
-                  //   }
-                  // googleMapController.showMarkerInfoWindow(
-                  //     MarkerId('${locations![0].longitude}'));
-
-                  googleMapController.animateCamera(
-                      CameraUpdate.newCameraPosition(
-                          CameraPosition(target: latLng, zoom: 5)));
-                },
-                onMapCreated: _onMapCreated,
-                // onMapCreated: (GoogleMapController controller) {
-                //   // addMarker(LatLng(31.350556, 34.452679));
-                //   googleMapController = controller;
-                //
-                //   // double lat = double.parse(widget.location!
-                //   //     .substring(0, widget.location!.indexOf(',')));
-                //   // double lng = double.parse(widget.location!
-                //   //     .substring(widget.location!.indexOf(',') + 1));
-                //
-                //   // LatLng latLng = LatLng(lat, lng);
-                //   // googleMapController.animateCamera(
-                //   //     CameraUpdate.newCameraPosition(
-                //   //         CameraPosition(target: latLng, zoom: 15)));
-                // },
-                markers: Set<Marker>.of(_marker),
-                // polylines:_polyline,
+                  markers: Set<Marker>.of(_marker),
+                  // polylines:_polyline,
+                ),
               ),
-            ),
-            // markers: _markers,
-            SizedBox(height: 30),
-          ],
-        ),
-        // panelBuilder: ,
-        // onPanelSlide: ,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(18)),
-      ),
+              // markers: _markers,
+              SizedBox(height: 30),
+            ],
+          ),
+          // panelBuilder: ,
+          // onPanelSlide: ,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(18)),
+        );
+      }),
     );
   }
 
@@ -389,18 +431,32 @@ class _MapScreenState extends State<MapScreen> with Helpers {
     var photo = await imagePicker.pickImage(source: ImageSource.camera);
     FileImage = File(photo!.path);
     print(FileImage);
-    new File('/storage/emulated/0/Pictures1/pla_todo1/${photo.name}').create(recursive: true);
+    new File('/storage/emulated/0/Pictures/pla_todo1/${photo.name}')
+        .create(recursive: true);
     print('file');
-    FileImage2= await FileImage!.copy('/storage/emulated/0/Pictures/pla_todo/${photo.name}');
+    FileImage2 = await FileImage!
+        .copy('/storage/emulated/0/Pictures/pla_todo/${photo.name}');
     print(FileImage2);
 
     setState(() {
-
       // GallerySaver.saveImage(photo.path, albumName: 'pla_todo'); //
       print('pla_todo');
       photoName = photo.name;
       print(photo.name);
     });
+
+    int x=0;
+    if( x<=3){
+      bool saved = await Provider.of<ImagesProvider>(context, listen: false)
+          .create(image: images);
+      if (saved) {
+        x++;
+        showSnackBar(
+            context: context, content: 'تمت العملية بنجاح', error: false);
+      }
+    }
+
+    print('done');
     //+++++++++++++++++++++++++++++++++++++++++++++++++++++
     //   final ImagePicker _imagePicker = ImagePicker();
     //   PickedFile? _pickedFile;
@@ -421,7 +477,6 @@ class _MapScreenState extends State<MapScreen> with Helpers {
     */
     // +++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-
     //data/user/0/com.example.todo_emp/cache/null
     // imageRaw = await FileImage.readAsBytes();
 
@@ -432,6 +487,7 @@ class _MapScreenState extends State<MapScreen> with Helpers {
 
   /// Get from Camera
   late String imgString;
+
   //
   // _getFromCamera() async {
   //   var photo = await imagePicker.pickImage(
@@ -491,6 +547,14 @@ class _MapScreenState extends State<MapScreen> with Helpers {
     task.image = photoName.toString();
 
     return task;
+  }
+
+  taskImage get images {
+    taskImage images = taskImage();
+    images.image = photoName.toString();
+    images.task_id = taskId;
+
+    return images;
   }
 }
 /*

@@ -73,7 +73,7 @@ class taskModel implements BackupModel {
     map['async'] = this.async;
     map['chek'] = this.chek;
     // map['status'] = this.status ? 1 : 0;    // map['users_id'] = users_id;
-    map['isDeleted']= this.isDeleted; // map['users_id'] = users_id;
+    map['isDeleted'] = this.isDeleted; // map['users_id'] = users_id;
     // map['chek'] = this.chek ? 1 : 0;    // map['users_id'] = users_id;
     // map['async'] = this.async ? 1 : 0;    // map['users_id'] = users_id;
     // map["time_created"] = time_created;

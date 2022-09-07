@@ -11,10 +11,12 @@ import 'package:todo_emp/controller/TaskDbController.dart';
 import 'package:todo_emp/mixins/api_mixin.dart';
 import 'package:todo_emp/mixins/helpersApi.dart';
 import 'package:todo_emp/model/location.dart';
+import 'package:todo_emp/model/taskImage.dart';
 import 'package:todo_emp/model/taskModel.dart';
 import 'package:http/http.dart' as http;
 import 'package:todo_emp/preferences/user_pref.dart';
 import 'package:todo_emp/providers/TaskProvider.dart';
+import 'package:todo_emp/providers/images_provider.dart';
 import 'package:todo_emp/providers/location_provider.dart';
 import 'package:todo_emp/utils/helpers.dart';
 
@@ -50,36 +52,47 @@ class TaskApiController with ApiMixin, HelpersApi {
     List<Map> newList = [];
     List<taskModel>? completeTasks;
     completeTasks = await TaskProvider().read2();
+    List<taskImage>? TasksImage;
+    TasksImage=await Provider.of<ImagesProvider>(context, listen: false).read();
     if (completeTasks!.isNotEmpty) {
       for (int i = 0; i < completeTasks.length; i++) {
         var taskid = completeTasks[i].id;
         File ?imageFile;
         print('taskid   :$taskid');
         print('taskimage   :${completeTasks[i].image}');
-        if(completeTasks[i].image != null){
-          final path = '/storage/emulated/0/Pictures/pla_todo/${completeTasks[i].image}';
-          final checkPathExistence = await Directory(path).exists();
-          print(checkPathExistence);
-           imageFile= File('/storage/emulated/0/Pictures/pla_todo/${completeTasks[i].image}');
-          // print(imageFile);
-          // print('${  base64Encode(imageFile.readAsBytesSync())}');
-          // print(imageFile);
+        List<taskImage>? taskImagebyId =await Provider.of<ImagesProvider>(context, listen: false).readId(taskid);
+
+        if(taskImagebyId!.isNotEmpty){
+          for(int i = 0; i < taskImagebyId.length; i++){
+            //print('taskimage   :${taskImagebyId[i].image}');
+
+            // final path = '/storage/emulated/0/Pictures/pla_todo/${TasksImage[i].image}';
+            // final checkPathExistence = await Directory(path).exists();
+            // print(checkPathExistence);
+            imageFile= File('/storage/emulated/0/Pictures/pla_todo/${taskImagebyId[i].image}');
+
+            taskImagebyId[i].image=base64Encode(imageFile.readAsBytesSync());
+            // print(imageFile);
+            // print('${  base64Encode(imageFile.readAsBytesSync())}');
+            // print(imageFile);
+          }
+
+        }else{
+          print('image is empty');
         }
 
 
 
         List<Location>? Location1 = await LocationProvider().readByTask(taskid);
-        if (Location1!.length > 0)
-          newList.add({"info": completeTasks[i], "locations": Location1,  'photo': imageFile != null ?
-              base64Encode(imageFile.readAsBytesSync()) : ''});
-        else
-          newList.add({"info": completeTasks[i], "locations": null,'photo': imageFile != null ?
-              base64Encode(imageFile.readAsBytesSync()) : ''});
-        print('Location1');
 
-        for (int j = 0; j < Location1.length; j++) {
-          print(jsonEncode(Location1[j]));
-        }
+          newList.add({"info": completeTasks[i], "locations": (Location1!.length > 0)?Location1:null,  'photos': (taskImagebyId.length >0) ?
+          taskImagebyId : null});
+
+        // print('Location1');
+        //
+        // for (int j = 0; j < Location1.length; j++) {
+        //   print(jsonEncode(Location1[j]));
+        // }
        // print(UserPreferences().token);
 
         // for (int j = 0; j < completeTasks.length; j++) {
@@ -103,6 +116,8 @@ class TaskApiController with ApiMixin, HelpersApi {
         print("no ${response.statusCode}");
         print('${response.body}');
         if (response.statusCode == 200) {
+          showSnackBar(
+              context: context, message: 'تم الترحيل', error: false);
           print('async');
           print('${response.body}');
 

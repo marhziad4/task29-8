@@ -112,4 +112,10 @@ class LocationDbController implements DbOperations<Location> {
     throw UnimplementedError();
   }
 
+  @override
+  Future<List<Location>> readId(int id) {
+    // TODO: implement readId
+    throw UnimplementedError();
+  }
+
 }

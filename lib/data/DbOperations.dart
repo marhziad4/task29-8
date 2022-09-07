@@ -3,6 +3,7 @@ abstract class DbOperations<T> {
 
   Future<int> create(T object);
 
+  Future<List<T>> readId(int id);
   Future<List<T>> read();
   Future<List<T>> read2();
 

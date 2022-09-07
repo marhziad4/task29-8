@@ -73,7 +73,6 @@ class TaskProvider extends ChangeNotifier {
     // print(jsonEncode(completeTasks));
     // print(jsonEncode(taskss));
     notifyListeners();
-    notifyListeners();
     return taskss;
   }
   Future<List<taskModel>?> read2() async {
