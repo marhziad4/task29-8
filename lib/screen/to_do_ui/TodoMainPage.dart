@@ -22,6 +22,8 @@ class _TodoMainPageState extends State<TodoMainPage>
     with SingleTickerProviderStateMixin, Helpers {
   late TabController tabController;
   bool async=false;
+
+
   initTabController() {
     tabController = TabController(length: 4, vsync: this);
     // tabController.animateTo(2);
@@ -33,6 +35,17 @@ class _TodoMainPageState extends State<TodoMainPage>
     super.initState();
     initTabController();
     TaskProvider().read();
+
+
+  }
+@override
+  void setState(VoidCallback fn) {
+    // TODO: implement setState
+    super.setState(fn);
+    // List<taskModel> completeTasks = <taskModel>[];
+    //
+    // completeTasks= TaskProvider().completeTasks;
+    // _index = completeTasks.length;
   }
 
   @override
@@ -114,6 +127,7 @@ class _TodoMainPageState extends State<TodoMainPage>
             Tab(
               icon: Icon(Icons.task_rounded),
               text: 'تم ترحيلها',
+
             ),
             // Tab(
             //   icon: Icon(Icons.done),
@@ -162,24 +176,6 @@ class _TodoMainPageState extends State<TodoMainPage>
                   ),
                 )
             ),
-            // leading: CircleAvatar(
-            //   radius: 30,
-            //         backgroundColor: Colors.blue,
-            //         child: Text('O'),
-            // ),
-            // title: Text(
-            //   'مرح',
-            //   style: TextStyle(
-            //     fontSize: 16,
-            //     color: Colors.black,
-            //     fontFamily: 'NotoNaskhArabic',
-            //     fontWeight: FontWeight.w700,
-            //   ),
-            // ),
-
-            // SizedBox(
-            //   height: 20,
-            // ),
             Divider(
               indent: 0,
               endIndent: 50,
@@ -188,6 +184,8 @@ class _TodoMainPageState extends State<TodoMainPage>
             ),
             DrawerListTile(
               title: "الرئيسية",
+              counter: '',
+
               iconData: Icons.home,
               onTab: () {
                 Navigator.pushNamed(context, '/TodoMainPage');
@@ -199,6 +197,8 @@ class _TodoMainPageState extends State<TodoMainPage>
             DrawerListTile(
               title: "اضافة مهام",
               iconData: Icons.add_box_outlined,
+              counter: '',
+
               onTab: () {
                 Navigator.pushNamed(context, '/NewTaskScreen');
               },
@@ -209,7 +209,10 @@ class _TodoMainPageState extends State<TodoMainPage>
             DrawerListTile(
               title: "ترحيل بيانات",
               iconData: Icons.cloud_upload,
-              onTab: () async {
+
+              counter: 'n',
+
+                onTab: () async {
 
                 TaskApiController()
                     .createTask(context: context);
@@ -255,6 +258,8 @@ class _TodoMainPageState extends State<TodoMainPage>
             DrawerListTile(
               title: "حفظ احتياطي",
               iconData: Icons.file_upload_rounded,
+              counter: '',
+
               onTab: () async {
                 // _writeBackup(tasks);
                 // RouterClass.routerClass.routingToSpecificWidgetWithoutPop(
@@ -265,6 +270,8 @@ class _TodoMainPageState extends State<TodoMainPage>
               height: 20,
             ),
             DrawerListTile(
+              counter: '',
+
               title: "المهام",
               iconData: Icons.calendar_month,
               onTab: () {
@@ -275,6 +282,8 @@ class _TodoMainPageState extends State<TodoMainPage>
               height: 20,
             ),
             DrawerListTile(
+              counter: '',
+
               title: "ضبط",
               iconData: Icons.settings,
               onTab: () {
@@ -289,6 +298,8 @@ class _TodoMainPageState extends State<TodoMainPage>
               color: Colors.grey.shade300,
             ),
             DrawerListTile(
+                counter: '',
+
                 iconData: Icons.logout,
                 title: "تسجيل خروج",
                 onTab: () async {

@@ -37,6 +37,7 @@ class _MapScreenState extends State<MapScreen> with Helpers {
   late GoogleMapController googleMapController;
   late CameraPosition _cameraPosition;
   late GoogleMap googleMap;
+  int x = 0;
 
   //Image imageFile= Image.file(File('/storage/emulated/0/Pictures/pla_todo'));
 
@@ -62,6 +63,9 @@ class _MapScreenState extends State<MapScreen> with Helpers {
   PolylinePoints polylinePoints = PolylinePoints();
   String googleAPiKey = "AIzaSyBFkWp36uH86gss_Wt-32YNSKjXk-UFBqM";
   late int taskId;
+  late double panelHeighOpen;
+
+  late double panelHeighClosed;
 
   /////polyLine///////
   @override
@@ -93,8 +97,8 @@ class _MapScreenState extends State<MapScreen> with Helpers {
 
   @override
   Widget build(BuildContext context) {
-    final panelHeighOpen = MediaQuery.of(context).size.height * 0.8;
-    final panelHeighClosed = MediaQuery.of(context).size.height * 0.2;
+    panelHeighOpen = MediaQuery.of(context).size.height * 0.8;
+    panelHeighClosed = MediaQuery.of(context).size.height * 0.2;
 
     return Scaffold(
       backgroundColor: Color(0xffffffff),
@@ -189,23 +193,49 @@ class _MapScreenState extends State<MapScreen> with Helpers {
                           scrollDirection: Axis.horizontal,
                           itemCount: provider.imageId.length,
                           itemBuilder: (context, index) {
-                            taskImage task = provider.imageId[index];
+                            taskImage Imagetask = provider.imageId[index];
 
-                              return Column(
-                                children: [
-                                  Container(
-                                    width: 130,
-                                    height: 170,
-                                    child: Image.file(File(
-                                        '/data/user/0/com.example.todo_emp/cache/${provider.imageId.toList()[index].image}')),
-                                  ),
-                                  SizedBox(
-                                    height: 20,
-                                  )
-                                ],
-                              );
+                           // print('Imagetask.id${Imagetask.id}');
 
-                            }),
+                            return Stack(
+                              children: [
+                                Container(
+                                  width: 130,
+                                  height: 170,
+                                  child: Image.file(File(
+                                      '/storage/emulated/0/Pictures/pla_todo/${Imagetask.image}')),
+                                ),
+                                IconButton(
+                                    icon: Icon(
+                                      Icons.cancel_outlined,
+                                      size: 25.0,
+                                    ),
+                                    color: Colors.white, //<-- SEE HERE
+
+                                    onPressed: () async {
+                                      List<taskImage>?image= await Provider.of<ImagesProvider>(context,
+                                              listen: false)
+                                              .read();
+                                      List<taskImage>?image2= await Provider.of<ImagesProvider>(context,
+                                              listen: false)
+                                              .imageId;
+                                      // print('${provider.imageId.toList()[index].id}');
+                                      // List<taskImage>?image =await Provider.of<ImagesProvider>(context,
+                                      //     listen: false)
+                                      // //     .read();
+                                      // for(int i = 0; i < image2.length; i++) {
+                                      //   print('image id ${image2[i].id}');
+                                      //   print('image image ${image2[i].image}');
+                                      //
+                                      // }
+                                      print(Imagetask.id);
+                                      await Provider.of<ImagesProvider>(context,
+                                              listen: false)
+                                          .delete(Imagetask.id);
+                                    }),
+                              ],
+                            );
+                          }),
                     ),
 
                     // widget.task.image
@@ -445,18 +475,20 @@ class _MapScreenState extends State<MapScreen> with Helpers {
       print(photo.name);
     });
 
-    int x=0;
-    if( x<=3){
-      bool saved = await Provider.of<ImagesProvider>(context, listen: false)
-          .create(image: images);
+    bool saved = await Provider.of<ImagesProvider>(context, listen: false)
+        .create(image: images);
+    await Provider.of<ImagesProvider>(context, listen: false).imageId;
+
       if (saved) {
-        x++;
-        showSnackBar(
-            context: context, content: 'تمت العملية بنجاح', error: false);
-      }
+      showSnackBar(
+          context: context, content: 'تمت العملية بنجاح', error: false);
+    } else {
+      showSnackBar(
+          context: context,
+          content: 'لا يجوز تحميل اكثر من 3 صور',
+          error: true);
     }
 
-    print('done');
     //+++++++++++++++++++++++++++++++++++++++++++++++++++++
     //   final ImagePicker _imagePicker = ImagePicker();
     //   PickedFile? _pickedFile;

@@ -98,6 +98,7 @@ class _LoginScreenState extends State<LoginScreen> with Helpers {
                     ),
                     AppTextField1(
                       controller: _userNum,
+                      textInputType: TextInputType.number,
                       hint: 'ادخل رقم المستخدم',
                       prefixIcon: Icon(
                         Icons.person,
@@ -110,6 +111,7 @@ class _LoginScreenState extends State<LoginScreen> with Helpers {
                     AppTextField1(
                       controller: _password,
                       obscure: _passwordVisible,
+                      textInputType: TextInputType.number,
                       hint: 'ادخل كلمة المرور',
                       prefixIcon: Icon(
                         Icons.lock,

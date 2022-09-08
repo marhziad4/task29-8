@@ -15,6 +15,7 @@ class TaskProvider extends ChangeNotifier {
   List<taskModel> NotAsync= <taskModel>[];
 
   TaskDbController _taskDbController = TaskDbController();
+   late int counter;
 
   TaskProvider() {
     // print('TaskProvider');
@@ -78,7 +79,8 @@ class TaskProvider extends ChangeNotifier {
   Future<List<taskModel>?> read2() async {
     // print('completeTasks');
     completeTasks = await _taskDbController.read2();
-
+   counter=completeTasks.length;
+print('counter$counter');
     notifyListeners();
     return completeTasks;
   }

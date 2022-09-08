@@ -4,9 +4,13 @@ class DrawerListTile extends StatelessWidget {
   IconData iconData;
   String title;
   void Function() onTab;
+  String counter;
 
   DrawerListTile(
-      {required this.iconData, required this.title, required this.onTab});
+      {required this.iconData,
+      required this.title,
+      required this.onTab,
+        required this.counter});
 
   @override
   Widget build(BuildContext context) {
@@ -15,6 +19,9 @@ class DrawerListTile extends StatelessWidget {
       leading: Icon(
         iconData,
         color: Color(0xff1565C0),
+      ),
+      trailing: Text(
+        counter,
       ),
       title: Text(
         title,
