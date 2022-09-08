@@ -193,9 +193,10 @@ class _MapScreenState extends State<MapScreen> with Helpers {
                           scrollDirection: Axis.horizontal,
                           itemCount: provider.imageId.length,
                           itemBuilder: (context, index) {
+
                             taskImage Imagetask = provider.imageId[index];
 
-                           // print('Imagetask.id${Imagetask.id}');
+                            print('delete Imagetask.id${Imagetask.id}');
 
                             return Stack(
                               children: [
@@ -213,9 +214,7 @@ class _MapScreenState extends State<MapScreen> with Helpers {
                                     color: Colors.white, //<-- SEE HERE
 
                                     onPressed: () async {
-                                      List<taskImage>?image= await Provider.of<ImagesProvider>(context,
-                                              listen: false)
-                                              .read();
+
                                       List<taskImage>?image2= await Provider.of<ImagesProvider>(context,
                                               listen: false)
                                               .imageId;
@@ -477,7 +476,6 @@ class _MapScreenState extends State<MapScreen> with Helpers {
 
     bool saved = await Provider.of<ImagesProvider>(context, listen: false)
         .create(image: images);
-    await Provider.of<ImagesProvider>(context, listen: false).imageId;
 
       if (saved) {
       showSnackBar(
@@ -583,6 +581,7 @@ class _MapScreenState extends State<MapScreen> with Helpers {
 
   taskImage get images {
     taskImage images = taskImage();
+    images.id=0;
     images.image = photoName.toString();
     images.task_id = taskId;
 

@@ -15,7 +15,7 @@ class ImageDbController extends DbOperations<taskImage> {
   @override
   Future<int> create(taskImage object) async {
     // TODO: implement create
-    return await _database.insert('images', object.toJson());
+    return await _database.insert('images', object.toJsonNoId());
   }
 
   @override
@@ -30,6 +30,16 @@ class ImageDbController extends DbOperations<taskImage> {
 
   @override
   Future<List<taskImage>> readId(int id) async {
+    // TODO: implement readId
+    List<Map<String, dynamic>> rows = await _database.query('images',
+        where: 'id = $id');
+    if (rows.isNotEmpty) {
+      return rows.map((rowMap) => taskImage.fromJson(rowMap)).toList();
+    }
+    return [];
+  }
+
+  Future<List<taskImage>> readTaskId(int id) async {
     // TODO: implement readId
     List<Map<String, dynamic>> rows = await _database.query('images',
         where: 'task_id = $id', orderBy: 'id DESC');

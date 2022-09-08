@@ -53,7 +53,6 @@ class TaskApiController with ApiMixin, HelpersApi {
     List<taskModel>? completeTasks;
     completeTasks = await TaskProvider().read2();
     List<taskImage>? TasksImage;
-    TasksImage=await Provider.of<ImagesProvider>(context, listen: false).read();
     if (completeTasks!.isNotEmpty) {
       for (int i = 0; i < completeTasks.length; i++) {
         var taskid = completeTasks[i].id;
