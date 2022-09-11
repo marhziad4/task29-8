@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lit_backup_service/lit_backup_service.dart';
+import 'package:provider/provider.dart';
 import 'package:todo_emp/controller/TaskApiController.dart';
 import 'package:todo_emp/controller/UserApiController.dart';
 import 'package:todo_emp/model/taskModel.dart';
@@ -12,6 +13,7 @@ import 'package:todo_emp/screen/to_do_ui/asyncTasksScreen.dart';
 import 'package:todo_emp/screen/to_do_ui/control/NewTaskScreen.dart';
 import 'package:todo_emp/utils/helpers.dart';
 import 'package:todo_emp/widgets/drawer_list_tile.dart';
+import 'package:todo_emp/widgets/drawer_list_tile2.dart';
 
 class TodoMainPage extends StatefulWidget {
   @override
@@ -28,20 +30,28 @@ class _TodoMainPageState extends State<TodoMainPage>
     tabController = TabController(length: 4, vsync: this);
     // tabController.animateTo(2);
   }
-
+ int? counter;
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     initTabController();
-    TaskProvider().read();
-
+    Provider.of<TaskProvider>(context, listen: false).read2();
+//     counter= await Provider.of<TaskProvider>(context, listen: false).counterCmp;
+// print('$counter');
 
   }
-@override
+
+
+  @override
   void setState(VoidCallback fn) {
     // TODO: implement setState
     super.setState(fn);
+   // =Provider.of<TaskProvider>(context, listen: true).counterCmp;
+    Provider.of<TaskProvider>(context, listen: false).read2();
+
+    counter= Provider.of<TaskProvider>(context, listen: false).completeTasks.length;
+
     // List<taskModel> completeTasks = <taskModel>[];
     //
     // completeTasks= TaskProvider().completeTasks;
@@ -51,6 +61,10 @@ class _TodoMainPageState extends State<TodoMainPage>
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
+    setState(() {
+      counter= Provider.of<TaskProvider>(context, listen: false).completeTasks.length;
+
+    });
     return Scaffold(
       backgroundColor: Color(0xffEBF0F9),
       // floatingActionButton: Padding(
@@ -75,6 +89,8 @@ class _TodoMainPageState extends State<TodoMainPage>
                 size: 25.0,
               ),
               onPressed: () {
+                // setState(() { TaskProvider.  });
+
                 print(" ${UserPreferences().chek}");
 
                 Navigator.push(
@@ -182,9 +198,8 @@ class _TodoMainPageState extends State<TodoMainPage>
               thickness: 1,
               color: Colors.grey.shade300,
             ),
-            DrawerListTile(
+            DrawerListTile2(
               title: "الرئيسية",
-              counter: '',
 
               iconData: Icons.home,
               onTab: () {
@@ -194,11 +209,9 @@ class _TodoMainPageState extends State<TodoMainPage>
             SizedBox(
               height: 20,
             ),
-            DrawerListTile(
+            DrawerListTile2(
               title: "اضافة مهام",
               iconData: Icons.add_box_outlined,
-              counter: '',
-
               onTab: () {
                 Navigator.pushNamed(context, '/NewTaskScreen');
               },
@@ -206,11 +219,12 @@ class _TodoMainPageState extends State<TodoMainPage>
             SizedBox(
               height: 20,
             ),
+
             DrawerListTile(
               title: "ترحيل بيانات",
               iconData: Icons.cloud_upload,
-
-              counter: 'n',
+        counter:'${  Provider.of<TaskProvider>(context, listen: false).completeTasks.length
+        }',
 
                 onTab: () async {
 
@@ -255,10 +269,9 @@ class _TodoMainPageState extends State<TodoMainPage>
             SizedBox(
               height: 20,
             ),
-            DrawerListTile(
+            DrawerListTile2(
               title: "حفظ احتياطي",
               iconData: Icons.file_upload_rounded,
-              counter: '',
 
               onTab: () async {
                 // _writeBackup(tasks);
@@ -269,8 +282,7 @@ class _TodoMainPageState extends State<TodoMainPage>
             SizedBox(
               height: 20,
             ),
-            DrawerListTile(
-              counter: '',
+            DrawerListTile2(
 
               title: "المهام",
               iconData: Icons.calendar_month,
@@ -281,8 +293,8 @@ class _TodoMainPageState extends State<TodoMainPage>
             SizedBox(
               height: 20,
             ),
-            DrawerListTile(
-              counter: '',
+            DrawerListTile2(
+
 
               title: "ضبط",
               iconData: Icons.settings,
@@ -297,8 +309,7 @@ class _TodoMainPageState extends State<TodoMainPage>
               thickness: 1,
               color: Colors.grey.shade300,
             ),
-            DrawerListTile(
-                counter: '',
+            DrawerListTile2(
 
                 iconData: Icons.logout,
                 title: "تسجيل خروج",

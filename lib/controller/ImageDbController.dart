@@ -15,7 +15,7 @@ class ImageDbController extends DbOperations<taskImage> {
   @override
   Future<int> create(taskImage object) async {
     // TODO: implement create
-    return await _database.insert('images', object.toJsonNoId());
+    return await _database.insert('images', object.toJson());
   }
 
   @override

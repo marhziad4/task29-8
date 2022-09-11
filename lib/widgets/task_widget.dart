@@ -98,9 +98,9 @@ class _TaskWidgetState extends State<TaskWidget> with Helpers {
                               color: Colors.grey, //<-- SEE HERE
 
                               onPressed: () async {
-                                int v=await Provider.of<TaskProvider>(context, listen: false)
-                                  .counter;
-                                print('counter$v');
+                                // int v=await Provider.of<TaskProvider>(context, listen: false)
+                                //   .counterCmp;
+                                // print('counter$v');
                                 // asyncTasks = await TaskProvider().readAsync();
                                 // if (asyncTasks!.isEmpty) {
                                 //   print('null');
@@ -115,20 +115,21 @@ class _TaskWidgetState extends State<TaskWidget> with Helpers {
                                 //             ' title ${asyncTasks![i].title}');
                                 //   }
                                 // }
-                                // completeTasks = await TaskProvider().read2();
-                                // if (completeTasks!.isEmpty) {
-                                //   print('null');
-                                // } else {
-                                //   for (int i = 0; i < completeTasks!.length; i++) {
-                                //     print(
-                                //         'index ${i} id ${completeTasks![i].id} details ${completeTasks![i].details}'
-                                //             'image ${completeTasks![i].image} isDeleted ${completeTasks![i].isDeleted}  '
-                                //             ' status ${completeTasks![i].status} '
-                                //             ' counter ${completeTasks![i].counter} '
-                                //             ' async ${completeTasks![i].async} '
-                                //             ' title ${completeTasks![i].title}');
-                                //   }
-                                // }
+                                List<taskModel>?completeTasks;
+                                 completeTasks = await TaskProvider().read2();
+                                 if (completeTasks!.isEmpty) {
+                                   print('null');
+                                 } else {
+                                   for (int i = 0; i < completeTasks.length; i++) {
+                                     print(
+                                         'index ${i} id ${completeTasks[i].id} details ${completeTasks[i].details}'
+                                             'image ${completeTasks[i].image} isDeleted ${completeTasks[i].isDeleted}  '
+                                             ' status ${completeTasks[i].status} '
+                                             ' counter ${completeTasks[i].counter} '
+                                             ' async ${completeTasks[i].async} '
+                                             ' title ${completeTasks[i].title}');
+                                   }
+                                 }
                                 List<taskModel>? TasksImage;
                                 TasksImage = await Provider.of<TaskProvider>(
                                         context,

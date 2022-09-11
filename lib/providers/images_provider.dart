@@ -10,7 +10,12 @@ class ImagesProvider extends ChangeNotifier {
   List<taskImage> images = [];
   List<taskImage> images1 = [];
   List<taskImage> imageId = [];
+  ImagesProvider() {
 
+    read();
+    // readId();
+    // readCounter(counter);
+  }
   Future<bool> create({required taskImage image}) async {
     //  taskModel task = taskModel()
 
@@ -18,16 +23,18 @@ class ImagesProvider extends ChangeNotifier {
       return false;
     } else {
       int id = await _imageDbController.create(image);
-      images1= await _imageDbController.readId(id);
+    // //  images1= await _imageDbController.readId(id);
+    //
+    //
+    //
+       print("id create image$id");
+    //   images.add(image);
+    //   imageId.add(image);
+    //  //  print(jsonEncode(images1));
+    //    print(jsonEncode(images));
+    //   // imageId.add(images[0]);
 
-
-
-      print("id create image$id");
-      images.add(image);
-       print(jsonEncode(images1));
-       print(jsonEncode(images));
-      imageId.add(images[0]);
-      print(jsonEncode(imageId));
+      notifyListeners();
       return true;
     }
     print('ImagesProvider');
@@ -46,10 +53,9 @@ class ImagesProvider extends ChangeNotifier {
 
   Future<List<taskImage>?> readId(int id) async {
     // completeTasks = await _taskDbController.read2();
-    imageId = await _imageDbController.readId(id);
-
-    // print(jsonEncode(completeTasks));
-    // print(jsonEncode(taskss));
+    imageId = await _imageDbController.readTaskId(id);
+    print('here');
+    print(jsonEncode(imageId));
     notifyListeners();
     return imageId;
   }

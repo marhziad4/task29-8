@@ -19,9 +19,10 @@ import 'package:todo_emp/providers/TaskProvider.dart';
 import 'package:todo_emp/providers/images_provider.dart';
 import 'package:todo_emp/providers/location_provider.dart';
 import 'package:todo_emp/utils/helpers.dart';
+import 'package:todo_emp/widgets/loading2.dart';
 
 class TaskApiController with ApiMixin, HelpersApi {
-
+  bool isLoading=false;
   Future<List<taskModel>> getTasks({required BuildContext context}) async {
     var url = Uri.parse(ApiSettings.TASKS);
     var response = await http.get(url, headers: requestHeaders);
@@ -105,15 +106,19 @@ class TaskApiController with ApiMixin, HelpersApi {
         // }
       }
       var body = jsonEncode({"tasks": newList});
-      print(body);
+      // print(body);
       var url = Uri.parse(ApiSettings.ADDTASKS);
 
       var response = await http.post(url, body: body, headers: requestHeaders);
-      print("no ${response.statusCode}");
-
+      // print("no ${response.statusCode}");
+      Loading2();
+      isLoading=true;
+      isLoading?Loading2() : print('false');
       if (isSuccessRequest(response.statusCode)) {
-        print("no ${response.statusCode}");
-        print('${response.body}');
+        isLoading=false;
+
+        // print("no ${response.statusCode}");
+        // print('${response.body}');
         if (response.statusCode == 200) {
           showSnackBar(
               context: context, message: 'تم الترحيل', error: false);
@@ -129,6 +134,8 @@ class TaskApiController with ApiMixin, HelpersApi {
             print('async');
           }
         }
+        return Loading2();
+
       } else if (response.statusCode == 401) {
         print("no ${response.statusCode}");
 

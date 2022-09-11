@@ -204,7 +204,7 @@ class _MapScreenState extends State<MapScreen> with Helpers {
                                   width: 130,
                                   height: 170,
                                   child: Image.file(File(
-                                      '/storage/emulated/0/Pictures/pla_todo/${Imagetask.image}')),
+                                      '/storage/emulated/0/Pictures/pla_todo/${  provider.imageId.toList()[index].image}')),
                                 ),
                                 IconButton(
                                     icon: Icon(
@@ -214,10 +214,11 @@ class _MapScreenState extends State<MapScreen> with Helpers {
                                     color: Colors.white, //<-- SEE HERE
 
                                     onPressed: () async {
+                                      print('dele');
 
-                                      List<taskImage>?image2= await Provider.of<ImagesProvider>(context,
-                                              listen: false)
-                                              .imageId;
+                                      // List<taskImage>?image2= await Provider.of<ImagesProvider>(context,
+                                      //         listen: false)
+                                      //         .imageId;
                                       // print('${provider.imageId.toList()[index].id}');
                                       // List<taskImage>?image =await Provider.of<ImagesProvider>(context,
                                       //     listen: false)
@@ -227,10 +228,10 @@ class _MapScreenState extends State<MapScreen> with Helpers {
                                       //   print('image image ${image2[i].image}');
                                       //
                                       // }
-                                      print(Imagetask.id);
+                                      // print(Imagetask.id);
                                       await Provider.of<ImagesProvider>(context,
                                               listen: false)
-                                          .delete(Imagetask.id);
+                                          .delete(provider.imageId.toList()[index].id);
                                     }),
                               ],
                             );
@@ -478,7 +479,9 @@ class _MapScreenState extends State<MapScreen> with Helpers {
         .create(image: images);
 
       if (saved) {
-      showSnackBar(
+       await Provider.of<ImagesProvider>(context, listen: false).readId(taskId);
+
+        showSnackBar(
           context: context, content: 'تمت العملية بنجاح', error: false);
     } else {
       showSnackBar(
@@ -581,7 +584,7 @@ class _MapScreenState extends State<MapScreen> with Helpers {
 
   taskImage get images {
     taskImage images = taskImage();
-    images.id=0;
+    // images.id=0;
     images.image = photoName.toString();
     images.task_id = taskId;
 
