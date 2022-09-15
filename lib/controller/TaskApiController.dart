@@ -87,13 +87,7 @@ class TaskApiController with ApiMixin, HelpersApi {
 
           Provider.of<TaskProvider>(context, listen: false).doneAsync;
 
-          context.showFlashDialog(
-            persistent: true,
-            title: Text(''),
-            content: Text('تم ترحيل المهام '),
 
-
-          );
           for (int i = 0; i < completeTasks.length; i++) {
             completeTasks[i].async = 1;
             Provider.of<TaskProvider>(context, listen: false)
@@ -103,9 +97,16 @@ class TaskApiController with ApiMixin, HelpersApi {
         }
         Provider.of<TaskProvider>(context, listen: false).completeTasks;
         Provider.of<TaskProvider>(context, listen: false).doneAsync;
-        Navigator.pushNamed(context, '/TodoMainPage');
+        // Navigator.pushNamed(context, '/TodoMainPage');
 
-        // Navigator.pop(context);
+        Navigator.pop(context);
+        context.showFlashDialog(
+          persistent: true,
+          title: Text(''),
+          content: Text('تم ترحيل المهام '),
+
+
+        );
         return true;
       } else if (response.statusCode == 401) {
         context.showFlashDialog(

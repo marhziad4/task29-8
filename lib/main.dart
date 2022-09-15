@@ -127,7 +127,7 @@ void readLocation() async {
 
         if ((lastLocations![0].latitude == latitude.toString() &&
                 lastLocations![0].longitude == longitude.toString()) ||
-            distanceInMeters <= 10) {
+            distanceInMeters <= 0) {
           lastLocations![0].updatetime = DateTime.now().toString();
           await LocationProvider().update(location: lastLocations![0]);
           print('nothing todo');

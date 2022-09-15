@@ -112,6 +112,8 @@ class _LoginScreenState extends State<LoginScreen> with Helpers {
                       controller: _password,
                       obscure: _passwordVisible,
                       textInputType: TextInputType.number,
+                      maxLines: 1,
+                      minLines: 1,
                       hint: 'ادخل كلمة المرور',
                       prefixIcon: Icon(
                         Icons.lock,

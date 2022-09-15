@@ -211,13 +211,15 @@ class _TodoMainPageState extends State<TodoMainPage>
                   color: Colors.white,
                 ),
                 currentAccountPicture:
+
                     // CircleAvatar(
+                    //   radius: 30,
                     //   child: Image.network(
-                    //       '${UserPreferences().image}'),
+                    //       '${UserPreferences().image}',width: 50,height: 50,),
                     // ),
                     CircleAvatar(
                   radius: 30,
-                  backgroundImage: NetworkImage('${UserPreferences().image}'),
+                  backgroundImage: NetworkImage('${UserPreferences().image}',scale: 50),
                 ),
                 accountName: Text(
                   '${UserPreferences().name}',
@@ -459,7 +461,7 @@ class _TodoMainPageState extends State<TodoMainPage>
         context: context,
         builder: (context) => FutureProgressDialog(
             TaskApiController().createTask(context: context),
-            message: Text('جاري ترحيل المهام ...')),
+            message: Text('جاري ترحيل المهام ')),
       );
       Provider.of<TaskProvider>(context, listen: false).completeTasks;
       print('Connected to a mobile network');

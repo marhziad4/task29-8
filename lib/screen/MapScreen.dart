@@ -470,7 +470,7 @@ class _MapScreenState extends State<MapScreen> with Helpers {
   String? photoName;
   File? FileImage;
   File? FileImage2;
-
+//,imageQuality: 25
   Future<void> pickImageCamera() async {
     print('FileImage');
     var photo = await imagePicker.pickImage(source: ImageSource.camera,imageQuality: 25);
@@ -598,7 +598,7 @@ class _MapScreenState extends State<MapScreen> with Helpers {
 
   taskImage get images {
     taskImage images = taskImage();
-    images.id=null;
+   // images.id=null;
     images.image = photoName.toString();
     images.task_id = taskId;
 
