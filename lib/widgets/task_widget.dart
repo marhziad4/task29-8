@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:cron/cron.dart';
+import 'package:flash/flash.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:todo_emp/main.dart';
@@ -36,10 +37,20 @@ class _TaskWidgetState extends State<TaskWidget> with Helpers {
     return Consumer<TaskProvider>(builder: (context, provider, x) {
       return InkWell(
         onTap: () async {
-          await Provider.of<ImagesProvider>(context, listen: false)
-              .readId(widget.task.id);
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => MapScreen(widget.task)));
+          if(widget.task.counter!=0){
+            await Provider.of<ImagesProvider>(context, listen: false)
+                .readId(widget.task.id??0);
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => MapScreen(widget.task)));
+          }else{
+            context.showFlashDialog(
+              persistent: true,
+              title:  Text('يجب بدء المهمة'),
+              content: Text(''),
+            );
+
+          }
+
         },
         child: Padding(
           padding: const EdgeInsets.only(top: 10),
@@ -203,7 +214,7 @@ class _TaskWidgetState extends State<TaskWidget> with Helpers {
                                   } else {
                                     await Provider.of<TaskProvider>(context,
                                             listen: false)
-                                        .delete(widget.task.id);
+                                        .delete(widget.task.id??0);
                                     widget.task.isDeleted = 1;
                                     // TaskProvider().update(task: widget.task);
                                     await Provider.of<TaskProvider>(context,
@@ -245,22 +256,19 @@ class _TaskWidgetState extends State<TaskWidget> with Helpers {
                                 // }
                                 // print('jsonEncode${ jsonEncode(Location1)}');
 
-                                print(widget.task.counter);
-                                print(widget.task.id);
-                                print(widget.task.status);
+                                 print(widget.task.counter);
+                                 print(widget.task.id);
+                                 print(widget.task.status);
                                 print(UserPreferences().chek);
                                 // completeTasks = await TaskProvider().read2();
-                                task_id = widget.task.id;
                                 //status false => شغال
                                 List<taskModel>? tasks;
 
                                 tasks = await TaskProvider().read();
-                                print('jsonEncode${jsonEncode(tasks)}');
 
                                 //&& tasks![i].status ==false && chek==false&&widget.task.counter ==1
                                 if (widget.task.counter == 0 &&
                                     UserPreferences().chek == 'true') {
-                                  print('object');
                                   showSnackBar(
                                       context: context,
                                       content: 'هناك مهمة قيد العمل',
@@ -273,40 +281,42 @@ class _TaskWidgetState extends State<TaskWidget> with Helpers {
                                       error: false);
                                 }
 
-                                cron.schedule(Schedule.parse('*/1 * * * *'),
-                                    () async {
-//  print('Cron readLocation');
 
-                                  readLocation();
-                                });
 
 // completeTasks = await TaskProvider().read2();
 
                                 setState(() {
                                   if (widget.task.counter == 0 &&
                                       widget.task.chek == 'false') {
-                                    print("first");
                                     chek = 'true';
                                     UserPreferences().setChek(chek);
                                     print('1${UserPreferences().chek}');
                                     widget.task.counter = 1;
                                     widget.task.status = 1;
+                                    task_id = widget.task.id??0;
+
                                     widget.task.chek = UserPreferences().chek;
-                                    print('status');
                                     Provider.of<TaskProvider>(context,
                                             listen: false)
                                         .update(task: widget.task);
+                                    cron.schedule(Schedule.parse('*/1 * * * *'),
+                                            () async {
+                                              print('every one minutes');
+
+                                              print('Cron readLocation');
+
+                                          readLocation();
+                                        });
 
 //       status = tasks[i].status;
-                                    print(" ${UserPreferences().chek}");
+                                    //    print(" ${UserPreferences().chek}");
                                   } else if (widget.task.counter == 1 &&
                                       widget.task.chek == 'true') {
-                                    print("sec");
-                                    print(" ${UserPreferences().chek}");
+                                    //     print(" ${UserPreferences().chek}");
 
                                     chek = 'false';
                                     UserPreferences().setChek(chek);
-                                    print('2${UserPreferences().chek}');
+                                    //    print('2${UserPreferences().chek}');
                                     widget.task.status = 0;
                                     widget.task.counter = 2;
                                     widget.task.chek = UserPreferences().chek;
@@ -314,8 +324,14 @@ class _TaskWidgetState extends State<TaskWidget> with Helpers {
                                     Provider.of<TaskProvider>(context,
                                             listen: false)
                                         .update(task: widget.task);
+                                    Provider.of<TaskProvider>(context,
+                                        listen: false).read();
+                                    Provider.of<TaskProvider>(context, listen: false).read2();
+
+                                    Provider.of<TaskProvider>(context, listen: false).completeTasks;
+                                    Provider.of<TaskProvider>(context, listen: false).completeTasks.length;
+
                                   }
-                                  print('3 ${UserPreferences().chek}');
                                 });
 //  await Provider.of<TaskProvider>(context, listen: false).readAll();
                               },

@@ -22,16 +22,14 @@ class _AsyncTasksScreenState extends State<AsyncTasksScreen>  with Helpers {
     refreshTasks();
   }
   Future refreshTasks()async{
-    setState(() {
-      isLoading =true;
-    });
-    // completeTasks=await TaskProvider().read2();
-    setState(() {
-      isLoading =false;
-    });
+    await Provider.of<TaskProvider>(context, listen: false).readAsync();
+
+
   }
   @override
   Widget build(BuildContext context) {
+    Provider.of<TaskProvider>(context, listen: false).readAll();
+
     // TODO: implement build
     return Container(
 

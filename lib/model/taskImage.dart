@@ -1,5 +1,5 @@
 class taskImage {
-   late int id;
+    int? id;
   late String image;
   late int task_id;
 
@@ -13,7 +13,7 @@ class taskImage {
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> map = Map<String, dynamic>();
-    // map['id'] = this.id;
+     map['id'] = this.id;
     map['image'] = this.image;
     map['task_id'] = this.task_id;
 

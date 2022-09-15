@@ -26,18 +26,11 @@ class _CompleteTasksScreenState extends State<CompleteTasksScreen>  with Helpers
     // print('ctini 456');
     //completeTasks=await TaskProvider().read2();
     // await Provider.of<TaskProvider>(context, listen: false).readAll();
-
-    setState(() {
-      isLoading =true;
-    });
-
-    setState(() {
-      isLoading =false;
-    });
+    // await Provider.of<TaskProvider>(context, listen: false).read2();
   }
   @override
   Widget build(BuildContext context) {
-    Provider.of<TaskProvider>(context, listen: false).readAll();
+   // Provider.of<TaskProvider>(context, listen: false).readAll();
     // TODO: implement build
     return Container(
 

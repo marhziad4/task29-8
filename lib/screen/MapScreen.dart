@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 
@@ -8,6 +9,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
+import 'package:todo_emp/model/location.dart';
 import 'package:todo_emp/model/taskImage.dart';
 import 'package:todo_emp/preferences/user_pref.dart';
 import 'package:todo_emp/main.dart';
@@ -52,8 +54,8 @@ class _MapScreenState extends State<MapScreen> with Helpers {
   var tapped;
   late TextEditingController details;
   final List<Map> myProducts =
-      List.generate(100000, (index) => {"id": 1, "name": "Product yy"})
-          .toList();
+  List.generate(100000, (index) => {"id": 1, "name": "Product yy"})
+      .toList();
 
   // _timeTextController = TextEditingController(text: widget.task.time);
 
@@ -72,9 +74,9 @@ class _MapScreenState extends State<MapScreen> with Helpers {
   void initState() {
     // TODO: implement initState
     super.initState();
-    taskId = widget.task.id;
+    taskId = widget.task.id!;
 
-    // listMarker();
+    listMarker();
     _cameraPosition =
         CameraPosition(target: LatLng(31.520088, 34.4347784), zoom: 11);
     details = TextEditingController(text: widget.task.details);
@@ -140,156 +142,175 @@ class _MapScreenState extends State<MapScreen> with Helpers {
         iconTheme: IconThemeData(color: Color(0xff0f31dc)),
       ),
       body: Consumer<ImagesProvider>(builder: (
-        BuildContext context,
-        ImagesProvider provider,
-        Widget? child,
-      ) {
+          BuildContext context,
+          ImagesProvider provider,
+          Widget? child,
+          ) {
         return SlidingUpPanel(
           minHeight: panelHeighClosed,
           maxHeight: panelHeighOpen,
           parallaxOffset: .5,
           parallaxEnabled: true,
-          panel: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(top: 15),
-                child: Container(
-                  width: 30,
-                  height: 5,
-                  decoration: BoxDecoration(
-                      color: Colors.grey[300],
-                      borderRadius: BorderRadius.circular(12)),
+          panel: SingleChildScrollView(
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(top: 15),
+                  child: Container(
+                    width: 30,
+                    height: 5,
+                    decoration: BoxDecoration(
+                        color: Colors.grey[300],
+                        borderRadius: BorderRadius.circular(12)),
+                  ),
                 ),
-              ),
-              Container(
-                margin: EdgeInsets.symmetric(horizontal: 20, vertical: 40),
-                padding: EdgeInsets.only(right: 5),
-                child: Column(
-                  children: [
-                    Text(
-                      widget.task.title,
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 30),
-                    ),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 200),
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    AppTextField1(hint: "تفاصيل", controller: details),
-                    SizedBox(
-                      height: 30,
-                    ),
-                    //3f10db1e-8999-4928-9a12-152e9525ed2d140771861045873629.jpg
-                    Container(
-                      width: double.infinity,
-                      height: 220,
-                      child: ListView.builder(
-                          //  shrinkWrap: true,
-                          scrollDirection: Axis.horizontal,
-                          itemCount: provider.imageId.length,
-                          itemBuilder: (context, index) {
+                Container(
+                  margin: EdgeInsets.symmetric(horizontal: 20, vertical: 40),
+                  padding: EdgeInsets.only(right: 5),
+                  child: Column(
+                    children: [
+                      Text(
+                        widget.task.title,
+                        style:
+                        TextStyle(fontWeight: FontWeight.bold, fontSize: 30),
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 200),
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      AppTextField1(hint: "تفاصيل", controller: details,maxLines: 5,minLines: 1,),
+                      SizedBox(
+                        height:5,
+                      ),
+                      AppButtonMain(
+                        onPressed: () async {
+                          await Provider.of<TaskProvider>(context, listen: false)
+                              .update1(task: task);
+                          locations = await Provider.of<LocationProvider>(context, listen: false).read();
+                          for (int i = 0; i < locations!.length; i++) {
+                            print(
+                                'index ${i} location ${locations![i].latitude} longitude ${locations![i].longitude}  time ${locations![i].time}  updatetime ${locations![i].updatetime}task_id ${locations![i].task_id}');
+                          }
 
-                            taskImage Imagetask = provider.imageId[index];
+                          // TaskDbController().alterTable('TABLE_CUSTOMER', 'Country');
+                          Navigator.pop(context);
+                        },
+                        title: 'حفظ',
+                      ),
+                      SizedBox(
+                        height: 30,
+                      ),
+                      //3f10db1e-8999-4928-9a12-152e9525ed2d140771861045873629.jpg
+                      Container(
+                        child:provider.imageId.length != 0
+                        ? Container(
+                          width: double.infinity,
+                          height: 220,
+                          child: ListView.builder(
+                            //  shrinkWrap: true,
+                              scrollDirection: Axis.horizontal,
+                              itemCount: provider.imageId.length,
+                              itemBuilder: (context, index) {
 
-                            print('delete Imagetask.id${Imagetask.id}');
+                                taskImage Imagetask = provider.imageId[index];
 
-                            return Stack(
-                              children: [
-                                Container(
-                                  width: 130,
-                                  height: 170,
-                                  child: Image.file(File(
-                                      '/storage/emulated/0/Pictures/pla_todo/${  provider.imageId.toList()[index].image}')),
-                                ),
-                                IconButton(
-                                    icon: Icon(
-                                      Icons.cancel_outlined,
-                                      size: 25.0,
+                                // print('delete Imagetask.id${Imagetask.id}');
+
+                                return Stack(
+                                  children: [
+                                    Container(
+                                      width: 130,
+                                      height: 170,
+                                      child: Image.file(File(
+                                          '/storage/emulated/0/Pictures/pla_todo/${  provider.imageId.toList()[index].image}')),
                                     ),
-                                    color: Colors.white, //<-- SEE HERE
+                                    IconButton(
+                                        icon: Icon(
+                                          Icons.cancel_outlined,
+                                          size: 25.0,
+                                        ),
+                                        color: Colors.white, //<-- SEE HERE
 
-                                    onPressed: () async {
-                                      print('dele');
+                                        onPressed: () async {
+                                          // print('dele');
 
-                                      // List<taskImage>?image2= await Provider.of<ImagesProvider>(context,
-                                      //         listen: false)
-                                      //         .imageId;
-                                      // print('${provider.imageId.toList()[index].id}');
-                                      // List<taskImage>?image =await Provider.of<ImagesProvider>(context,
-                                      //     listen: false)
-                                      // //     .read();
-                                      // for(int i = 0; i < image2.length; i++) {
-                                      //   print('image id ${image2[i].id}');
-                                      //   print('image image ${image2[i].image}');
-                                      //
-                                      // }
-                                      // print(Imagetask.id);
-                                      await Provider.of<ImagesProvider>(context,
+                                          // List<taskImage>?image2= await Provider.of<ImagesProvider>(context,
+                                          //         listen: false)
+                                          //         .imageId;
+                                          // print('${provider.imageId.toList()[index].id}');
+                                          // List<taskImage>?image =await Provider.of<ImagesProvider>(context,
+                                          //     listen: false)
+                                          // //     .read();
+                                          // for(int i = 0; i < image2.length; i++) {
+                                          //   print('image id ${image2[i].id}');
+                                          //   print('image image ${image2[i].image}');
+                                          //
+                                          // }
+                                          // print(Imagetask.id);
+                                          await Provider.of<ImagesProvider>(context,
                                               listen: false)
-                                          .delete(provider.imageId.toList()[index].id);
-                                    }),
-                              ],
-                            );
-                          }),
-                    ),
+                                              .delete(provider.imageId.toList()[index].id!);
+                                        }),
+                                  ],
+                                );
+                              }),
+                        ):
+                            Container(
+                              width:20,
+                              height: 20,
+                              child: Text(''),
+                            )
+                      ),
 
-                    // widget.task.image
-                    // widget.task.image
-                    //6ca5e1f6-c582-4575-9611-dd7ad8e442356687349653389249750.jpg
-                    //data/user/0/com.example.todo_emp/cache/
-                    /*
-                      //Image imageFile= Image.file(File('/storage/emulated/0/Pictures/pla_todo'));
-                    //'/data/user/0/com.example.todo_emp/cache/${widget.task.image}'
-                     */
+                      // widget.task.image
+                      // widget.task.image
+                      //6ca5e1f6-c582-4575-9611-dd7ad8e442356687349653389249750.jpg
+                      //data/user/0/com.example.todo_emp/cache/
+                      /*
+                        //Image imageFile= Image.file(File('/storage/emulated/0/Pictures/pla_todo'));
+                      //'/data/user/0/com.example.todo_emp/cache/${widget.task.image}'
+                       */
 
-                    // Container(
-                    //     child: widget.task.image != null
-                    //         ? Container(
-                    //       width: 200,
-                    //       height: 200,
-                    //       child: Image.file(File(
-                    //           '/data/user/0/com.example.todo_emp/cache/${widget.task.image}')),
-                    //     )
-                    //         : photoName==null?
-                    //     Text(' ')
-                    //         :
-                    //     Container(
-                    //       width: 200,
-                    //       height: 200,
-                    //       child: Image.file(File(
-                    //           '/data/user/0/com.example.todo_emp/cache/${photoName}')),
-                    //     )
-                    /*
-                                : Container(
-                                      width: 200,
-                                      height: 200,
-                                      child: Utility.imageFromBase64String(
-                                          widget.task.image!),
-                                    )
-                               */
-                    //
-                    //         ),
-                    // ),
+                      // Container(
+                      //     child: widget.task.image != null
+                      //         ? Container(
+                      //       width: 200,
+                      //       height: 200,
+                      //       child: Image.file(File(
+                      //           '/data/user/0/com.example.todo_emp/cache/${widget.task.image}')),
+                      //     )
+                      //         : photoName==null?
+                      //     Text(' ')
+                      //         :
+                      //     Container(
+                      //       width: 200,
+                      //       height: 200,
+                      //       child: Image.file(File(
+                      //           '/data/user/0/com.example.todo_emp/cache/${photoName}')),
+                      //     )
+                      /*
+                                  : Container(
+                                        width: 200,
+                                        height: 200,
+                                        child: Utility.imageFromBase64String(
+                                            widget.task.image!),
+                                      )
+                                 */
+                      //
+                      //         ),
+                      // ),
 
-                    AppButtonMain(
-                      onPressed: () async {
-                        // await Provider.of<TaskProvider>(context, listen: false)
-                        //     .update1(task: task);
 
-                        // TaskDbController().alterTable('TABLE_CUSTOMER', 'Country');
-                        Navigator.pop(context);
-                      },
-                      title: 'حفظ',
-                    )
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
           body: Column(
             children: [
@@ -365,90 +386,84 @@ class _MapScreenState extends State<MapScreen> with Helpers {
     );
   }
 
-  // listMarker() async {
-  //   locations = await LocationProvider().read();
-  //   locationas = await LocationProvider().show(widget.task.id);
-  //   for (int i = 0; i < locations!.length; i++) {
-  //     if(locations![i].task_id != widget.task.id){
-  //
-  //       LatLng latlng;
-  //     latlng = LatLng(double.parse('${locations![i].latitude}'),
-  //         double.parse('${locations![i].longitude}'));
-  //     print(
-  //         'Marker >> latitude :${locations![i].latitude} longitude:${locations![i].longitude}task_idmark:${locations![i].task_id}');
-  //
-  //     setState(() {
-  //       _list.add(
-  //         Marker(
-  //           markerId: MarkerId([i].toString()),
-  //           position: latlng,
-  //         ),
-  //       );
-  //     });
-  //   }
-  //   }
-  // }
+  listMarker() async {
+    locations = await LocationProvider().read();
+    locationsById = await LocationProvider().show(widget.task.id!);
+    for (int i = 0; i < locations!.length; i++) {
+      if(locations![i].task_id != widget.task.id){
+
+        LatLng latlng;
+        latlng = LatLng(double.parse('${locationsById![i].latitude}'),
+            double.parse('${locationsById![i].longitude}'));
+        print(
+            'MarkerList >> latitude :${locationsById![i].latitude} longitude:${locationsById![i].longitude}task_idmark:${locationsById![i].task_id}');
+
+        setState(() {
+          _list.add(
+            Marker(
+              markerId: MarkerId([i].toString()),
+              position: latlng,
+            ),
+          );
+        });
+      }
+    }
+  }
 
   void _onMapCreated(GoogleMapController controller) async {
-    locationas = await LocationProvider().show(widget.task.id);
+    locationsById =await Provider.of<LocationProvider>(context, listen: false).show(widget.task.id!);
+    print(jsonEncode(locationsById));
+    // locations = await LocationProvider().read();
 
-    setState(() {
-      /*
-        locations = await LocationProvider().read();
-  locationas = await LocationProvider().show(widget.task.id);
-  for (int i = 0; i < locations!.length; i++) {
-    if(locations![i].task_id != widget.task.id){
-      LatLng latlng;
-    latlng = LatLng(double.parse('${locations![i].latitude}'),
-        double.parse('${locations![i].longitude}'));
-    print(
-        'Marker >> latitude :${locations![i].latitude} longitude:${locations![i].longitude}task_idmark:${locations![i].task_id}');
-    setState(() {
-    */
 
-      for (int i = 0; i < locationas!.length; i++) {
-        LatLng latlng;
-        latlng = LatLng(double.parse('${locationas![i].latitude}'),
-            double.parse('${locationas![i].longitude}'));
-        print(
-            'Marker1 >> latitude :${locations![i].latitude} longitude:${locations![i].longitude} time:${locations![i].time} updatetime:${locations![i].updatetime}task_id:${locationas![i].task_id}');
 
-        _marker.add(
-          Marker(
-            markerId: MarkerId([i].toString()),
-            position: LatLng(double.parse('${locationas![i].latitude}'),
-                double.parse('${locationas![i].longitude}')),
-            // infoWindow: InfoWindow(title: "Marker1",snippet: "Marker",onTap: (){
-            //   Navigator.pushReplacementNamed(context, '/TodoMainPage');
-            //
-            // }),
+      for (int i = 0; i < locationsById!.length; i++) {
+        if (locationsById![i].task_id == widget.task.id) {
+          // LatLng latlng;
+          // latlng = LatLng(double.parse('${locations![i].latitude}'),
+          //     double.parse('${locations![i].longitude}'));
+          print(
+              'Marker >> latitude :${locationsById![i]
+                  .latitude} longitude:${locationsById![i]
+                  .longitude}task_idmark:${locationsById![i].task_id}');
+          setState(() {
+            for (int i = 0; i < locationsById!.length; i++) {
+              print('here');
+              print('length${locationsById!.length}');
+              LatLng latlng= LatLng(double.parse('${locationsById![i].latitude}'),
+                  double.parse('${locationsById![i].longitude}'));
 
-            infoWindow: InfoWindow(
-                // title:'${distanceInMeters}',
+              print(
+                  'Marker1 >> latitude :${locationsById![i]
+                      .latitude} longitude:${locationsById![i]
+                      .longitude} time:${locationsById![i]
+                      .time} updatetime:${locationsById![i]
+                      .updatetime}task_id:${locationsById![i].task_id}');
 
-                title: '${[
-                  i
-                ]} ${locationas![i].latitude}  ${locations![i].longitude} ',
-                snippet: locationas![i].time),
-            // onTap: () => _onTap(locations),
-            draggable: false,
+              _marker.add(
+                Marker(
+                  markerId: MarkerId([i].toString()),
+                  position: LatLng(double.parse('${locationsById![i].latitude}'),
+                      double.parse('${locationsById![i].longitude}')),
+                  // infoWindow: InfoWindow(title: "Marker1",snippet: "Marker",onTap: (){
+                  //   Navigator.pushReplacementNamed(context, '/TodoMainPage');
+                  //
+                  // }),
 
-            // icon: locationas![i] == 0
-            //     ? BitmapDescriptor.defaultMarkerWithHue(
-            //         BitmapDescriptor.hueCyan)
-            //     : BitmapDescriptor.defaultMarkerWithHue(
-            //         BitmapDescriptor.hueGreen),
+                  infoWindow: InfoWindow(
+                    // title:'${distanceInMeters}',
 
-            icon:
-                BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
-            // locationas![i]==0 ? BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueCyan)
-            //     :BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
-          ),
-        );
+                      title: '${[
+                        i
+                      ]} ${locationsById![i].latitude}  ${locations![i].longitude} ',
+                      snippet: locationsById![i].time),
+
+                ),
+              );
+            }
+          });
+        }
       }
-// BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
-      // googleMap=createMapOptions();
-    });
   }
 
   Uint8List? imageRaw;
@@ -458,7 +473,7 @@ class _MapScreenState extends State<MapScreen> with Helpers {
 
   Future<void> pickImageCamera() async {
     print('FileImage');
-    var photo = await imagePicker.pickImage(source: ImageSource.camera);
+    var photo = await imagePicker.pickImage(source: ImageSource.camera,imageQuality: 25);
     FileImage = File(photo!.path);
     print(FileImage);
     new File('/storage/emulated/0/Pictures/pla_todo1/${photo.name}')
@@ -478,10 +493,10 @@ class _MapScreenState extends State<MapScreen> with Helpers {
     bool saved = await Provider.of<ImagesProvider>(context, listen: false)
         .create(image: images);
 
-      if (saved) {
-       await Provider.of<ImagesProvider>(context, listen: false).readId(taskId);
+    if (saved) {
+      await Provider.of<ImagesProvider>(context, listen: false).readId(taskId);
 
-        showSnackBar(
+      showSnackBar(
           context: context, content: 'تمت العملية بنجاح', error: false);
     } else {
       showSnackBar(
@@ -547,9 +562,9 @@ class _MapScreenState extends State<MapScreen> with Helpers {
     //     wayPoints: [PolylineWayPoint(location: "Sabo, Yaba Lagos Nigeria")]);
     // if (result.points.isNotEmpty) {
     //   result.points.forEach((PointLatLng point) {
-    for (int i = 0; i < locationas!.length; i++) {
-      polylineCoordinates.add(LatLng(double.parse('${locationas![i].latitude}'),
-          double.parse('${locationas![i].longitude}')));
+    for (int i = 0; i < locationsById!.length; i++) {
+      polylineCoordinates.add(LatLng(double.parse('${locationsById![i].latitude}'),
+          double.parse('${locationsById![i].longitude}')));
     }
     // polylineCoordinates.add(LatLng(double.parse('${locations![0].latitude}'),
     //     double.parse('${locations![0].longitude}')));
@@ -575,16 +590,15 @@ class _MapScreenState extends State<MapScreen> with Helpers {
 
   taskModel get task {
     taskModel task = widget.task;
-    print('photo_pla$photoName');
     task.details = details.text;
-    task.image = photoName.toString();
+    // task.image = photoName.toString();
 
     return task;
   }
 
   taskImage get images {
     taskImage images = taskImage();
-    // images.id=0;
+    images.id=null;
     images.image = photoName.toString();
     images.task_id = taskId;
 
@@ -604,3 +618,17 @@ class _MapScreenState extends State<MapScreen> with Helpers {
     }
 <<<<<<< HEAD
  */
+
+// onTap: () => _onTap(locations),
+// draggable: false,
+
+// icon: locationas![i] == 0
+//     ? BitmapDescriptor.defaultMarkerWithHue(
+//         BitmapDescriptor.hueCyan)
+//     : BitmapDescriptor.defaultMarkerWithHue(
+//         BitmapDescriptor.hueGreen),
+
+// icon:
+//     BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
+// // locationas![i]==0 ? BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueCyan)
+// //     :BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),

@@ -169,6 +169,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "4.6.1"
+  flash:
+    dependency: "direct main"
+    description:
+      name: flash
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.3+3"
   flutter:
     dependency: "direct main"
     description: flutter
@@ -233,6 +240,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "10.1.0"
+  future_progress_dialog:
+    dependency: "direct main"
+    description:
+      name: future_progress_dialog
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.2.0"
   gallery_saver:
     dependency: "direct main"
     description:

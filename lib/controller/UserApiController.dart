@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:cron/cron.dart';
+import 'package:flash/flash.dart';
 import 'package:flutter/material.dart';
 import 'package:todo_emp/api/api_settings.dart';
 import 'package:todo_emp/model/login.dart';
@@ -52,11 +53,26 @@ class UserApiController with Helpers {
 
       return true;
     } else if (response.statusCode == 401) {
-      showSnackBar(
-          context: context, content: 'خطا في تسجيل الدخول', error: true);
+      context.showFlashDialog(
+        persistent: true,
+        title:  Text('خطا في ادخال بيانات المستخدم '),
+        content: Text(''),
+
+
+      );
+
+
     } else {
-      showSnackBar(
-          context: context, content: ' يرجى المحاولة فيما بعد', error: true);
+      context.showFlashDialog(
+        persistent: true,
+        title: Text(''),
+        content: Text(' يرجى المحاولة فيما بعد '),
+
+
+      );
+
+
+
     }
     return false;
   }

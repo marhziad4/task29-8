@@ -1,6 +1,5 @@
-import 'package:path/path.dart';
-import 'package:async/async.dart';
 import 'dart:io';
+import 'package:flash/flash.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter/material.dart';
@@ -13,16 +12,11 @@ import 'package:todo_emp/mixins/helpersApi.dart';
 import 'package:todo_emp/model/location.dart';
 import 'package:todo_emp/model/taskImage.dart';
 import 'package:todo_emp/model/taskModel.dart';
-import 'package:http/http.dart' as http;
-import 'package:todo_emp/preferences/user_pref.dart';
 import 'package:todo_emp/providers/TaskProvider.dart';
 import 'package:todo_emp/providers/images_provider.dart';
 import 'package:todo_emp/providers/location_provider.dart';
-import 'package:todo_emp/utils/helpers.dart';
-import 'package:todo_emp/widgets/loading2.dart';
 
 class TaskApiController with ApiMixin, HelpersApi {
-  bool isLoading=false;
   Future<List<taskModel>> getTasks({required BuildContext context}) async {
     var url = Uri.parse(ApiSettings.TASKS);
     var response = await http.get(url, headers: requestHeaders);
@@ -34,20 +28,10 @@ class TaskApiController with ApiMixin, HelpersApi {
       TaskDbController().create(jsonResponseBody);
       print(jsonResponseBody);
       return jsonResponseBody;
-      // BaseGenericArrayResponse<Tasks> genericArrayResponse = BaseGenericArrayResponse.fromJson(jsonResponseBody);
-      // return genericArrayResponse.tasks;
     }
     return [];
   }
-  Future<String> get _localPath async {
-    final directory = await getApplicationDocumentsDirectory();
 
-    return directory.path;
-  }
-  Future<File> get _localFile async {
-    final path = await _localPath;
-    return File('$path/Pictures/pla_todo/text.txt');
-  }
   Future createTask({required BuildContext context}) async {
     //
     List<Map> newList = [];
@@ -57,104 +41,118 @@ class TaskApiController with ApiMixin, HelpersApi {
     if (completeTasks!.isNotEmpty) {
       for (int i = 0; i < completeTasks.length; i++) {
         var taskid = completeTasks[i].id;
-        File ?imageFile;
+        File? imageFile;
+        // completeTasks.add(completeTasks[i].id);
         print('taskid   :$taskid');
         print('taskimage   :${completeTasks[i].image}');
-        List<taskImage>? taskImagebyId =await Provider.of<ImagesProvider>(context, listen: false).readId(taskid);
+        List<taskImage>? taskImagebyId =
+            await Provider.of<ImagesProvider>(context, listen: false)
+                .readId(taskid!);
 
-        if(taskImagebyId!.isNotEmpty){
-          for(int i = 0; i < taskImagebyId.length; i++){
-            //print('taskimage   :${taskImagebyId[i].image}');
+        if (taskImagebyId!.isNotEmpty) {
+          for (int i = 0; i < taskImagebyId.length; i++) {
+            imageFile = File(
+                '/storage/emulated/0/Pictures/pla_todo/${taskImagebyId[i].image}');
 
-            // final path = '/storage/emulated/0/Pictures/pla_todo/${TasksImage[i].image}';
-            // final checkPathExistence = await Directory(path).exists();
-            // print(checkPathExistence);
-            imageFile= File('/storage/emulated/0/Pictures/pla_todo/${taskImagebyId[i].image}');
-
-            taskImagebyId[i].image=base64Encode(imageFile.readAsBytesSync());
-            // print(imageFile);
-            // print('${  base64Encode(imageFile.readAsBytesSync())}');
-            // print(imageFile);
+            taskImagebyId[i].image = base64Encode(imageFile.readAsBytesSync());
           }
-
-        }else{
+        } else {
           print('image is empty');
         }
 
-
-
         List<Location>? Location1 = await LocationProvider().readByTask(taskid);
 
-          newList.add({"info": completeTasks[i], "locations": (Location1!.length > 0)?Location1:null,  'photos': (taskImagebyId.length >0) ?
-          taskImagebyId : null});
-
-        // print('Location1');
-        //
-        // for (int j = 0; j < Location1.length; j++) {
-        //   print(jsonEncode(Location1[j]));
-        // }
-       // print(UserPreferences().token);
-
-        // for (int j = 0; j < completeTasks.length; j++) {
-        //   print(jsonEncode(completeTasks[j]));
-        // }
-        // List<taskModel>? NotAsync;
-        // NotAsync = await TaskProvider().NotAsync1();
-        // print('NotAsync');
-        // for (int j = 0; j < NotAsync!.length; j++) {
-        //   print(jsonEncode(NotAsync[j]));
-        // }
+        newList.add({
+          "info": completeTasks[i],
+          "locations": (Location1!.length > 0) ? Location1 : null,
+          'photos': (taskImagebyId.length > 0) ? taskImagebyId : null
+        });
       }
+
       var body = jsonEncode({"tasks": newList});
-      // print(body);
+      print(body);
       var url = Uri.parse(ApiSettings.ADDTASKS);
 
       var response = await http.post(url, body: body, headers: requestHeaders);
-      // print("no ${response.statusCode}");
-      Loading2();
-      isLoading=true;
-      isLoading?Loading2() : print('false');
+      print("no ${response.statusCode}");
+      print("no ${response.body}");
+
       if (isSuccessRequest(response.statusCode)) {
-        isLoading=false;
-
-        // print("no ${response.statusCode}");
-        // print('${response.body}');
+        print("no ${response.statusCode}");
+        print('${response.body}');
         if (response.statusCode == 200) {
-          showSnackBar(
-              context: context, message: 'تم الترحيل', error: false);
-          print('async');
-          print('${response.body}');
+          await Provider.of<TaskProvider>(context, listen: false).read2();
 
+          Provider.of<TaskProvider>(context, listen: false).completeTasks;
+
+          Provider.of<TaskProvider>(context, listen: false).doneAsync;
+
+          context.showFlashDialog(
+            persistent: true,
+            title: Text(''),
+            content: Text('تم ترحيل المهام '),
+
+
+          );
           for (int i = 0; i < completeTasks.length; i++) {
-            print('here');
             completeTasks[i].async = 1;
             Provider.of<TaskProvider>(context, listen: false)
                 .update(task: completeTasks[i]);
             // TaskProvider().update(task: completeTasks![i]);
-            print('async');
           }
         }
-        return Loading2();
+        Provider.of<TaskProvider>(context, listen: false).completeTasks;
+        Provider.of<TaskProvider>(context, listen: false).doneAsync;
+        Navigator.pushNamed(context, '/TodoMainPage');
 
+        // Navigator.pop(context);
+        return true;
       } else if (response.statusCode == 401) {
-        print("no ${response.statusCode}");
+        context.showFlashDialog(
+          persistent: true,
+          title: Text(''),
+          content: Text('خطا في تسجيل الدخول '),
 
-        showSnackBar(
-            context: context, message: 'خطا في تسجيل الدخول', error: true);
+
+        );
+        // showSnackBar(
+        //     context: context, message: 'خطا في تسجيل الدخول', error: true);
         // await UserApiController().logout(context: context);
         // Navigator.pushReplacementNamed(context, '/Login_screen');
 
       } else {
-        print("no ${response.statusCode}");
-
         handleServerError(context);
       }
     } else {
-      showSnackBar(
-          context: context, message: 'لا يوجد مهام لترحيلها', error: true);
+      showFlash(
+        context: context,
+        duration: const Duration(seconds: 3),
+        builder: (_, c) {
+          return Flash(
+            controller: c,
+            barrierDismissible: false,
+            alignment: const Alignment(0, 0.8),
+            borderRadius: BorderRadius.circular(12),
+            backgroundColor: Colors.black87,
+            margin: const EdgeInsets.symmetric(
+                horizontal: 20, vertical: 12),
+            child: const Padding(
+              padding:
+              EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+              child: Text(
+                "لا يوجد مهام لترحيلها",
+                style: TextStyle(
+                  fontSize: 16,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          );
+        },
+      );
     }
 
-    return null;
+    return false;
   }
 
   Future<bool> deleteTask(BuildContext context, {required int id}) async {
@@ -246,3 +244,22 @@ class TaskApiController with ApiMixin, HelpersApi {
 
 // List<List<dynamic>?> TaskWithLocation = [];
 //print(jsonEncode(completeTasks));
+// print('Location1');
+//
+// for (int j = 0; j < Location1.length; j++) {
+//   print(jsonEncode(Location1[j]));
+// }
+// print(UserPreferences().token);
+
+// for (int j = 0; j < completeTasks.length; j++) {
+//   print(jsonEncode(completeTasks[j]));
+// }
+// List<taskModel>? NotAsync;
+// NotAsync = await TaskProvider().NotAsync1();
+// print('NotAsync');
+// for (int j = 0; j < NotAsync!.length; j++) {
+//   print(jsonEncode(NotAsync[j]));
+// }
+
+// BaseGenericArrayResponse<Tasks> genericArrayResponse = BaseGenericArrayResponse.fromJson(jsonResponseBody);
+// return genericArrayResponse.tasks;

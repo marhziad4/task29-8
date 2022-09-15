@@ -7,6 +7,7 @@ class AppTextField1 extends StatefulWidget {
   bool obscure = false;
   Widget? prefixIcon;
   int? minLines;
+  int? maxLines;
   Widget? suffixIcon;
 
   AppTextField1(
@@ -16,7 +17,9 @@ class AppTextField1 extends StatefulWidget {
       this.textInputType = TextInputType.text,
       this.prefixIcon,
       this.suffixIcon,
-      this.minLines});
+      this.minLines,
+      this.maxLines
+      });
 
   @override
   _AppTextField1State createState() => _AppTextField1State();
@@ -29,6 +32,7 @@ class _AppTextField1State extends State<AppTextField1> {
       keyboardType: widget.textInputType,
       obscureText: widget.obscure,
       minLines: widget.minLines,
+      maxLines: widget.maxLines,
       controller: widget.controller,
       style: TextStyle(
         fontWeight: FontWeight.w500,

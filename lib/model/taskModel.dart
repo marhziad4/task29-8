@@ -9,7 +9,7 @@ import 'package:todo_emp/preferences/user_pref.dart';
 //
 
 class taskModel implements BackupModel {
-  late int id;
+   int? id;
   late String userId;
   late String chek;
 
@@ -17,7 +17,7 @@ class taskModel implements BackupModel {
   late String description;
   String time = TimeOfDay.now().toString();
   late String date = DateTime.now().toString();
-  late String details;
+   String ?details;
 
   String? image;
   int status = 0;
@@ -60,7 +60,7 @@ class taskModel implements BackupModel {
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> map = Map<String, dynamic>();
-    // map['id'] = this.id;
+    map['id'] = this.id;
     map['title'] = this.title;
     map['userId'] = this.userId;
     map['description'] = this.description;
@@ -85,7 +85,7 @@ class taskModel implements BackupModel {
     Map<String, dynamic> map = Map<String, dynamic>();
     map['id'] = this.id;
     map['details'] = this.details;
-    map['image'] = this.image;
+    // map['image'] = this.image;
 
     return map;
   }

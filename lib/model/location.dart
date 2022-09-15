@@ -1,5 +1,5 @@
 class Location {
-  late int id;
+   int? id;
   String ? users_id;
   int? task_id;
   String? latitude='0';
@@ -42,6 +42,7 @@ class Location {
 
   Map<String, dynamic> toMap() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
     data['users_id'] = this.users_id;
     data['task_id'] = this.task_id;
     data['latitude'] = this.latitude;

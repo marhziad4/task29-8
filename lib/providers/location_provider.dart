@@ -6,6 +6,7 @@ import 'package:todo_emp/model/location.dart';
 class LocationProvider extends ChangeNotifier {
   List<Location> locations = <Location>[];
   LocationDbController _locationDbController = LocationDbController();
+  List<Location>? locationas = <Location>[];
 
   Future<bool> addLocation({required Location location}) async {
     int id = await _locationDbController.create(location);

@@ -20,6 +20,7 @@ class _AllTasksScreenState extends State<AllTasksScreen> with Helpers {
 // late taskModel tasks;
 bool isLoading = false;
 
+
   @override
   void initState() {
     // TODO: implement initState
@@ -31,15 +32,11 @@ bool isLoading = false;
 
    await Provider.of<TaskProvider>(context, listen: false).readAll();
 
-   setState(() {
-       isLoading =true;
-     });
-     setState(() {
-       isLoading =false;
-     });
  }
   @override
   Widget build(BuildContext context) {
+    Provider.of<TaskProvider>(context, listen: false).readAll();
+
     //Provider.of<TaskProvider>(context, listen: false).readAll();
     // TODO: implement build
     return Container(

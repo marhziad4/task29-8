@@ -1,19 +1,27 @@
+import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:flash/flash.dart';
 import 'package:flutter/material.dart';
+import 'package:future_progress_dialog/future_progress_dialog.dart';
 import 'package:lit_backup_service/lit_backup_service.dart';
 import 'package:provider/provider.dart';
 import 'package:todo_emp/controller/TaskApiController.dart';
 import 'package:todo_emp/controller/UserApiController.dart';
+import 'package:todo_emp/model/location.dart';
 import 'package:todo_emp/model/taskModel.dart';
 import 'package:todo_emp/model/tasks.dart';
 import 'package:todo_emp/preferences/user_pref.dart';
 import 'package:todo_emp/providers/TaskProvider.dart';
 import 'package:todo_emp/screen/to_do_ui/AllTasksScreen.dart';
+import 'package:todo_emp/screen/to_do_ui/ApiTasksScreen.dart';
 import 'package:todo_emp/screen/to_do_ui/CompleteTasksScreen.dart';
 import 'package:todo_emp/screen/to_do_ui/asyncTasksScreen.dart';
 import 'package:todo_emp/screen/to_do_ui/control/NewTaskScreen.dart';
 import 'package:todo_emp/utils/helpers.dart';
 import 'package:todo_emp/widgets/drawer_list_tile.dart';
 import 'package:todo_emp/widgets/drawer_list_tile2.dart';
+import 'package:todo_emp/widgets/loading2.dart';
+
+import '../../providers/location_provider.dart';
 
 class TodoMainPage extends StatefulWidget {
   @override
@@ -23,48 +31,59 @@ class TodoMainPage extends StatefulWidget {
 class _TodoMainPageState extends State<TodoMainPage>
     with SingleTickerProviderStateMixin, Helpers {
   late TabController tabController;
-  bool async=false;
-
+  bool async = false;
 
   initTabController() {
     tabController = TabController(length: 4, vsync: this);
     // tabController.animateTo(2);
   }
- int? counter;
+
+  int? counter;
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     initTabController();
-    Provider.of<TaskProvider>(context, listen: false).read2();
+    refreshTasks();
+
 //     counter= await Provider.of<TaskProvider>(context, listen: false).counterCmp;
 // print('$counter');
-
   }
 
+  Future refreshTasks() async {
+    // print('ctini 456');
+    //completeTasks=await TaskProvider().read2();
+     await Provider.of<TaskProvider>(context, listen: false).readAll();
+    await Provider.of<TaskProvider>(context, listen: false).read2();
 
-  @override
-  void setState(VoidCallback fn) {
-    // TODO: implement setState
-    super.setState(fn);
-   // =Provider.of<TaskProvider>(context, listen: true).counterCmp;
-    Provider.of<TaskProvider>(context, listen: false).read2();
+    @override
+    void setState(VoidCallback fn) {
+      // TODO: implement setState
+      super.setState(fn);
+      // =Provider.of<TaskProvider>(context, listen: true).counterCmp;
+      Provider.of<TaskProvider>(context, listen: false).read2();
 
-    counter= Provider.of<TaskProvider>(context, listen: false).completeTasks.length;
+      counter = Provider.of<TaskProvider>(context, listen: false)
+          .completeTasks
+          .length;
 
-    // List<taskModel> completeTasks = <taskModel>[];
-    //
-    // completeTasks= TaskProvider().completeTasks;
-    // _index = completeTasks.length;
+      // List<taskModel> completeTasks = <taskModel>[];
+      //
+      // completeTasks= TaskProvider().completeTasks;
+      // _index = completeTasks.length;
+    }
   }
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
-    setState(() {
-      counter= Provider.of<TaskProvider>(context, listen: false).completeTasks.length;
-
-    });
+    // setState(() {
+    //   counter = Provider.of<TaskProvider>(context, listen: false)
+    //       .completeTasks
+    //       .length;
+    // });
     return Scaffold(
       backgroundColor: Color(0xffEBF0F9),
       // floatingActionButton: Padding(
@@ -78,6 +97,7 @@ class _TodoMainPageState extends State<TodoMainPage>
       //         // print(TaskProvider().completeTasks);
       //       }),
       // ),
+      key: _scaffoldKey,
       appBar: AppBar(
         elevation: 0,
         actions: [
@@ -93,8 +113,8 @@ class _TodoMainPageState extends State<TodoMainPage>
 
                 print(" ${UserPreferences().chek}");
 
-                Navigator.push(
-                    context, MaterialPageRoute(builder: (_) => NewTaskScreen()));
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (_) => NewTaskScreen()));
               },
             ),
           )
@@ -143,7 +163,6 @@ class _TodoMainPageState extends State<TodoMainPage>
             Tab(
               icon: Icon(Icons.task_rounded),
               text: 'تم ترحيلها',
-
             ),
             // Tab(
             //   icon: Icon(Icons.done),
@@ -151,9 +170,35 @@ class _TodoMainPageState extends State<TodoMainPage>
             // ),
           ],
         ),
+        leading: new IconButton(
+          icon: new Icon(Icons.menu),
+          onPressed: () async {
+            _scaffoldKey.currentState?.openDrawer();
+            print("object");
+            List<Location>? locations;
+
+            locations = await Provider.of<LocationProvider>(context, listen: false).read();
+            for (int i = 0; i < locations!.length; i++) {
+              print(
+                  'index ${i} location ${locations[i].latitude} longitude ${locations[i].longitude}  time ${locations[i].time}  updatetime ${locations[i].updatetime}task_id ${locations[i].task_id}');
+            }
+            setState(() {
+               Provider.of<TaskProvider>(context, listen: false).read2();
+
+              Provider.of<TaskProvider>(context, listen: false).completeTasks;
+
+              counter= Provider.of<TaskProvider>(context, listen: false).completeTasks.length;
+
+            });
+
+            print(
+                '${Provider.of<TaskProvider>(context, listen: false).completeTasks.length}');
+
+            print('${counter}');
+          }
+        ),
       ),
       drawer: Drawer(
-
         backgroundColor: Colors.white,
         child: ListView(
           padding: EdgeInsets.symmetric(vertical: 20, horizontal: 25),
@@ -161,22 +206,19 @@ class _TodoMainPageState extends State<TodoMainPage>
             SizedBox(
               height: 10,
             ),
-
             UserAccountsDrawerHeader(
                 decoration: BoxDecoration(
                   color: Colors.white,
                 ),
                 currentAccountPicture:
-                // CircleAvatar(
-                //   child: Image.network(
-                //       '${UserPreferences().image}'),
-                // ),
-                CircleAvatar(
+                    // CircleAvatar(
+                    //   child: Image.network(
+                    //       '${UserPreferences().image}'),
+                    // ),
+                    CircleAvatar(
                   radius: 30,
                   backgroundImage: NetworkImage('${UserPreferences().image}'),
-
                 ),
-
                 accountName: Text(
                   '${UserPreferences().name}',
                   style: TextStyle(
@@ -190,8 +232,7 @@ class _TodoMainPageState extends State<TodoMainPage>
                     fontSize: 16,
                     color: Colors.black,
                   ),
-                )
-            ),
+                )),
             Divider(
               indent: 0,
               endIndent: 50,
@@ -200,7 +241,6 @@ class _TodoMainPageState extends State<TodoMainPage>
             ),
             DrawerListTile2(
               title: "الرئيسية",
-
               iconData: Icons.home,
               onTab: () {
                 Navigator.pushNamed(context, '/TodoMainPage');
@@ -213,25 +253,22 @@ class _TodoMainPageState extends State<TodoMainPage>
               title: "اضافة مهام",
               iconData: Icons.add_box_outlined,
               onTab: () {
+                print(
+                    '${Provider.of<TaskProvider>(context, listen: false).completeTasks.length}');
+                print('${counter}');
                 Navigator.pushNamed(context, '/NewTaskScreen');
               },
             ),
             SizedBox(
               height: 20,
             ),
-
             DrawerListTile(
               title: "ترحيل بيانات",
               iconData: Icons.cloud_upload,
-        counter:'${  Provider.of<TaskProvider>(context, listen: false).completeTasks.length
-        }',
+              counter: '${counter}',
+              onTab: () async {
 
-                onTab: () async {
-
-                TaskApiController()
-                    .createTask(context: context);
-                Navigator.pop(context);
-
+                _checkConnectivityState();
                 // if(async==false){
                 //   TaskApiController()
                 //       .createTask(context: context);
@@ -252,7 +289,6 @@ class _TodoMainPageState extends State<TodoMainPage>
                 // var jsonResponse = jsonDecode(response.body);
                 // print("hhhh>>${jsonResponse}");
 
-
                 //
                 // var url = Uri.parse(ApiSettings.ADDTASKS);
                 // var response = await http.post((url),body: {
@@ -272,7 +308,6 @@ class _TodoMainPageState extends State<TodoMainPage>
             DrawerListTile2(
               title: "حفظ احتياطي",
               iconData: Icons.file_upload_rounded,
-
               onTab: () async {
                 // _writeBackup(tasks);
                 // RouterClass.routerClass.routingToSpecificWidgetWithoutPop(
@@ -283,7 +318,6 @@ class _TodoMainPageState extends State<TodoMainPage>
               height: 20,
             ),
             DrawerListTile2(
-
               title: "المهام",
               iconData: Icons.calendar_month,
               onTab: () {
@@ -294,8 +328,6 @@ class _TodoMainPageState extends State<TodoMainPage>
               height: 20,
             ),
             DrawerListTile2(
-
-
               title: "ضبط",
               iconData: Icons.settings,
               onTab: () {
@@ -310,7 +342,6 @@ class _TodoMainPageState extends State<TodoMainPage>
               color: Colors.grey.shade300,
             ),
             DrawerListTile2(
-
                 iconData: Icons.logout,
                 title: "تسجيل خروج",
                 onTab: () async {
@@ -330,7 +361,7 @@ class _TodoMainPageState extends State<TodoMainPage>
         children: [
           AllTasksScreen(),
           // ApiTasksScreen(),
-          CompleteTasksScreen(),
+          ApiTasksScreen(),
           CompleteTasksScreen(),
           AsyncTasksScreen(),
         ],
@@ -409,5 +440,44 @@ class _TodoMainPageState extends State<TodoMainPage>
     if (status) {
       Navigator.pushReplacementNamed(context, '/Login_screen');
     }
+  }
+
+  Future<bool> _checkConnectivityState() async {
+    final ConnectivityResult result = await Connectivity().checkConnectivity();
+
+    if (result == ConnectivityResult.wifi) {
+      showDialog(
+        context: context,
+        builder: (context) => FutureProgressDialog(
+            TaskApiController().createTask(context: context),
+            message: Text('جاري ترحيل المهام ...')),
+      );
+      Provider.of<TaskProvider>(context, listen: false).completeTasks;      print('Connected to a Wi-Fi network');
+      return true;
+    } else if (result == ConnectivityResult.mobile) {
+      showDialog(
+        context: context,
+        builder: (context) => FutureProgressDialog(
+            TaskApiController().createTask(context: context),
+            message: Text('جاري ترحيل المهام ...')),
+      );
+      Provider.of<TaskProvider>(context, listen: false).completeTasks;
+      print('Connected to a mobile network');
+      return true;
+    } else {
+      context.showFlashDialog(
+        persistent: true,
+        title: Text('خطأ'),
+        content: Text('تعذر الاتصال بالانترنت '),
+
+
+      );
+      print('Not connected to any network');
+
+
+      return false;
+    }
+
+
   }
 }

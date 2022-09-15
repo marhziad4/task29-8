@@ -283,7 +283,7 @@ class _NewTaskScreenState extends State<NewTaskScreen> with Helpers {
         showSnackBar(
             context: context, content: 'تمت العملية بنجاح', error: false);
       }
-      Navigator.pop(context);
+      Navigator.pushNamed(context, '/TodoMainPage');
     }
   }
 
@@ -291,6 +291,7 @@ class _NewTaskScreenState extends State<NewTaskScreen> with Helpers {
     taskModel task = taskModel();
     // task.id=0;
     print('${UserPreferences().chek}');
+    //task.id = null;
     task.title = titleTextController.text;
     task.userId = UserPreferences().IdUser;
     task.description = descriptionTextController.text;
@@ -300,7 +301,7 @@ class _NewTaskScreenState extends State<NewTaskScreen> with Helpers {
     task.chek =UserPreferences().chek;
     task.date = dateTextController.text.toString();
     task.time = timeTextController.text.toString();
-    task.details = 'التفاصيل';
+    task.details = null;
     task.image = null;
     return task;
   }

@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 
+import 'package:flash/flash.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart';
 import 'package:todo_emp/mixins/helpersApi.dart';
@@ -17,10 +18,17 @@ mixin ApiMixin implements HelpersApi {
   }
 
   void handleServerError(BuildContext context) {
-    showSnackBar(
-        context: context,
-        message: 'حدث خطأ بالترحيل',
-        error: true);
+    context.showFlashDialog(
+      persistent: true,
+      title: Text(''),
+      content: Text('حدث خطأ بالترحيل'),
+
+
+    );
+    // showSnackBar(
+    //     context: context,
+    //     message: 'حدث خطأ بالترحيل',
+    //     error: true);
   }
 
   void showMessage(BuildContext context, Response response,

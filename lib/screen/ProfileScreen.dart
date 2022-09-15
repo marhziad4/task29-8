@@ -28,7 +28,7 @@ class ProfileScreen extends StatelessWidget {
                   subtitle: Text(provider.locations[index].id.toString()),
                   trailing: IconButton(
                     onPressed: () async{
-                      await Provider.of<LocationProvider>(context, listen: false).delete(id: provider.locations[index].id);
+                      await Provider.of<LocationProvider>(context, listen: false).delete(id: provider.locations[index].id!);
                     },
                     icon: Icon(Icons.delete),
                   ),
