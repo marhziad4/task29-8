@@ -126,27 +126,31 @@ class _TaskWidgetState extends State<TaskWidget> with Helpers {
                                 //             ' title ${asyncTasks![i].title}');
                                 //   }
                                 // }
+                               // print('${DateTime.now().toString()}');
                                 List<taskModel>?completeTasks;
                                  completeTasks = await TaskProvider().read2();
                                  if (completeTasks!.isEmpty) {
                                    print('null');
                                  } else {
                                    for (int i = 0; i < completeTasks.length; i++) {
+                                     print(jsonEncode(completeTasks));
                                      print(
                                          'index ${i} id ${completeTasks[i].id} details ${completeTasks[i].details}'
                                              'image ${completeTasks[i].image} isDeleted ${completeTasks[i].isDeleted}  '
                                              ' status ${completeTasks[i].status} '
+                                             ' time ${completeTasks[i].time} '
+                                             ' date ${completeTasks[i].date} '
                                              ' counter ${completeTasks[i].counter} '
                                              ' async ${completeTasks[i].async} '
                                              ' title ${completeTasks[i].title}');
                                    }
                                  }
-                                List<taskModel>? TasksImage;
-                                TasksImage = await Provider.of<TaskProvider>(
-                                        context,
-                                        listen: false)
-                                    .read();
-                                print(jsonEncode(TasksImage));
+                                // List<taskModel>? TasksImage;
+                                // TasksImage = await Provider.of<TaskProvider>(
+                                //         context,
+                                //         listen: false)
+                                //     .read();
+                                // print(jsonEncode(TasksImage));
                                 print("____________________________");
                                 // print('chek : ${UserPreferences().chek}}');
                                 // List<taskModel>? Tasks;
@@ -301,8 +305,6 @@ class _TaskWidgetState extends State<TaskWidget> with Helpers {
                                         .update(task: widget.task);
                                     cron.schedule(Schedule.parse('*/1 * * * *'),
                                             () async {
-                                              print('every one minutes');
-
                                               print('Cron readLocation');
 
                                           readLocation();

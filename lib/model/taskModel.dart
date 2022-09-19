@@ -11,12 +11,15 @@ import 'package:todo_emp/preferences/user_pref.dart';
 class taskModel implements BackupModel {
    int? id;
   late String userId;
+   late String id_pk;
   late String chek;
-
   late String title;
   late String description;
-  String time = TimeOfDay.now().toString();
-  late String date = DateTime.now().toString();
+   late String time ;
+  late String date;
+  late String start_date;
+  late String end_date;
+  late String create_date;
    String ?details;
 
   String? image;
@@ -39,6 +42,7 @@ class taskModel implements BackupModel {
   taskModel.fromJson(Map<dynamic, dynamic> rowMap) {
     this.id = rowMap['id'];
     this.userId = rowMap['userId'];
+    this.id_pk = rowMap['id_pk'];
     this.title = rowMap['title'];
     this.description = rowMap['description'];
     this.time = rowMap['time'];
@@ -57,12 +61,21 @@ class taskModel implements BackupModel {
 
     // users_id = rowMap['users_id'];
   }
-
+   taskModel.fromJson2(Map<dynamic, dynamic> rowMap) {
+     this.id = rowMap['id'];
+     this.id_pk = rowMap['id_pk'];
+     this.title = rowMap['title'];
+     this.description = rowMap['description'];
+     this.start_date = rowMap['start_date'];
+     this.end_date = rowMap['end_date'];
+     this.create_date = rowMap['create_date'];
+   }
   Map<String, dynamic> toJson() {
     Map<String, dynamic> map = Map<String, dynamic>();
     map['id'] = this.id;
     map['title'] = this.title;
     map['userId'] = this.userId;
+    map['id_pk'] = this.id_pk;
     map['description'] = this.description;
     map['time'] = this.time;
     map['date'] = this.date;
@@ -89,4 +102,12 @@ class taskModel implements BackupModel {
 
     return map;
   }
+   Map<String, dynamic> toMap2() {
+     Map<String, dynamic> map = Map<String, dynamic>();
+     map['id'] = this.id;
+     map['id_pk'] = this.id_pk;
+     // map['image'] = this.image;
+
+     return map;
+   }
 }

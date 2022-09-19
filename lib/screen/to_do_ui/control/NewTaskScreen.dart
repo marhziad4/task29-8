@@ -29,6 +29,8 @@ class _NewTaskScreenState extends State<NewTaskScreen> with Helpers {
     // TODO: implement initState
     titleTextController = TextEditingController();
     descriptionTextController = TextEditingController();
+    DateTime now = DateTime.now();
+//text:DateFormat('kk:mm:ss').format(now),text:DateFormat('EEE d MMM').format(now)
     dateTextController = TextEditingController();
     timeTextController = TextEditingController();
     TaskProvider().read();
@@ -286,6 +288,7 @@ class _NewTaskScreenState extends State<NewTaskScreen> with Helpers {
       Navigator.pushNamed(context, '/TodoMainPage');
     }
   }
+  static final _defaultDate = DateTime.now().toString();
 
   taskModel get tasks {
     taskModel task = taskModel();
@@ -294,13 +297,14 @@ class _NewTaskScreenState extends State<NewTaskScreen> with Helpers {
     //task.id = null;
     task.title = titleTextController.text;
     task.userId = UserPreferences().IdUser;
+    task.id_pk = '0';
     task.description = descriptionTextController.text;
     task.status = 0;
     task.counter = 0;
     task.isDeleted = 0;
     task.chek =UserPreferences().chek;
-    task.date = dateTextController.text.toString();
-    task.time = timeTextController.text.toString();
+    task.date = dateTextController.text;
+    task.time = timeTextController.text;
     task.details = null;
     task.image = null;
     return task;

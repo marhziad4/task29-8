@@ -41,7 +41,8 @@ class DbProvider {
             'counter INTEGER,'
             'userId TEXT,'
             'async INTEGER,'
-            'chek TEXT'
+            'chek TEXT,'
+            'id_pk TEXT'
 
             ')');
         // 'isComplete INTEGER,'

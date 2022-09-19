@@ -1,5 +1,8 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:todo_emp/controller/TaskApiController.dart';
 import 'package:todo_emp/model/taskModel.dart';
 import 'package:todo_emp/providers/TaskProvider.dart';
 
@@ -14,11 +17,16 @@ class ApiTasksScreen extends StatefulWidget {
 class _ApiTasksScreenState extends State<ApiTasksScreen> {
   late Future<List<taskModel>> _future;
   List<taskModel> tasks = <taskModel>[];
+  List<taskModel> tasksAdmin = <taskModel>[];
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    _future = TaskApiController().getTasks();
+
+    // print(jsonEncode(_future));
+
     // Provider.of<TasksApiProvider>(context, listen: false)
     //     .getTasks(context: context);
   }
@@ -31,32 +39,122 @@ class _ApiTasksScreenState extends State<ApiTasksScreen> {
   Widget build(BuildContext context) {
     // TODO: implement build
     //final model = Provider.of<AllGoodsViewModel>(context);
-    return Consumer<TaskProvider>(
-      builder: (
-        BuildContext context,
-          TaskProvider TaskProvider,
-        Widget? child,
-      ) {
-        // if (value.loading) {
-        //   return Center(
-        //     child: CircularProgressIndicator(),
-        //   );
-        // } else
-       if (TaskProvider.tasks.isNotEmpty) {
-          return ListView.builder(
+     return FutureBuilder<List<taskModel>>(
+      future: _future,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(child: CircularProgressIndicator());
+        } else if (snapshot.hasData && snapshot.data!.isNotEmpty) {
+          tasksAdmin = snapshot.data!;
+          return ListView.separated(
             itemBuilder: (context, index) {
-              return InkWell(
-                onTap: () {
-                  Navigator.pushNamed(context, '/details_apiTasks_screen');
-                },
-                child: ListTile(
-                  leading: Icon(Icons.task),
-                  title: Text(TaskProvider.tasks[index].title),
-                  subtitle: Text(TaskProvider.tasks[index].description),
-                ),
-              );
+              return Padding(
+                padding: const EdgeInsets.only(top: 10),
+                child: SizedBox(
+                  height: 150,
+                  child: Card(
+                    // width: double.infinity,
+                    // height: 200.h,
+                    clipBehavior: Clip.antiAliasWithSaveLayer,
+                    elevation: 0.16,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    margin: EdgeInsets.symmetric(horizontal: 15),
+                    // decoration: BoxDecoration(
+                    //   color: Colors.white,
+                    //   borderRadius: BorderRadius.circular(25.r),
+                    //   boxShadow: AppShadow.shadow036,
+                    // ),
+                    child: Stack(
+                      children: [
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const SizedBox(
+                              height: 25,
+                              width: 0,
+                            ),
+                            Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 40),
+                              child: Text(
+                              '${tasksAdmin[index].title}',
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 25,
+                                        color: Colors.black87),
+
+
+                            ),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 40),
+                              child: Row(
+                                children: [
+                                  Text(
+                                    '${tasksAdmin[index].description}',
+                                    style: TextStyle(
+                                        fontSize: 20, color: Colors.black87),
+                                  ),
+
+                                ],
+                              ),
+                            ),
+                            Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Spacer(),
+
+                                Text(
+                                    '${tasksAdmin[index].start_date}',
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 15,
+                                      color: Colors.blueGrey),
+                                ),
+// Checkbox(
+//   value:value ,
+//     //Provider.of<DatabaseProvider>(context).isComplete
+//   onChanged: (value) {
+//     Provider.of<DatabaseProvider>(context, listen: false)
+//         .changeIsCompleteOnNewTaskScreen();
+//   },
+//   title: Text('I have complete this task'),
+// ),
+                                SizedBox(
+                                  width:10,
+                                ),
+
+                                Text(
+                                  '${tasksAdmin[index].end_date}',
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 15,
+                                      color: Colors.blueGrey),
+                                ),
+                              ],
+                            ),
+// const SizedBox(
+//   height: 25,
+//   width: 0,
+// ),
+                          ],
+                        ),
+                      ],
+                    ),
+                    ),
+                    ),
+                  );
+
+
             },
-            itemCount: TaskProvider.completeTasks.length,
+            separatorBuilder: (context, index) {
+              return Divider();
+            },
+            itemCount: tasksAdmin.length,
           );
         } else {
           return Center(
@@ -69,7 +167,7 @@ class _ApiTasksScreenState extends State<ApiTasksScreen> {
                   size: 80,
                 ),
                 Text(
-                  'لا يوجد بيانات',
+                  'NO DATA',
                   style: TextStyle(
                     color: Colors.grey.shade500,
                     fontWeight: FontWeight.bold,

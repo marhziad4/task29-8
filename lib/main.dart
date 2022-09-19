@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -64,12 +65,12 @@ late int task_id;
 //       desiredAccuracy: LocationAccuracy.high);
 //   debugPrint('position.latitude${position.latitude}');
 // }
-
+// late var position ;
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await DbProvider().initDatabase();
   await UserPreferences().initPreferences();
-  final position = await CurrentLocation.fetch();
+   final position = await CurrentLocation.fetch();
   latitude = (position.latitude).toString();
   longitude = (position.longitude).toString();
   var status = await Permission.storage.status;
@@ -97,21 +98,24 @@ void main() async {
 }
 
 void readLocation() async {
-  // print('readLocation');
 
-  // print('every one minutes latitude ${position.latitude}');
-  // print('every one minutes longitude ${position.longitude}');
+
+   // print('every one minutes latitude ${position.latitude}');
+   // print('every one minutes longitude ${position.longitude}');
   lastLocations = await LocationProvider().lastRow();
   // tasks = await TaskProvider().read();
-  List taskss = await TaskProvider().taskss;
-  // print('tasks${jsonEncode(taskss)}');
-  // print('lastLocations${jsonEncode(lastLocations)}');
+
+  print('lastLocations${jsonEncode(lastLocations)}');
   List<taskModel>? Tasks;
   Tasks = await TaskProvider().read();
 
   for (int i = 0; i < Tasks!.length; i++) {
+    print('taskds${jsonEncode(Tasks)}');
+
     if (Tasks[i].counter == 1) {
       if (lastLocations!.length > 0) {
+        print('every one minutes2');
+
         // print(
         //     'latitude >> ${lastLocations![0].latitude} == ${latitude.toString()}');
         // print(
@@ -127,7 +131,7 @@ void readLocation() async {
 
         if ((lastLocations![0].latitude == latitude.toString() &&
                 lastLocations![0].longitude == longitude.toString()) ||
-            distanceInMeters <= 0) {
+            distanceInMeters <= 10 ) {
           lastLocations![0].updatetime = DateTime.now().toString();
           await LocationProvider().update(location: lastLocations![0]);
           print('nothing todo');

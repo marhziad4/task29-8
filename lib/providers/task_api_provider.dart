@@ -5,20 +5,20 @@ import 'package:todo_emp/model/taskModel.dart';
 import '../model/tasks.dart';
 
 class TasksApiProvider extends ChangeNotifier{
-  List<Tasks> tasks = [];
+  List<taskModel> tasks = [];
   TaskApiController _tasksApiController =TaskApiController();
    bool _Loading = false;
-
+  //
   // Future<void> getTasks({required BuildContext context})async{
   //    _startLoading();
   //   List<taskModel> data = await _tasksApiController.getTasks(context: context);
   //   if(data.isNotEmpty){
-  //     tasks=data;
+  //     tasks.add(data);
   //     _stopLoading();
   //     notifyListeners();
   //   }
   // }
-  //
+
 
   // Future<bool> createTask(
   //     {required BuildContext context, required Tasks newTask}) async {

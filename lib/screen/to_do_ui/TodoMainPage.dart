@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flash/flash.dart';
 import 'package:flutter/material.dart';
@@ -108,9 +110,13 @@ class _TodoMainPageState extends State<TodoMainPage>
                 Icons.add,
                 size: 25.0,
               ),
-              onPressed: () {
+              onPressed: () async{
                 // setState(() { TaskProvider.  });
+                // late Future<List<taskModel>> _future;
+              //  await TaskProvider().update2(task: task);
 
+               // await TaskApiController().getTasks();
+                // print(jsonEncode(_future));
                 print(" ${UserPreferences().chek}");
 
                 Navigator.push(context,
@@ -219,7 +225,7 @@ class _TodoMainPageState extends State<TodoMainPage>
                     // ),
                     CircleAvatar(
                   radius: 30,
-                  backgroundImage: NetworkImage('${UserPreferences().image}',scale: 50),
+                  backgroundImage: NetworkImage('${UserPreferences().image}'),
                 ),
                 accountName: Text(
                   '${UserPreferences().name}',

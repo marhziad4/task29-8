@@ -8,5 +8,6 @@ class ApiSettings{
   static final String TASK = _BASE_URL + 'tasks/4';
   static final String ADDTASKS = _BASE_URL + 'store';
   static final String refresh = _BASE_URL + 'refresh';
+  static final String getTask = _BASE_URL + 'taskByAdmin';
 
 }

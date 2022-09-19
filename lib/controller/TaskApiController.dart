@@ -9,6 +9,8 @@ import 'package:todo_emp/api/api_settings.dart';
 import 'package:todo_emp/controller/TaskDbController.dart';
 import 'package:todo_emp/mixins/api_mixin.dart';
 import 'package:todo_emp/mixins/helpersApi.dart';
+import 'package:todo_emp/model/base_generic_array_response.dart';
+import 'package:todo_emp/model/base_response.dart';
 import 'package:todo_emp/model/location.dart';
 import 'package:todo_emp/model/taskImage.dart';
 import 'package:todo_emp/model/taskModel.dart';
@@ -17,21 +19,44 @@ import 'package:todo_emp/providers/images_provider.dart';
 import 'package:todo_emp/providers/location_provider.dart';
 
 class TaskApiController with ApiMixin, HelpersApi {
-  Future<List<taskModel>> getTasks({required BuildContext context}) async {
-    var url = Uri.parse(ApiSettings.TASKS);
+  //{required BuildContext context}
+  String id_pk='0';
+  Future<List<taskModel>> getTasks() async {
+    var url = Uri.parse(ApiSettings.getTask);
     var response = await http.get(url, headers: requestHeaders);
-    if (response.statusCode == 200) {
-      print('hello');
-      var jsonResponseBody = jsonDecode(response.body)
-          .map(((e) => taskModel.fromJson(e)))
-          .toList();
-      TaskDbController().create(jsonResponseBody);
-      print(jsonResponseBody);
-      return jsonResponseBody;
-    }
-    return [];
-  }
+    var jsonResponse =  jsonDecode(response.body);
+    var jsonResponseBody = jsonDecode(response.body)['tasks'] as List;
 
+    if (response.statusCode == 200) {
+      // print(jsonResponse);
+      // print('id_pk ${jsonResponse['tasks'][0]['id_pk']}');
+      id_pk=jsonResponse['tasks'][0]['id_pk'];
+      await TaskProvider().update2(task: task);
+       List<taskModel> tasksList = <taskModel>[];
+      jsonResponseBody.forEach((v) {
+        print(v);
+        tasksList.add(new taskModel.fromJson2(v));
+        for(int i =0 ;i<=tasksList.length;i++){
+          print(i);
+        }
+
+      });
+
+        return tasksList;
+        // BaseGenericArrayResponse<Tasks> genericArrayResponse = BaseGenericArrayResponse.fromJson(jsonResponseBody);
+        // return genericArrayResponse.tasks;
+      }
+      return [];
+
+  }
+  taskModel get task {
+    taskModel task = taskModel();
+    task.id_pk = id_pk;
+    task.id = 1;
+    // task.image = photoName.toString();
+
+    return task;
+  }
   Future createTask({required BuildContext context}) async {
     //
     List<Map> newList = [];

@@ -137,7 +137,17 @@ class TaskProvider extends ChangeNotifier {
     readAll();
     return updated;
   }
-
+  Future<bool> update2({required taskModel task}) async {
+    bool updated = await _taskDbController.update2(task);
+    if (updated) {
+      int index = tasks.indexWhere((contact) => contact.id == task.id);
+      //taskss[index] = task;
+      notifyListeners();
+    }
+    notifyListeners();
+    readAll();
+    return updated;
+  }
   Future<bool> updateRow({required taskModel task}) async {
     bool updated = await _taskDbController.update(task);
     if (updated) {

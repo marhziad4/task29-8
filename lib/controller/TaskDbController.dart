@@ -52,7 +52,7 @@ class TaskDbController extends DbOperations<taskModel> {
   }
   @override
   Future<List<taskModel>> read2() async {
-    List<Map<String, dynamic>> rows = await _database.query('tasks',where: 'counter = 2 and async = 0 and userId = ${UserPreferences().IdUser}',orderBy:'id DESC');//,where: 'counter = 2'
+    List<Map<String, dynamic>> rows = await _database.query('tasks',where: 'counter = 2 and userId = ${UserPreferences().IdUser}',orderBy:'id DESC');//,where: 'counter = 2'
     if (rows.isNotEmpty ) {
       return rows.map((rowMap) => taskModel.fromJson(rowMap)).toList();
     }
@@ -122,7 +122,16 @@ class TaskDbController extends DbOperations<taskModel> {
         where: 'id = ?', whereArgs: [task.id]);
     return countOfUpdatedRows != 0;
   }
+  @override
+  Future<bool> update2(taskModel task) async {
 
+    // TODO: implement update
+    print('update2');
+    int countOfUpdatedRows = await _database.update(
+        'tasks', task.toMap2(),
+        where: 'id = ?', whereArgs: [task.id]);
+    return countOfUpdatedRows != 0;
+  }
   @override
   Future<List<taskModel>> show2() {
     // TODO: implement show2

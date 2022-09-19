@@ -203,7 +203,7 @@ class _EditTaskScreenState extends State<EditTaskScreen> with Helpers{
       clear();
     } else {
       showSnackBar(
-          context: context, content: 'فشل تعديل البيانات', error: false);    }
+          context: context, content: 'فشل تعديل البيانات', error: true);    }
   }
   taskModel get task {
     taskModel task = widget.task;
