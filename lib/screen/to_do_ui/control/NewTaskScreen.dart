@@ -113,17 +113,16 @@ class _NewTaskScreenState extends State<NewTaskScreen> with Helpers {
                       ).then((value) {
                         timeTextController.text =
                             value!.format(context).toString();
-                        print(value.format(context).split('AM'));
+                        print(value.format(context));
                       });
                     },
-                    //DateFormat.yMMMd().format(DateTime.now())
                     validate: (String value) {
                       if (value.isEmpty) {
-                        return 'الرجاء ادخال الوقت';
+                        return 'الرجاس ادخال الوقت';
                       }
                       return null;
                     },
-                    label: "${TimeOfDay.now().format(context).toString()}",
+                    label: 'وقت المهمة',
                     prefix: Icons.watch_later_outlined,
                   ),
                   SizedBox(
@@ -303,8 +302,8 @@ class _NewTaskScreenState extends State<NewTaskScreen> with Helpers {
     task.counter = 0;
     task.isDeleted = 0;
     task.chek =UserPreferences().chek;
-    task.date = dateTextController.text;
-    task.time = timeTextController.text;
+    task.date = dateTextController.text.toString();
+    task.time = timeTextController.text.toString();
     task.details = null;
     task.image = null;
     return task;

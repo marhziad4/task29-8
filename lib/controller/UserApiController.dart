@@ -18,20 +18,18 @@ class UserApiController with Helpers {
     var response = await http
         .post(url, body: {'username': username, 'password': password});
     var jsonResponse = jsonDecode(response.body);
-     print(jsonResponse);
+    print(jsonResponse);
     //   print('${jsonResponse['access_token']}');
 
     if (response.statusCode == 200) {
-
       loginUser users = loginUser.fromJson(jsonDecode(response.body));
       var user = await UserPreferences().save(users);
-      var token =
-          await UserPreferences().setToken(jsonResponse['token']);
-          await UserPreferences().setname(jsonResponse['name']);
-          await UserPreferences().setimage(jsonResponse['image']);
+      var token = await UserPreferences().setToken(jsonResponse['token']);
+      await UserPreferences().setname(jsonResponse['name']);
+      await UserPreferences().setimage(jsonResponse['image']);
       Cron cron = Cron();
       cron.schedule(Schedule.parse('* */23 * * *'), () async {
-      //  print('Cron');
+        //  print('Cron');
         print(UserPreferences().token);
 
         var url = Uri.parse(ApiSettings.refresh);
@@ -47,7 +45,6 @@ class UserApiController with Helpers {
         print(UserPreferences().token);
       });
 
-
       print('token:${UserPreferences().token}');
       print('user:${UserPreferences().isLoggedIn}');
 
@@ -55,24 +52,15 @@ class UserApiController with Helpers {
     } else if (response.statusCode == 401) {
       context.showFlashDialog(
         persistent: true,
-        title:  Text('خطا في ادخال بيانات المستخدم '),
+        title: Text('خطا في ادخال بيانات المستخدم '),
         content: Text(''),
-
-
       );
-
-
     } else {
       context.showFlashDialog(
         persistent: true,
         title: Text(''),
         content: Text(' يرجى المحاولة فيما بعد '),
-
-
       );
-
-
-
     }
     return false;
   }

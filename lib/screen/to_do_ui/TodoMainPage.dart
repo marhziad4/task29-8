@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flash/flash.dart';
 import 'package:flutter/material.dart';
@@ -56,7 +57,7 @@ class _TodoMainPageState extends State<TodoMainPage>
   Future refreshTasks() async {
     // print('ctini 456');
     //completeTasks=await TaskProvider().read2();
-     await Provider.of<TaskProvider>(context, listen: false).readAll();
+    await Provider.of<TaskProvider>(context, listen: false).readAll();
     await Provider.of<TaskProvider>(context, listen: false).read2();
 
     @override
@@ -76,6 +77,7 @@ class _TodoMainPageState extends State<TodoMainPage>
       // _index = completeTasks.length;
     }
   }
+
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
   @override
@@ -110,12 +112,12 @@ class _TodoMainPageState extends State<TodoMainPage>
                 Icons.add,
                 size: 25.0,
               ),
-              onPressed: () async{
+              onPressed: () async {
                 // setState(() { TaskProvider.  });
                 // late Future<List<taskModel>> _future;
-              //  await TaskProvider().update2(task: task);
+                //  await TaskProvider().update2(task: task);
 
-               // await TaskApiController().getTasks();
+                // await TaskApiController().getTasks();
                 // print(jsonEncode(_future));
                 print(" ${UserPreferences().chek}");
 
@@ -177,32 +179,34 @@ class _TodoMainPageState extends State<TodoMainPage>
           ],
         ),
         leading: new IconButton(
-          icon: new Icon(Icons.menu),
-          onPressed: () async {
-            _scaffoldKey.currentState?.openDrawer();
-            print("object");
-            List<Location>? locations;
+            icon: new Icon(Icons.menu),
+            onPressed: () async {
+              _scaffoldKey.currentState?.openDrawer();
+              print("object");
+              List<Location>? locations;
 
-            locations = await Provider.of<LocationProvider>(context, listen: false).read();
-            for (int i = 0; i < locations!.length; i++) {
+              locations =
+                  await Provider.of<LocationProvider>(context, listen: false)
+                      .read();
+              for (int i = 0; i < locations!.length; i++) {
+                print(
+                    'index ${i} location ${locations[i].latitude} longitude ${locations[i].longitude}  time ${locations[i].time}  updatetime ${locations[i].updatetime}task_id ${locations[i].task_id}');
+              }
+              setState(() {
+                Provider.of<TaskProvider>(context, listen: false).read2();
+
+                Provider.of<TaskProvider>(context, listen: false).completeTasks;
+
+                counter = Provider.of<TaskProvider>(context, listen: false)
+                    .completeTasks
+                    .length;
+              });
+
               print(
-                  'index ${i} location ${locations[i].latitude} longitude ${locations[i].longitude}  time ${locations[i].time}  updatetime ${locations[i].updatetime}task_id ${locations[i].task_id}');
-            }
-            setState(() {
-               Provider.of<TaskProvider>(context, listen: false).read2();
+                  '${Provider.of<TaskProvider>(context, listen: false).completeTasks.length}');
 
-              Provider.of<TaskProvider>(context, listen: false).completeTasks;
-
-              counter= Provider.of<TaskProvider>(context, listen: false).completeTasks.length;
-
-            });
-
-            print(
-                '${Provider.of<TaskProvider>(context, listen: false).completeTasks.length}');
-
-            print('${counter}');
-          }
-        ),
+              print('${counter}');
+            }),
       ),
       drawer: Drawer(
         backgroundColor: Colors.white,
@@ -223,10 +227,26 @@ class _TodoMainPageState extends State<TodoMainPage>
                     //   child: Image.network(
                     //       '${UserPreferences().image}',width: 50,height: 50,),
                     // ),
-                    CircleAvatar(
-                  radius: 30,
-                  backgroundImage: NetworkImage('${UserPreferences().image}'),
-                ),
+                //     CircleAvatar(
+                //   radius: 30,
+                //   backgroundImage: NetworkImage('${UserPreferences().image}'),
+                // ),
+                ClipRRect(
+                borderRadius:
+                BorderRadius.circular(50),
+        child: CachedNetworkImage(
+
+
+          imageUrl:
+          '${UserPreferences().image}',
+          height:20,
+          width: 20,
+            fit: BoxFit.fill,
+            placeholder: (context, url) => CircularProgressIndicator(),
+              errorWidget: (context, url, error) => Icon(Icons.error),
+        ),
+      ),
+
                 accountName: Text(
                   '${UserPreferences().name}',
                   style: TextStyle(
@@ -241,12 +261,12 @@ class _TodoMainPageState extends State<TodoMainPage>
                     color: Colors.black,
                   ),
                 )),
-            Divider(
-              indent: 0,
-              endIndent: 50,
-              thickness: 1,
-              color: Colors.grey.shade300,
-            ),
+            // Divider(
+            //   indent: 0,
+            //   endIndent: 50,
+            //   thickness: 1,
+            //   color: Colors.grey.shade300,
+            // ),
             DrawerListTile2(
               title: "الرئيسية",
               iconData: Icons.home,
@@ -267,6 +287,7 @@ class _TodoMainPageState extends State<TodoMainPage>
                 Navigator.pushNamed(context, '/NewTaskScreen');
               },
             ),
+
             SizedBox(
               height: 20,
             ),
@@ -275,7 +296,6 @@ class _TodoMainPageState extends State<TodoMainPage>
               iconData: Icons.cloud_upload,
               counter: '${counter}',
               onTab: () async {
-
                 _checkConnectivityState();
                 // if(async==false){
                 //   TaskApiController()
@@ -314,22 +334,24 @@ class _TodoMainPageState extends State<TodoMainPage>
               height: 20,
             ),
             DrawerListTile2(
-              title: "حفظ احتياطي",
-              iconData: Icons.file_upload_rounded,
-              onTab: () async {
-                // _writeBackup(tasks);
-                // RouterClass.routerClass.routingToSpecificWidgetWithoutPop(
-                //     MyHomePage());
+              title: "جلب المهام",
+              iconData: Icons.task,
+              onTab: () {
+                TaskApiController().getTasks(context: context);
+                Navigator.pop(context);
+                //  _checkConnectivityStateFetchTask();
               },
             ),
             SizedBox(
               height: 20,
             ),
             DrawerListTile2(
-              title: "المهام",
-              iconData: Icons.calendar_month,
-              onTab: () {
-                Navigator.pushNamed(context, '/CalenderScreen');
+              title: "حفظ احتياطي",
+              iconData: Icons.file_upload_rounded,
+              onTab: () async {
+                // _writeBackup(tasks);
+                // RouterClass.routerClass.routingToSpecificWidgetWithoutPop(
+                //     MyHomePage());
               },
             ),
             SizedBox(
@@ -460,7 +482,8 @@ class _TodoMainPageState extends State<TodoMainPage>
             TaskApiController().createTask(context: context),
             message: Text('جاري ترحيل المهام ...')),
       );
-      Provider.of<TaskProvider>(context, listen: false).completeTasks;      print('Connected to a Wi-Fi network');
+      Provider.of<TaskProvider>(context, listen: false).completeTasks;
+      print('Connected to a Wi-Fi network');
       return true;
     } else if (result == ConnectivityResult.mobile) {
       showDialog(
@@ -477,15 +500,44 @@ class _TodoMainPageState extends State<TodoMainPage>
         persistent: true,
         title: Text('خطأ'),
         content: Text('تعذر الاتصال بالانترنت '),
-
-
       );
       print('Not connected to any network');
 
+      return false;
+    }
+  }
+  Future<bool> _checkConnectivityStateFetchTask() async {
+    final ConnectivityResult result = await Connectivity().checkConnectivity();
+
+    if (result == ConnectivityResult.wifi) {
+      showDialog(
+        context: context,
+        builder: (context) => FutureProgressDialog(
+            TaskApiController().getTasks(context: context),
+            message: Text('جاري جلب المهام ...')),
+      );
+      Provider.of<TaskProvider>(context, listen: false).readTaskAdmin;
+      print('Connected to a Wi-Fi network');
+      return true;
+    } else if (result == ConnectivityResult.mobile) {
+      showDialog(
+        context: context,
+        builder: (context) => FutureProgressDialog(
+            TaskApiController().getTasks(context: context),
+            message: Text('جاري جلب المهام ...')),
+      );
+      Provider.of<TaskProvider>(context, listen: false).readTaskAdmin;
+      print('Connected to a mobile network');
+      return true;
+    } else {
+      context.showFlashDialog(
+        persistent: true,
+        title: Text('خطأ'),
+        content: Text('تعذر الاتصال بالانترنت '),
+      );
+      print('Not connected to any network');
 
       return false;
     }
-
-
   }
 }

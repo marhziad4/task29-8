@@ -9,13 +9,15 @@ import '../main.dart';
 class TaskProvider extends ChangeNotifier {
   List<taskModel> tasks = <taskModel>[];
   List<taskModel> taskss = <taskModel>[];
+
   // List<taskModel> isDeletedTasks = <taskModel>[];
   List<taskModel> completeTasks = <taskModel>[];
-  List<taskModel> doneAsync= <taskModel>[];
-  List<taskModel> NotAsync= <taskModel>[];
+  List<taskModel> readTaskAdmin = <taskModel>[];
+  List<taskModel> doneAsync = <taskModel>[];
+  List<taskModel> NotAsync = <taskModel>[];
 
   TaskDbController _taskDbController = TaskDbController();
-    int? counterCmp;
+  int? counterCmp;
 
   TaskProvider() {
     // print('TaskProvider');
@@ -27,10 +29,9 @@ class TaskProvider extends ChangeNotifier {
   }
 
   Future<bool> readAll() async {
-
     taskss.clear();
     taskss = await _taskDbController.read();
-     taskss.reversed;
+    taskss.reversed;
     notifyListeners();
     //============================
     completeTasks.clear();
@@ -43,9 +44,11 @@ class TaskProvider extends ChangeNotifier {
     doneAsync.clear();
     doneAsync = await _taskDbController.doneAsync();
     notifyListeners();
-
+    //====================
+    readTaskAdmin.clear();
+    readTaskAdmin = await _taskDbController.readTaskAdmin();
+    notifyListeners();
     return true;
-
   }
 
   // fillTasksLists(List<taskModel> tasks) {
@@ -63,7 +66,13 @@ class TaskProvider extends ChangeNotifier {
 
     notifyListeners();
     return true;
+  }
 
+  Future<List<taskModel>?> readAllTask() async {
+    completeTasks.clear();
+    tasks = await _taskDbController.allTask();
+    notifyListeners();
+    return tasks;
   }
 
   Future<List<taskModel>?> read() async {
@@ -76,67 +85,76 @@ class TaskProvider extends ChangeNotifier {
     notifyListeners();
     return taskss;
   }
+
   Future<List<taskModel>?> read2() async {
     // print('completeTasks');
     completeTasks = await _taskDbController.read2();
-   // counterCmp=completeTasks.length;
+    // counterCmp=completeTasks.length;
     counterCmp2();
 
     notifyListeners();
     return completeTasks;
   }
-  int count=0;
 
-   Future<int> counterCmp2()async{
-    for(int i =0;i<completeTasks.length;i++){
+  Future<List<taskModel>?> readTaskAd() async {
+    // print('completeTasks');
+    readTaskAdmin = await _taskDbController.readTaskAdmin();
+    // counterCmp=completeTasks.length;
+    counterCmp2();
+
+    notifyListeners();
+    return readTaskAdmin;
+  }
+
+  int count = 0;
+
+  Future<int> counterCmp2() async {
+    for (int i = 0; i < completeTasks.length; i++) {
       count++;
     }
-    counterCmp=completeTasks.length;
-
+    counterCmp = completeTasks.length;
 
     notifyListeners();
     return completeTasks.length;
-
   }
+
   Future<List<taskModel>?> readAsync() async {
     doneAsync = await _taskDbController.doneAsync();
     notifyListeners();
     return doneAsync;
   }
+
   Future<List<taskModel>?> NotAsync1() async {
     NotAsync = await _taskDbController.TaskNotAsync();
     notifyListeners();
     return NotAsync;
   }
 
-
-
-
   Future<bool> update({required taskModel? task}) async {
     bool updated = await _taskDbController.update(task!);
 
-    int index = tasks.indexWhere((element) => element.id == task.id);
+    int index = taskss.indexWhere((element) => element.id == task.id);
     if (index != -1) {
-      //completeTasks.removeAt(index);
-      readAll();
-      notifyListeners();
-      return true;
-    }
-    return false;
-  }
+      taskss[index] = task;
 
+      notifyListeners();
+      return updated;
+    }
+    return updated;
+  }
 
   Future<bool> update1({required taskModel task}) async {
     bool updated = await _taskDbController.update1(task);
     if (updated) {
       int index = tasks.indexWhere((contact) => contact.id == task.id);
-      //taskss[index] = task;
+      tasks[index] = task;
       notifyListeners();
     }
     notifyListeners();
     readAll();
     return updated;
   }
+
   Future<bool> update2({required taskModel task}) async {
     bool updated = await _taskDbController.update2(task);
     if (updated) {
@@ -148,6 +166,7 @@ class TaskProvider extends ChangeNotifier {
     readAll();
     return updated;
   }
+
   Future<bool> updateRow({required taskModel task}) async {
     bool updated = await _taskDbController.update(task);
     if (updated) {
@@ -159,7 +178,7 @@ class TaskProvider extends ChangeNotifier {
   }
 
   Future<bool> delete(int id) async {
-     bool deleted = await TaskDbController().delete(id);
+    bool deleted = await TaskDbController().delete(id);
 
     int index = tasks.indexWhere((element) => element.id == id);
     if (index != -1) {

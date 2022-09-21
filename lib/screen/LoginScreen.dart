@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:flash/flash.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:todo_emp/controller/UserApiController.dart';
@@ -134,7 +135,7 @@ class _LoginScreenState extends State<LoginScreen> with Helpers {
                         visible = true;
 
                         // performLogin();
-                         _checkConnectivityState();
+                        _checkConnectivityState();
                         //  Navigator.pushNamed(context, '/TodoMainPage');
                       },
                       child: Container(
@@ -209,7 +210,7 @@ class _LoginScreenState extends State<LoginScreen> with Helpers {
         context: context,
         username: _userNum.text.trim(),
         password: _password.text.trim());
-   UserPreferences().setIdUser(_userNum.text);
+    UserPreferences().setIdUser(_userNum.text);
     // bool loogedIn = await UserApiController().login(
     //     context: context,
     //     email: _userNum.text,
@@ -294,8 +295,11 @@ class _LoginScreenState extends State<LoginScreen> with Helpers {
       print('Connected to a mobile network');
       return true;
     } else {
-      showSnackBar(
-          context: context, content: "  لا يوجد اتصال بالانترنت ", error: true);
+      context.showFlashDialog(
+        persistent: true,
+        title: Text('خطأ'),
+        content: Text('تعذر الاتصال بالانترنت '),
+      );
       print('Not connected to any network');
 
       setState(() {

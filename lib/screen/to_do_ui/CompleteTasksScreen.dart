@@ -23,10 +23,10 @@ class _CompleteTasksScreenState extends State<CompleteTasksScreen>  with Helpers
     refreshTasks();
   }
   Future refreshTasks()async{
-    // print('ctini 456');
-    //completeTasks=await TaskProvider().read2();
-    // await Provider.of<TaskProvider>(context, listen: false).readAll();
-    // await Provider.of<TaskProvider>(context, listen: false).read2();
+
+    await Provider.of<TaskProvider>(context, listen: false).readAll();
+
+
   }
   @override
   Widget build(BuildContext context) {

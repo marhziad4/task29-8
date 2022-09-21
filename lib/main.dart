@@ -98,7 +98,7 @@ void main() async {
 }
 
 void readLocation() async {
-
+print('readLocation');
 
    // print('every one minutes latitude ${position.latitude}');
    // print('every one minutes longitude ${position.longitude}');
@@ -110,7 +110,7 @@ void readLocation() async {
   Tasks = await TaskProvider().read();
 
   for (int i = 0; i < Tasks!.length; i++) {
-    print('taskds${jsonEncode(Tasks)}');
+    // print('taskds${jsonEncode(Tasks)}');
 
     if (Tasks[i].counter == 1) {
       if (lastLocations!.length > 0) {
@@ -131,7 +131,7 @@ void readLocation() async {
 
         if ((lastLocations![0].latitude == latitude.toString() &&
                 lastLocations![0].longitude == longitude.toString()) ||
-            distanceInMeters <= 10 ) {
+            distanceInMeters <= 10) {
           lastLocations![0].updatetime = DateTime.now().toString();
           await LocationProvider().update(location: lastLocations![0]);
           print('nothing todo');
@@ -319,15 +319,7 @@ class CurrentLocation {
 //   print(status);
 // });
 //
-// getLocationUpdates() {
-//   final LocationSettings locationSettings =
-//   LocationSettings(accuracy: LocationAccuracy.best, distanceFilter: 0);
-//
-//   StreamSubscription<ServiceStatus> serviceStatusStream =
-//   Geolocator.getServiceStatusStream().listen((ServiceStatus status) {
-//     print(status);
-//   });
-// }
+
 // tasks =
 // (await TaskProvider().read())!;
 // completeTasks =

@@ -35,7 +35,6 @@ class MapScreen extends StatefulWidget {
 class _MapScreenState extends State<MapScreen> with Helpers {
   final Set<Polyline> _polyline = {};
   List<Marker> _marker = [];
-  List<Marker> _list = [];
   late GoogleMapController googleMapController;
   late CameraPosition _cameraPosition;
   late GoogleMap googleMap;
@@ -54,8 +53,8 @@ class _MapScreenState extends State<MapScreen> with Helpers {
   var tapped;
   late TextEditingController details;
   final List<Map> myProducts =
-  List.generate(100000, (index) => {"id": 1, "name": "Product yy"})
-      .toList();
+      List.generate(100000, (index) => {"id": 1, "name": "Product yy"})
+          .toList();
 
   // _timeTextController = TextEditingController(text: widget.task.time);
 
@@ -75,13 +74,25 @@ class _MapScreenState extends State<MapScreen> with Helpers {
     // TODO: implement initState
     super.initState();
     taskId = widget.task.id!;
-
-    listMarker();
+    Provider.of<LocationProvider>(context, listen: false).readByTask(taskId);
+    // listMarker();
     _cameraPosition =
         CameraPosition(target: LatLng(31.520088, 34.4347784), zoom: 11);
     details = TextEditingController(text: widget.task.details);
     _getPolyline();
-    _marker.addAll(_list);
+    // _marker.addAll(_list);
+    // _marker.add(
+    //   Marker(markerId: MarkerId('place_name'),
+    //     position: LatLng(37.4219999, -122.0862462),
+    //   ),
+    //
+    //   );
+    // _marker.add(
+    //   Marker(markerId: MarkerId('place_name2'),
+    //     position: LatLng(38.6619999, -122.552462),
+    //   ),
+    //
+    // );
     print(_marker);
     //listMarker();
     // _cameraPosition = CameraPosition(target: LatLng(31.568836, 34.564535),
@@ -142,10 +153,10 @@ class _MapScreenState extends State<MapScreen> with Helpers {
         iconTheme: IconThemeData(color: Color(0xff0f31dc)),
       ),
       body: Consumer<ImagesProvider>(builder: (
-          BuildContext context,
-          ImagesProvider provider,
-          Widget? child,
-          ) {
+        BuildContext context,
+        ImagesProvider provider,
+        Widget? child,
+      ) {
         return SlidingUpPanel(
           minHeight: panelHeighClosed,
           maxHeight: panelHeighOpen,
@@ -171,8 +182,8 @@ class _MapScreenState extends State<MapScreen> with Helpers {
                     children: [
                       Text(
                         widget.task.title,
-                        style:
-                        TextStyle(fontWeight: FontWeight.bold, fontSize: 30),
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 30),
                       ),
                       SizedBox(
                         height: 20,
@@ -183,15 +194,24 @@ class _MapScreenState extends State<MapScreen> with Helpers {
                       SizedBox(
                         height: 10,
                       ),
-                      AppTextField1(hint: "تفاصيل", controller: details,maxLines: 5,minLines: 1,),
+                      AppTextField1(
+                        hint: "تفاصيل",
+                        controller: details,
+                        maxLines: 5,
+                        minLines: 1,
+                      ),
                       SizedBox(
-                        height:5,
+                        height: 5,
                       ),
                       AppButtonMain(
                         onPressed: () async {
-                          await Provider.of<TaskProvider>(context, listen: false)
-                              .update1(task: task);
-                          locations = await Provider.of<LocationProvider>(context, listen: false).read();
+                          await Provider.of<TaskProvider>(context,
+                                  listen: false)
+                              .update(task: task);
+                          locations = await Provider.of<LocationProvider>(
+                                  context,
+                                  listen: false)
+                              .read();
                           for (int i = 0; i < locations!.length; i++) {
                             print(
                                 'index ${i} location ${locations![i].latitude} longitude ${locations![i].longitude}  time ${locations![i].time}  updatetime ${locations![i].updatetime}task_id ${locations![i].task_id}');
@@ -207,65 +227,69 @@ class _MapScreenState extends State<MapScreen> with Helpers {
                       ),
                       //3f10db1e-8999-4928-9a12-152e9525ed2d140771861045873629.jpg
                       Container(
-                        child:provider.imageId.length != 0
-                        ? Container(
-                          width: double.infinity,
-                          height: 220,
-                          child: ListView.builder(
-                            //  shrinkWrap: true,
-                              scrollDirection: Axis.horizontal,
-                              itemCount: provider.imageId.length,
-                              itemBuilder: (context, index) {
+                          child: provider.imageId.length != 0
+                              ? Container(
+                                  width: double.infinity,
+                                  height: 220,
+                                  child: ListView.builder(
+                                      //  shrinkWrap: true,
+                                      scrollDirection: Axis.horizontal,
+                                      itemCount: provider.imageId.length,
+                                      itemBuilder: (context, index) {
+                                        taskImage Imagetask =
+                                            provider.imageId[index];
 
-                                taskImage Imagetask = provider.imageId[index];
+                                        // print('delete Imagetask.id${Imagetask.id}');
 
-                                // print('delete Imagetask.id${Imagetask.id}');
+                                        return Stack(
+                                          children: [
+                                            Container(
+                                              width: 130,
+                                              height: 170,
+                                              child: Image.file(File(
+                                                  '/storage/emulated/0/Pictures/pla_todo/${provider.imageId.toList()[index].image}')),
+                                            ),
+                                            IconButton(
+                                                icon: Icon(
+                                                  Icons.cancel_outlined,
+                                                  size: 25.0,
+                                                ),
+                                                color:
+                                                    Colors.white, //<-- SEE HERE
 
-                                return Stack(
-                                  children: [
-                                    Container(
-                                      width: 130,
-                                      height: 170,
-                                      child: Image.file(File(
-                                          '/storage/emulated/0/Pictures/pla_todo/${  provider.imageId.toList()[index].image}')),
-                                    ),
-                                    IconButton(
-                                        icon: Icon(
-                                          Icons.cancel_outlined,
-                                          size: 25.0,
-                                        ),
-                                        color: Colors.white, //<-- SEE HERE
+                                                onPressed: () async {
+                                                  // print('dele');
 
-                                        onPressed: () async {
-                                          // print('dele');
-
-                                          // List<taskImage>?image2= await Provider.of<ImagesProvider>(context,
-                                          //         listen: false)
-                                          //         .imageId;
-                                          // print('${provider.imageId.toList()[index].id}');
-                                          // List<taskImage>?image =await Provider.of<ImagesProvider>(context,
-                                          //     listen: false)
-                                          // //     .read();
-                                          // for(int i = 0; i < image2.length; i++) {
-                                          //   print('image id ${image2[i].id}');
-                                          //   print('image image ${image2[i].image}');
-                                          //
-                                          // }
-                                          // print(Imagetask.id);
-                                          await Provider.of<ImagesProvider>(context,
-                                              listen: false)
-                                              .delete(provider.imageId.toList()[index].id!);
-                                        }),
-                                  ],
-                                );
-                              }),
-                        ):
-                            Container(
-                              width:20,
-                              height: 20,
-                              child: Text(''),
-                            )
-                      ),
+                                                  // List<taskImage>?image2= await Provider.of<ImagesProvider>(context,
+                                                  //         listen: false)
+                                                  //         .imageId;
+                                                  // print('${provider.imageId.toList()[index].id}');
+                                                  // List<taskImage>?image =await Provider.of<ImagesProvider>(context,
+                                                  //     listen: false)
+                                                  // //     .read();
+                                                  // for(int i = 0; i < image2.length; i++) {
+                                                  //   print('image id ${image2[i].id}');
+                                                  //   print('image image ${image2[i].image}');
+                                                  //
+                                                  // }
+                                                  // print(Imagetask.id);
+                                                  await Provider.of<
+                                                              ImagesProvider>(
+                                                          context,
+                                                          listen: false)
+                                                      .delete(provider.imageId
+                                                          .toList()[index]
+                                                          .id!);
+                                                }),
+                                          ],
+                                        );
+                                      }),
+                                )
+                              : Container(
+                                  width: 20,
+                                  height: 20,
+                                  child: Text(''),
+                                )),
 
                       // widget.task.image
                       // widget.task.image
@@ -304,8 +328,6 @@ class _MapScreenState extends State<MapScreen> with Helpers {
                       //
                       //         ),
                       // ),
-
-
                     ],
                   ),
                 ),
@@ -386,9 +408,12 @@ class _MapScreenState extends State<MapScreen> with Helpers {
     );
   }
 
+/*
   listMarker() async {
     locations = await LocationProvider().read();
     locationsById = await LocationProvider().show(widget.task.id!);
+
+
     for (int i = 0; i < locations!.length; i++) {
       if(locations![i].task_id != widget.task.id){
 
@@ -409,71 +434,66 @@ class _MapScreenState extends State<MapScreen> with Helpers {
       }
     }
   }
-
+*/
   void _onMapCreated(GoogleMapController controller) async {
-    locationsById =await Provider.of<LocationProvider>(context, listen: false).show(widget.task.id!);
+    locationsById = await Provider.of<LocationProvider>(context, listen: false)
+        .locationsByIdTask;
     print(jsonEncode(locationsById));
     // locations = await LocationProvider().read();
 
+    for (int i = 0; i < locationsById!.length; i++) {
+      if (locationsById![i].task_id == widget.task.id) {
+        // LatLng latlng;
+        // latlng = LatLng(double.parse('${locations![i].latitude}'),
+        //     double.parse('${locations![i].longitude}'));
+        print(
+            'Marker >> latitude :${locationsById![i].latitude} longitude:${locationsById![i].longitude}task_idmark:${locationsById![i].task_id}');
+        setState(() {
+          for (int i = 0; i < locationsById!.length; i++) {
+            print('here');
+            print('length${locationsById!.length}');
+            LatLng latlng = LatLng(
+                double.parse('${locationsById![i].latitude}'),
+                double.parse('${locationsById![i].longitude}'));
 
+            print(
+                'Marker1 >> latitude :${locationsById![i].latitude} longitude:${locationsById![i].longitude} time:${locationsById![i].time} updatetime:${locationsById![i].updatetime}task_id:${locationsById![i].task_id}');
 
-      for (int i = 0; i < locationsById!.length; i++) {
-        if (locationsById![i].task_id == widget.task.id) {
-          // LatLng latlng;
-          // latlng = LatLng(double.parse('${locations![i].latitude}'),
-          //     double.parse('${locations![i].longitude}'));
-          print(
-              'Marker >> latitude :${locationsById![i]
-                  .latitude} longitude:${locationsById![i]
-                  .longitude}task_idmark:${locationsById![i].task_id}');
-          setState(() {
-            for (int i = 0; i < locationsById!.length; i++) {
-              print('here');
-              print('length${locationsById!.length}');
-              LatLng latlng= LatLng(double.parse('${locationsById![i].latitude}'),
-                  double.parse('${locationsById![i].longitude}'));
+            _marker.add(
+              Marker(
+                markerId: MarkerId([i].toString()),
+                position: LatLng(double.parse('${locationsById![i].latitude}'),
+                    double.parse('${locationsById![i].longitude}')),
+                // infoWindow: InfoWindow(title: "Marker1",snippet: "Marker",onTap: (){
+                //   Navigator.pushReplacementNamed(context, '/TodoMainPage');
+                //
+                // }),
 
-              print(
-                  'Marker1 >> latitude :${locationsById![i]
-                      .latitude} longitude:${locationsById![i]
-                      .longitude} time:${locationsById![i]
-                      .time} updatetime:${locationsById![i]
-                      .updatetime}task_id:${locationsById![i].task_id}');
-
-              _marker.add(
-                Marker(
-                  markerId: MarkerId([i].toString()),
-                  position: LatLng(double.parse('${locationsById![i].latitude}'),
-                      double.parse('${locationsById![i].longitude}')),
-                  // infoWindow: InfoWindow(title: "Marker1",snippet: "Marker",onTap: (){
-                  //   Navigator.pushReplacementNamed(context, '/TodoMainPage');
-                  //
-                  // }),
-
-                  infoWindow: InfoWindow(
+                infoWindow: InfoWindow(
                     // title:'${distanceInMeters}',
 
-                      title: '${[
-                        i
-                      ]} ${locationsById![i].latitude}  ${locations![i].longitude} ',
-                      snippet: locationsById![i].time),
-
-                ),
-              );
-            }
-          });
-        }
+                    title: '${[
+                      i
+                    ]} ${locationsById![i].latitude}  ${locations![i].longitude} ',
+                    snippet: locationsById![i].time),
+              ),
+            );
+          }
+        });
       }
+    }
   }
 
   Uint8List? imageRaw;
   String? photoName;
   File? FileImage;
   File? FileImage2;
+
 //,imageQuality: 25
   Future<void> pickImageCamera() async {
     print('FileImage');
-    var photo = await imagePicker.pickImage(source: ImageSource.camera,imageQuality: 25);
+    var photo = await imagePicker.pickImage(
+        source: ImageSource.camera, imageQuality: 25);
     FileImage = File(photo!.path);
     print(FileImage);
     new File('/storage/emulated/0/Pictures/pla_todo1/${photo.name}')
@@ -563,7 +583,8 @@ class _MapScreenState extends State<MapScreen> with Helpers {
     // if (result.points.isNotEmpty) {
     //   result.points.forEach((PointLatLng point) {
     for (int i = 0; i < locationsById!.length; i++) {
-      polylineCoordinates.add(LatLng(double.parse('${locationsById![i].latitude}'),
+      polylineCoordinates.add(LatLng(
+          double.parse('${locationsById![i].latitude}'),
           double.parse('${locationsById![i].longitude}')));
     }
     // polylineCoordinates.add(LatLng(double.parse('${locations![0].latitude}'),
@@ -598,7 +619,7 @@ class _MapScreenState extends State<MapScreen> with Helpers {
 
   taskImage get images {
     taskImage images = taskImage();
-   // images.id=null;
+    // images.id=null;
     images.image = photoName.toString();
     images.task_id = taskId;
 

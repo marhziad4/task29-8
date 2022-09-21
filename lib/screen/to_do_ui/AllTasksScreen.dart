@@ -28,11 +28,11 @@ bool isLoading = false;
 
      refreshTasks();
   }
- Future refreshTasks()async{
 
-   await Provider.of<TaskProvider>(context, listen: false).readAll();
+  Future refreshTasks() async {
+    await Provider.of<TaskProvider>(context, listen: false).readAll();
+  }
 
- }
   @override
   Widget build(BuildContext context) {
     Provider.of<TaskProvider>(context, listen: false).readAll();

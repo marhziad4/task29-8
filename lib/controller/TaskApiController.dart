@@ -14,6 +14,7 @@ import 'package:todo_emp/model/base_response.dart';
 import 'package:todo_emp/model/location.dart';
 import 'package:todo_emp/model/taskImage.dart';
 import 'package:todo_emp/model/taskModel.dart';
+import 'package:todo_emp/preferences/user_pref.dart';
 import 'package:todo_emp/providers/TaskProvider.dart';
 import 'package:todo_emp/providers/images_provider.dart';
 import 'package:todo_emp/providers/location_provider.dart';
@@ -21,40 +22,82 @@ import 'package:todo_emp/providers/location_provider.dart';
 class TaskApiController with ApiMixin, HelpersApi {
   //{required BuildContext context}
   String id_pk='0';
-  Future<List<taskModel>> getTasks() async {
+  String title='0';
+  String description='0';
+  String start_date='0';
+  String end_date='0';
+  String create_date='0';
+  String update_date='0';
+
+  Future<List<taskModel>> getTasks({required BuildContext context})  async {
+
+
     var url = Uri.parse(ApiSettings.getTask);
     var response = await http.get(url, headers: requestHeaders);
-    var jsonResponse =  jsonDecode(response.body);
+    print("no ${response.statusCode}");
+    print("no ${response.body}");
     var jsonResponseBody = jsonDecode(response.body)['tasks'] as List;
+    if(jsonResponseBody.isNotEmpty) {
+      if (response.statusCode == 200) {
+        // print('id_pk ${jsonResponse['tasks'][0]['id_pk']}');
 
-    if (response.statusCode == 200) {
-      // print(jsonResponse);
-      // print('id_pk ${jsonResponse['tasks'][0]['id_pk']}');
-      id_pk=jsonResponse['tasks'][0]['id_pk'];
-      await TaskProvider().update2(task: task);
-       List<taskModel> tasksList = <taskModel>[];
-      jsonResponseBody.forEach((v) {
-        print(v);
-        tasksList.add(new taskModel.fromJson2(v));
-        for(int i =0 ;i<=tasksList.length;i++){
-          print(i);
-        }
+        var jsonResponse =  jsonDecode(response.body);
+        var jsonResponseBody = jsonDecode(response.body)['tasks'] as List;
+        id_pk=jsonResponse['tasks'][0]['id_pk'];
+        print(jsonResponseBody);
+        // bool saved = await TaskProvider()
+        //     .create(task: tasks);
+        // await TaskProvider().update2(task: task);
+        List<taskModel> tasksList = <taskModel>[];
+        jsonResponseBody.forEach((v) async{
+          print(v);
+          tasksList.add(new taskModel.fromJson2(v));
 
-      });
+          id_pk= v['id_pk'];
+          title= v['title'];
+          description= v['description'];
+          start_date= v['start_date'];
+          end_date= v['end_date'];
+          create_date= v['create_date'];
+          update_date= v['update_date'];
+          bool saved = await TaskProvider()
+              .create(task: tasks);
+          await Provider.of<TaskProvider>(context, listen: false).readTaskAd();
 
+          print(v['id_pk']);
+
+
+
+        });
         return tasksList;
         // BaseGenericArrayResponse<Tasks> genericArrayResponse = BaseGenericArrayResponse.fromJson(jsonResponseBody);
         // return genericArrayResponse.tasks;
       }
+    }else{
+      context.showFlashDialog(
+        persistent: true,
+        title: Text(''),
+        content: Text('لا يوجد مهام لجلبها'),
+      );
+    }
+
       return [];
 
   }
-  taskModel get task {
+  taskModel get tasks {
     taskModel task = taskModel();
+    task.title = title;
+    task.userId = UserPreferences().IdUser;
     task.id_pk = id_pk;
-    task.id = 1;
-    // task.image = photoName.toString();
-
+    task.description = description;
+    task.status = 0;
+    task.counter = 0;
+    task.isDeleted = 0;
+    task.chek =UserPreferences().chek;
+    task.date = start_date;
+    task.time =start_date;
+    task.details = null;
+    task.image = null;
     return task;
   }
   Future createTask({required BuildContext context}) async {

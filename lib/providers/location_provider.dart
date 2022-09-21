@@ -5,8 +5,8 @@ import 'package:todo_emp/model/location.dart';
 
 class LocationProvider extends ChangeNotifier {
   List<Location> locations = <Location>[];
+  List<Location> locationsByIdTask = <Location>[];
   LocationDbController _locationDbController = LocationDbController();
-  List<Location>? locationas = <Location>[];
 
   Future<bool> addLocation({required Location location}) async {
     int id = await _locationDbController.create(location);
@@ -25,16 +25,17 @@ class LocationProvider extends ChangeNotifier {
     return locations;
   }
   Future<List<Location>?> readByTask(int taskId) async {
-    locations = await _locationDbController.readByTask(taskId);
+    locationsByIdTask.clear();
+    locationsByIdTask = await _locationDbController.readByTask(taskId);
     notifyListeners();
-    return locations;
+    return locationsByIdTask;
   }
-  Future<List<Location>?> show(int task_id) async {
-    //SELECT * FROM categories WHERE}) async {
-    locationas = await _locationDbController.show(task_id);
-    notifyListeners();
-    return locationas;
-  }
+  // Future<List<Location>?> show(int task_id) async {
+  //   //SELECT * FROM categories WHERE}) async {
+  //   locationas = await _locationDbController.show(task_id);
+  //   notifyListeners();
+  //   return locationas;
+  // }
 
   Future<List<Location>?> lastRow() async {
     locations = await _locationDbController.lastRow();

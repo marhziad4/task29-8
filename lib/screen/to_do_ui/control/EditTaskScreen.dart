@@ -17,7 +17,7 @@ class EditTaskScreen extends StatefulWidget {
   State<EditTaskScreen> createState() => _EditTaskScreenState();
 }
 
-class _EditTaskScreenState extends State<EditTaskScreen> with Helpers{
+class _EditTaskScreenState extends State<EditTaskScreen> with Helpers {
   late TextEditingController _titleTextController;
   late TextEditingController _descriptionTextController;
   late TextEditingController _dateTextController;
@@ -30,9 +30,11 @@ class _EditTaskScreenState extends State<EditTaskScreen> with Helpers{
     super.initState();
     // TODO: implement initState
     _titleTextController = TextEditingController(text: widget.task.title);
-    _descriptionTextController = TextEditingController(text: widget.task.description);
+    _descriptionTextController =
+        TextEditingController(text: widget.task.description);
     _dateTextController = TextEditingController(text: widget.task.date);
     _timeTextController = TextEditingController(text: widget.task.time);
+    Provider.of<TaskProvider>(context, listen: false).completeTasks;
   }
 
   @override
@@ -158,9 +160,7 @@ class _EditTaskScreenState extends State<EditTaskScreen> with Helpers{
             ),
             AppButtonMain(
               onPressed: () async {
-               await performSave();
-               Navigator.pop(context);
-
+                await performSave();
               },
               title: 'تعديل',
             ),
@@ -178,6 +178,7 @@ class _EditTaskScreenState extends State<EditTaskScreen> with Helpers{
       ),
     );
   }
+
   Future performSave() async {
     if (checkData()) {
       await updateContact();
@@ -190,27 +191,32 @@ class _EditTaskScreenState extends State<EditTaskScreen> with Helpers{
       return true;
     }
     showSnackBar(
-        context: context, content: 'الرجاء ادخال البيانات المطلوبة', error: false);
+        context: context,
+        content: 'الرجاء ادخال البيانات المطلوبة',
+        error: false);
     return false;
   }
 
   Future updateContact() async {
-    bool inserted =
-    await Provider.of<TaskProvider>(context, listen: false).update(task: task);
+    bool inserted = await Provider.of<TaskProvider>(context, listen: false)
+        .update(task: task);
+    await Provider.of<TaskProvider>(context, listen: false).read2();
     if (inserted) {
-      showSnackBar(
-          context: context, content: 'تم التعديل بنجاح', error: false);
+      showSnackBar(context: context, content: 'تم التعديل بنجاح', error: false);
       clear();
     } else {
       showSnackBar(
-          context: context, content: 'فشل تعديل البيانات', error: true);    }
+          context: context, content: 'فشل تعديل البيانات', error: true);
+    }
+    Navigator.pop(context);
   }
+
   taskModel get task {
     taskModel task = widget.task;
     task.title = _titleTextController.text;
     task.description = _descriptionTextController.text;
-    task.time = _timeTextController.text;
-    task.date = _dateTextController.text;
+    task.time = _timeTextController.text.toString();
+    task.date = _dateTextController.text.toString();
     return task;
   }
 
@@ -219,6 +225,5 @@ class _EditTaskScreenState extends State<EditTaskScreen> with Helpers{
     _descriptionTextController.text = '';
     _timeTextController.text = '';
     _dateTextController.text = '';
-
   }
 }

@@ -37,20 +37,21 @@ class _TaskWidgetState extends State<TaskWidget> with Helpers {
     return Consumer<TaskProvider>(builder: (context, provider, x) {
       return InkWell(
         onTap: () async {
-          if(widget.task.counter!=0){
+          if (widget.task.counter != 0) {
             await Provider.of<ImagesProvider>(context, listen: false)
-                .readId(widget.task.id??0);
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => MapScreen(widget.task)));
-          }else{
+                .readId(widget.task.id ?? 0);
+            // Provider.of<LocationProvider>(context, listen: false).readByTask(task_id);
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => MapScreen(widget.task)));
+          } else {
             context.showFlashDialog(
               persistent: true,
-              title:  Text('يجب بدء المهمة'),
+              title: Text('يجب بدء المهمة'),
               content: Text(''),
             );
-
           }
-
         },
         child: Padding(
           padding: const EdgeInsets.only(top: 10),
@@ -126,52 +127,61 @@ class _TaskWidgetState extends State<TaskWidget> with Helpers {
                                 //             ' title ${asyncTasks![i].title}');
                                 //   }
                                 // }
-                               // print('${DateTime.now().toString()}');
-                                List<taskModel>?completeTasks;
-                                 completeTasks = await TaskProvider().read2();
-                                 if (completeTasks!.isEmpty) {
-                                   print('null');
-                                 } else {
-                                   for (int i = 0; i < completeTasks.length; i++) {
-                                     print(jsonEncode(completeTasks));
-                                     print(
-                                         'index ${i} id ${completeTasks[i].id} details ${completeTasks[i].details}'
-                                             'image ${completeTasks[i].image} isDeleted ${completeTasks[i].isDeleted}  '
-                                             ' status ${completeTasks[i].status} '
-                                             ' time ${completeTasks[i].time} '
-                                             ' date ${completeTasks[i].date} '
-                                             ' counter ${completeTasks[i].counter} '
-                                             ' async ${completeTasks[i].async} '
-                                             ' title ${completeTasks[i].title}');
-                                   }
-                                 }
+                                // print('${DateTime.now().toString()}');
+                             //   ______________
+                                /*
+                                List<taskModel>? completeTasks;
+                                completeTasks = await TaskProvider().read2();
+                                if (completeTasks!.isEmpty) {
+                                  print('null');
+                                } else {
+                                  for (int i = 0;
+                                      i < completeTasks.length;
+                                      i++) {
+                                    print(jsonEncode(completeTasks));
+                                    print(
+                                        'index ${i} id ${completeTasks[i].id} details ${completeTasks[i].details}'
+                                        'image ${completeTasks[i].image} isDeleted ${completeTasks[i].isDeleted}  '
+                                        ' status ${completeTasks[i].status} '
+                                        ' time ${completeTasks[i].time} '
+                                        ' date ${completeTasks[i].date} '
+                                        ' counter ${completeTasks[i].counter} '
+                                        ' async ${completeTasks[i].async} '
+                                        ' title ${completeTasks[i].title}');
+                                  }
+                                }
+                                */
                                 // List<taskModel>? TasksImage;
                                 // TasksImage = await Provider.of<TaskProvider>(
                                 //         context,
                                 //         listen: false)
                                 //     .read();
                                 // print(jsonEncode(TasksImage));
-                                print("____________________________");
+                            //    print("____________________________");
                                 // print('chek : ${UserPreferences().chek}}');
-                                // List<taskModel>? Tasks;
-                                // Tasks = await Provider.of<TaskProvider>(context, listen: false).read();
-                                // // asyncTasks =Provider.of<TaskProvider>(context, listen: false).asyncTasks;
-                                // if (Tasks!.isEmpty) {
-                                //   print('null');
-                                // } else {
-                                //   for (int i = 0; i < Tasks.length; i++) {
-                                //     print(
-                                //         'index ${i} id ${Tasks[i].id} details ${Tasks[i].details}'
-                                //             'image ${Tasks[i].image} isDeleted ${Tasks[i].isDeleted}  '
-                                //             ' status ${Tasks[i].status} '
-                                //             ' counter ${Tasks[i].counter} '
-                                //             ' async ${Tasks[i].async} '
-                                //             ' chek ${Tasks[i].chek} '
-                                //         //   ' img ${Tasks[i].image} '
-                                //             ' title ${Tasks[i].title}');
-                                //   }
-                                // }
-
+                                List<taskModel>? Tasks;
+                                Tasks = await Provider.of<TaskProvider>(context,
+                                        listen: false)
+                                    .read();
+                                // asyncTasks =Provider.of<TaskProvider>(context, listen: false).asyncTasks;
+                               /*
+                                if (Tasks!.isEmpty) {
+                                  print('null');
+                                } else {
+                                  for (int i = 0; i < Tasks.length; i++) {
+                                    print(
+                                        'index ${i} id ${Tasks[i].id} details ${Tasks[i].details}'
+                                        'image ${Tasks[i].image} isDeleted ${Tasks[i].isDeleted}  '
+                                        ' status ${Tasks[i].status} '
+                                        ' counter ${Tasks[i].counter} '
+                                        ' async ${Tasks[i].async} '
+                                        ' chek ${Tasks[i].chek} '
+                                        ' id_pk ${Tasks[i].id_pk} '
+                                        //   ' img ${Tasks[i].image} '
+                                        ' title ${Tasks[i].title}');
+                                  }
+                                }
+*/
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(
@@ -209,7 +219,7 @@ class _TaskWidgetState extends State<TaskWidget> with Helpers {
                                   //     ),
                                   //   ],
                                   // );
-                                  if (widget.task.status == false) {
+                                  if (widget.task.counter == 1) {
                                     showSnackBar(
                                         context: context,
                                         content:
@@ -218,7 +228,7 @@ class _TaskWidgetState extends State<TaskWidget> with Helpers {
                                   } else {
                                     await Provider.of<TaskProvider>(context,
                                             listen: false)
-                                        .delete(widget.task.id??0);
+                                        .delete(widget.task.id ?? 0);
                                     widget.task.isDeleted = 1;
                                     // TaskProvider().update(task: widget.task);
                                     await Provider.of<TaskProvider>(context,
@@ -260,9 +270,9 @@ class _TaskWidgetState extends State<TaskWidget> with Helpers {
                                 // }
                                 // print('jsonEncode${ jsonEncode(Location1)}');
 
-                                 print(widget.task.counter);
-                                 print(widget.task.id);
-                                 print(widget.task.status);
+                                print(widget.task.counter);
+                                print(widget.task.id);
+                                print(widget.task.status);
                                 print(UserPreferences().chek);
                                 // completeTasks = await TaskProvider().read2();
                                 //status false => شغال
@@ -285,8 +295,6 @@ class _TaskWidgetState extends State<TaskWidget> with Helpers {
                                       error: false);
                                 }
 
-
-
 // completeTasks = await TaskProvider().read2();
 
                                 setState(() {
@@ -297,18 +305,16 @@ class _TaskWidgetState extends State<TaskWidget> with Helpers {
                                     print('1${UserPreferences().chek}');
                                     widget.task.counter = 1;
                                     widget.task.status = 1;
-                                    task_id = widget.task.id??0;
+                                    task_id = widget.task.id ?? 0;
 
                                     widget.task.chek = UserPreferences().chek;
                                     Provider.of<TaskProvider>(context,
                                             listen: false)
                                         .update(task: widget.task);
                                     cron.schedule(Schedule.parse('*/1 * * * *'),
-                                            () async {
-                                              print('Cron readLocation');
-
-                                          readLocation();
-                                        });
+                                        () async {
+                                      readLocation();
+                                    });
 
 //       status = tasks[i].status;
                                     //    print(" ${UserPreferences().chek}");
@@ -327,12 +333,19 @@ class _TaskWidgetState extends State<TaskWidget> with Helpers {
                                             listen: false)
                                         .update(task: widget.task);
                                     Provider.of<TaskProvider>(context,
-                                        listen: false).read();
-                                    Provider.of<TaskProvider>(context, listen: false).read2();
+                                            listen: false)
+                                        .read();
+                                    Provider.of<TaskProvider>(context,
+                                            listen: false)
+                                        .read2();
 
-                                    Provider.of<TaskProvider>(context, listen: false).completeTasks;
-                                    Provider.of<TaskProvider>(context, listen: false).completeTasks.length;
-
+                                    Provider.of<TaskProvider>(context,
+                                            listen: false)
+                                        .completeTasks;
+                                    Provider.of<TaskProvider>(context,
+                                            listen: false)
+                                        .completeTasks
+                                        .length;
                                   }
                                 });
 //  await Provider.of<TaskProvider>(context, listen: false).readAll();
@@ -375,19 +388,17 @@ class _TaskWidgetState extends State<TaskWidget> with Helpers {
                       ),
                       Padding(
                         padding:
-                            EdgeInsets.symmetric(horizontal: 40, vertical: 20),
+                            EdgeInsets.symmetric(horizontal: 90, vertical: 20),
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Spacer(),
-
-                            Text(
-                              widget.task.time,
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 15,
-                                  color: Colors.blueGrey),
-                            ),
+                            // Text(
+                            //   widget.task.time,
+                            //   style: TextStyle(
+                            //       fontWeight: FontWeight.bold,
+                            //       fontSize: 15,
+                            //       color: Colors.blueGrey),
+                            // ),
 // Checkbox(
 //   value:value ,
 //     //Provider.of<DatabaseProvider>(context).isComplete
