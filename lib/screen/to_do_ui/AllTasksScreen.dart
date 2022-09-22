@@ -31,6 +31,7 @@ bool isLoading = false;
 
   Future refreshTasks() async {
     await Provider.of<TaskProvider>(context, listen: false).readAll();
+    await Provider.of<TaskProvider>(context, listen: false).taskss;
   }
 
   @override

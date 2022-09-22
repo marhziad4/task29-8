@@ -6,6 +6,7 @@ import 'package:todo_emp/controller/TaskApiController.dart';
 import 'package:todo_emp/model/taskModel.dart';
 import 'package:todo_emp/providers/TaskProvider.dart';
 import 'package:todo_emp/widgets/task_widget.dart';
+import 'package:todo_emp/widgets/task_widget_admin.dart';
 
 import '../../providers/task_api_provider.dart';
 
@@ -54,7 +55,7 @@ class _ApiTasksScreenState extends State<ApiTasksScreen> {
                 itemBuilder: (context, index) {
                   taskModel task = provider.readTaskAdmin[index];
 
-                  return TaskWidget(
+                  return TaskWidgetAdmin(
                     provider.readTaskAdmin.toList()[index],
                   );
                 });

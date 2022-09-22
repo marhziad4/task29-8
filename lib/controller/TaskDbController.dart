@@ -129,6 +129,32 @@ class TaskDbController extends DbOperations<taskModel> {
     return countOfUpdatedRows != 0;
   }
 
+  Future<bool> update3(taskModel task) async {
+    // TODO: implement update
+    await _database
+        .rawUpdate('''
+    UPDATE tasks
+    SET chek = ?
+    ''',
+        ['true']);
+    int countOfUpdatedRows = await _database
+        .update('tasks', task.toJson(), where: 'id = ?', whereArgs: [task.id]);
+
+    return countOfUpdatedRows != 0;
+  }
+  Future<bool> update4(taskModel task) async {
+    // TODO: implement update
+    await _database
+        .rawUpdate('''
+    UPDATE tasks
+    SET chek = ?
+    ''',
+        ['false']);
+    int countOfUpdatedRows = await _database
+        .update('tasks', task.toJson(), where: 'id = ?', whereArgs: [task.id]);
+
+    return countOfUpdatedRows != 0;
+  }
 /*
   Future<dynamic> alterTable(String details ) async {
 

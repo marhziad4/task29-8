@@ -16,16 +16,16 @@ import 'package:todo_emp/screen/MapScreen.dart';
 import 'package:todo_emp/screen/to_do_ui/control/EditTaskScreen.dart';
 import 'package:todo_emp/utils/helpers.dart';
 
-class TaskWidget extends StatefulWidget {
+class TaskWidgetAdmin extends StatefulWidget {
   taskModel task;
 
-  TaskWidget(this.task);
+  TaskWidgetAdmin(this.task);
 
   @override
-  State<TaskWidget> createState() => _TaskWidgetState();
+  State<TaskWidgetAdmin> createState() => _TaskWidgetAdminState();
 }
 
-class _TaskWidgetState extends State<TaskWidget> with Helpers {
+class _TaskWidgetAdminState extends State<TaskWidgetAdmin> with Helpers {
   // bool visible = true;
   String chek = 'false';
 
@@ -101,150 +101,7 @@ class _TaskWidgetState extends State<TaskWidget> with Helpers {
                                   fontSize: 25,
                                   color: Colors.black87),
                             ),
-                            Spacer(),
-                            IconButton(
-                              icon: Icon(
-                                Icons.edit,
-                                size: 25.0,
-                              ),
-                              color: Colors.grey, //<-- SEE HERE
 
-                              onPressed: () async {
-                                // int v=await Provider.of<TaskProvider>(context, listen: false)
-                                //   .counterCmp;
-                                // print('counter$v');
-                                // asyncTasks = await TaskProvider().readAsync();
-                                // if (asyncTasks!.isEmpty) {
-                                //   print('null');
-                                // } else {
-                                //   for (int i = 0; i < asyncTasks!.length; i++) {
-                                //     print(
-                                //         'index ${i} id ${asyncTasks![i].id} details ${asyncTasks![i].details}'
-                                //             'image ${asyncTasks![i].image} isDeleted ${asyncTasks![i].isDeleted}  '
-                                //             ' status ${asyncTasks![i].status} '
-                                //             ' counter ${asyncTasks![i].counter} '
-                                //             ' async ${asyncTasks![i].async} '
-                                //             ' title ${asyncTasks![i].title}');
-                                //   }
-                                // }
-                                // print('${DateTime.now().toString()}');
-                             //   ______________
-
-                                List<taskModel>? completeTasks;
-                                completeTasks = await TaskProvider().read();
-                                if (completeTasks!.isEmpty) {
-                                  print('null');
-                                } else {
-                                  for (int i = 0;
-                                      i < completeTasks.length;
-                                      i++) {
-                                    print(jsonEncode(completeTasks));
-                                    print(
-                                        'index ${i} id ${completeTasks[i].id} details ${completeTasks[i].details}'
-                                        'image ${completeTasks[i].image} isDeleted ${completeTasks[i].isDeleted}  '
-                                        ' status ${completeTasks[i].status} '
-                                        ' time ${completeTasks[i].time} '
-                                        ' date ${completeTasks[i].date} '
-                                        ' counter ${completeTasks[i].counter} '
-                                        ' async ${completeTasks[i].async} '
-                                        ' title ${completeTasks[i].title}'
-                                        ' chek ${completeTasks[i].chek}');
-                                  }
-                                }
-
-                                // List<taskModel>? TasksImage;
-                                // TasksImage = await Provider.of<TaskProvider>(
-                                //         context,
-                                //         listen: false)
-                                //     .read();
-                                // print(jsonEncode(TasksImage));
-                            //    print("____________________________");
-                                // print('chek : ${UserPreferences().chek}}');
-                                List<taskModel>? Tasks;
-                                Tasks = await Provider.of<TaskProvider>(context,
-                                        listen: false)
-                                    .read();
-                                // asyncTasks =Provider.of<TaskProvider>(context, listen: false).asyncTasks;
-                               /*
-                                if (Tasks!.isEmpty) {
-                                  print('null');
-                                } else {
-                                  for (int i = 0; i < Tasks.length; i++) {
-                                    print(
-                                        'index ${i} id ${Tasks[i].id} details ${Tasks[i].details}'
-                                        'image ${Tasks[i].image} isDeleted ${Tasks[i].isDeleted}  '
-                                        ' status ${Tasks[i].status} '
-                                        ' counter ${Tasks[i].counter} '
-                                        ' async ${Tasks[i].async} '
-                                        ' chek ${Tasks[i].chek} '
-                                        ' id_pk ${Tasks[i].id_pk} '
-                                        //   ' img ${Tasks[i].image} '
-                                        ' title ${Tasks[i].title}');
-                                  }
-                                }
-*/
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            EditTaskScreen(widget.task)));
-                              },
-                            ),
-                            SizedBox(
-                              width: 10,
-                            ),
-                            IconButton(
-                                icon: Icon(
-                                  Icons.delete,
-                                  size: 25.0,
-                                ),
-                                color: Colors.grey, //<-- SEE HERE
-
-                                onPressed: () async {
-                                  // AlertDialog(
-                                  //   content: new Text("هل تريد حذف المهمة؟ "),
-                                  //   actions: <Widget>[
-                                  //     new ElevatedButton(
-                                  //       child: new Text("موافق"),
-                                  //       onPressed: () async {
-                                  //         await Provider.of<TaskProvider>(
-                                  //             context, listen: false)
-                                  //             .delete(task.id);
-                                  //       },
-                                  //     ),
-                                  //     new ElevatedButton(
-                                  //       child: new Text("الغاء"),
-                                  //       onPressed: ()  {
-                                  //         Navigator.pop(context);
-                                  //       },
-                                  //     ),
-                                  //   ],
-                                  // );
-                                  if (widget.task.counter == 1) {
-                                    showSnackBar(
-                                        context: context,
-                                        content:
-                                            'الرجاء انتهاء المهمة قبل الحذف',
-                                        error: true);
-                                  } else {
-                                    await Provider.of<TaskProvider>(context,
-                                            listen: false)
-                                        .delete(widget.task.id ?? 0);
-                                    widget.task.isDeleted = 1;
-                                    // TaskProvider().update(task: widget.task);
-                                    await Provider.of<TaskProvider>(context,
-                                            listen: false)
-                                        .update(task: widget.task);
-                                    await Provider.of<TaskProvider>(context,
-                                            listen: false)
-                                        .readAll();
-
-                                    showSnackBar(
-                                        context: context,
-                                        content: 'تم الحذف',
-                                        error: false);
-                                  }
-                                }),
                           ],
                         ),
                       ),

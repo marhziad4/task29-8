@@ -21,41 +21,53 @@ class UserApiController with Helpers {
     print(jsonResponse);
     //   print('${jsonResponse['access_token']}');
 
+
+
     if (response.statusCode == 200) {
-      loginUser users = loginUser.fromJson(jsonDecode(response.body));
-      var user = await UserPreferences().save(users);
-      var token = await UserPreferences().setToken(jsonResponse['token']);
-      await UserPreferences().setname(jsonResponse['name']);
-      await UserPreferences().setimage(jsonResponse['image']);
-      Cron cron = Cron();
-      cron.schedule(Schedule.parse('* */23 * * *'), () async {
-        //  print('Cron');
-        print(UserPreferences().token);
+      // if(jsonResponse['token']== null){
+      //   context.showFlashDialog(
+      //     persistent: true,
+      //     title: Text(''),
+      //     content: Text('${jsonResponse['message']}'),
+      //   );
+      // }else{
+        loginUser users = loginUser.fromJson(jsonDecode(response.body));
+        var user = await UserPreferences().save(users);
+        var token = await UserPreferences().setToken(jsonResponse['token']);
+        await UserPreferences().setname(jsonResponse['name']);
+        await UserPreferences().setimage(jsonResponse['image']);
+        Cron cron = Cron();
+        cron.schedule(Schedule.parse('* */23 * * *'), () async {
+          //  print('Cron');
+          print(UserPreferences().token);
 
-        var url = Uri.parse(ApiSettings.refresh);
+          var url = Uri.parse(ApiSettings.refresh);
 
-        var response1 = await http.post(url, headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-          'Authorization': 'Bearer ' + UserPreferences().token,
+          var response1 = await http.post(url, headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': 'Bearer ' + UserPreferences().token,
+          });
+          var jsonResponse1 = jsonDecode(response1.body);
+          print(jsonResponse1);
+          await UserPreferences().setToken(jsonResponse1['access_token']);
+          print(UserPreferences().token);
         });
-        var jsonResponse1 = jsonDecode(response1.body);
-        print(jsonResponse1);
-        await UserPreferences().setToken(jsonResponse1['access_token']);
-        print(UserPreferences().token);
-      });
 
-      print('token:${UserPreferences().token}');
-      print('user:${UserPreferences().isLoggedIn}');
+        print('token:${UserPreferences().token}');
+        print('user:${UserPreferences().isLoggedIn}');
 
-      return true;
+        return true;
+      // }
+
     } else if (response.statusCode == 401) {
       context.showFlashDialog(
         persistent: true,
         title: Text('خطا في ادخال بيانات المستخدم '),
         content: Text(''),
       );
-    } else {
+    }
+    else {
       context.showFlashDialog(
         persistent: true,
         title: Text(''),

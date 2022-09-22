@@ -143,6 +143,30 @@ class TaskProvider extends ChangeNotifier {
     return updated;
   }
 
+  Future<bool> update3({required taskModel? task}) async {
+    bool updated = await _taskDbController.update3(task!);
+
+    int index = taskss.indexWhere((element) => element.id == task.id);
+    if (index != -1) {
+      taskss[index] = task;
+
+      notifyListeners();
+      return updated;
+    }
+    return updated;
+  }
+  Future<bool> update4({required taskModel? task}) async {
+    bool updated = await _taskDbController.update4(task!);
+
+    int index = taskss.indexWhere((element) => element.id == task.id);
+    if (index != -1) {
+      taskss[index] = task;
+
+      notifyListeners();
+      return updated;
+    }
+    return updated;
+  }
   Future<bool> update1({required taskModel task}) async {
     bool updated = await _taskDbController.update1(task);
     if (updated) {

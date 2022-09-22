@@ -35,6 +35,7 @@ class MapScreen extends StatefulWidget {
 class _MapScreenState extends State<MapScreen> with Helpers {
   final Set<Polyline> _polyline = {};
   List<Marker> _marker = [];
+  List<Marker> _list = [];
   late GoogleMapController googleMapController;
   late CameraPosition _cameraPosition;
   late GoogleMap googleMap;
@@ -80,7 +81,7 @@ class _MapScreenState extends State<MapScreen> with Helpers {
         CameraPosition(target: LatLng(31.520088, 34.4347784), zoom: 11);
     details = TextEditingController(text: widget.task.details);
     _getPolyline();
-    // _marker.addAll(_list);
+   _marker.addAll(_list);
     // _marker.add(
     //   Marker(markerId: MarkerId('place_name'),
     //     position: LatLng(37.4219999, -122.0862462),

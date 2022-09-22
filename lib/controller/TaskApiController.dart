@@ -67,7 +67,11 @@ class TaskApiController with ApiMixin, HelpersApi {
           print(v['id_pk']);
 
 
-
+          context.showFlashDialog(
+            persistent: true,
+            title: Text(''),
+            content: Text('تم جلب المهام'),
+          );
         });
         return tasksList;
         // BaseGenericArrayResponse<Tasks> genericArrayResponse = BaseGenericArrayResponse.fromJson(jsonResponseBody);

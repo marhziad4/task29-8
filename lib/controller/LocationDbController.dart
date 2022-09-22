@@ -57,7 +57,7 @@ class LocationDbController implements DbOperations<Location> {
   Future<List<Location>> readByTask(int taskId) async {
     //SELECT * FROM categories;
     List<Map<String, dynamic>> rows = await _database.query('location',
-        where: 'task_id =?',whereArgs: [taskId]);
+        where: 'task_id = ?',whereArgs: [taskId]);
     if (rows.isNotEmpty) {
       return rows.map((rowMap) => Location.fromMap(rowMap)).toList();
     }

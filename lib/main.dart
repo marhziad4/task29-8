@@ -26,9 +26,9 @@ import 'model/taskModel.dart';
 String? longitude;
 String? latitude;
 List<Location>? locations;
-List<Location>? locationsById;
 bool status = true;
 List<Location>? lastLocations;
+List<Location>? locationsById;
 List<Location>? totalDistance;
 List<double>? listDistance;
 // List<taskModel>? tasks;
@@ -70,13 +70,12 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await DbProvider().initDatabase();
   await UserPreferences().initPreferences();
-   final position = await CurrentLocation.fetch();
-  latitude = (position.latitude).toString();
-  longitude = (position.longitude).toString();
+  await CurrentLocation.fetch();
   var status = await Permission.storage.status;
   if (!status.isGranted) {
     await Permission.storage.request();
   }
+
   runApp(
     MultiProvider(
       providers: [
@@ -99,7 +98,9 @@ void main() async {
 
 void readLocation() async {
 print('readLocation');
-
+final position = await CurrentLocation.fetch();
+latitude = (position.latitude).toString();
+longitude = (position.longitude).toString();
    // print('every one minutes latitude ${position.latitude}');
    // print('every one minutes longitude ${position.longitude}');
   lastLocations = await LocationProvider().lastRow();
@@ -226,6 +227,7 @@ class CurrentLocation {
   /// When the location services are not enabled or permissions
   /// are denied the `Future` will return an error.
   static Future<Position> fetch() async {
+
     bool serviceEnabled;
     LocationPermission permission;
 

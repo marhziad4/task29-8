@@ -110,4 +110,12 @@ class taskModel implements BackupModel {
 
      return map;
    }
+   Map<String, dynamic> toMap3() {
+     Map<String, dynamic> map = Map<String, dynamic>();
+     map['id'] = this.id;
+     map['chek'] = this.chek;
+     // map['image'] = this.image;
+
+     return map;
+   }
 }
