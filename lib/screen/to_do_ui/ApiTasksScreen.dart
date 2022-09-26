@@ -26,7 +26,6 @@ class _ApiTasksScreenState extends State<ApiTasksScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    //TaskApiController().getTasks();
     refreshTasks();
   }
   Future refreshTasks()async{
@@ -37,6 +36,7 @@ class _ApiTasksScreenState extends State<ApiTasksScreen> {
   @override
   Widget build(BuildContext context) {
      Provider.of<TaskProvider>(context, listen: false).readTaskAd();
+     TaskApiController().getTasks(context: context);
 
     //Provider.of<TaskProvider>(context, listen: false).readAll();
     // TODO: implement build

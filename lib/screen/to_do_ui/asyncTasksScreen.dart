@@ -4,6 +4,7 @@ import 'package:todo_emp/main.dart';
 import 'package:todo_emp/providers/TaskProvider.dart';
 import 'package:todo_emp/utils/helpers.dart';
 import 'package:todo_emp/widgets/task_widget.dart';
+import 'package:todo_emp/widgets/task_widget_admin.dart';
 
 class AsyncTasksScreen extends StatefulWidget {
   @override
@@ -43,7 +44,7 @@ class _AsyncTasksScreenState extends State<AsyncTasksScreen>  with Helpers {
             return ListView.builder(
                 itemCount: provider.doneAsync.length,
                 itemBuilder: (context, index) {
-                  return TaskWidget(
+                  return TaskWidgetAdmin(
                     provider.doneAsync.toList()[index],
                   );
                 });

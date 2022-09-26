@@ -50,9 +50,9 @@ class ImageDbController extends DbOperations<taskImage> {
   }
 
   @override
-  Future<bool> delete(int id) async {
+  Future<bool> delete(int task_id) async {
     int countOfDeletedRows =
-        await _database.delete('images', where: 'id = ?', whereArgs: [id]);
+        await _database.delete('images', where: 'task_id = ?', whereArgs: [task_id]);
     return countOfDeletedRows > 0;
   }
 

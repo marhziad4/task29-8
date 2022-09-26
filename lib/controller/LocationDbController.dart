@@ -33,11 +33,11 @@ class LocationDbController implements DbOperations<Location> {
   }
 
   @override
-  Future<bool> delete(int id) async {
+  Future<bool> delete(int task_id) async {
     //DELETE FROM categories;
     //DELETE FROM categories WHERE id = 1;
     int countOfDeletedRows =
-    await _database.delete('location', where: 'id = ?', whereArgs: [id]);
+    await _database.delete('location', where: 'task_id = ?', whereArgs: [task_id]);
     return countOfDeletedRows > 0;
   }
 

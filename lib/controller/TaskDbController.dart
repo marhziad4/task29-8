@@ -27,6 +27,8 @@ class TaskDbController extends DbOperations<taskModel> {
   Future<bool> delete(int id) async {
     int countOfDeletedRows =
         await _database.delete('tasks', where: 'id = ?', whereArgs: [id]);
+        await _database.delete('location', where: 'id = ?', whereArgs: [id]);
+        await _database.delete('images', where: 'id = ?', whereArgs: [id]);
     return countOfDeletedRows > 0;
   }
 

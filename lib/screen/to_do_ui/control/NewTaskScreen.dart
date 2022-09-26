@@ -31,8 +31,8 @@ class _NewTaskScreenState extends State<NewTaskScreen> with Helpers {
     descriptionTextController = TextEditingController();
     DateTime now = DateTime.now();
 //text:DateFormat('kk:mm:ss').format(now),text:DateFormat('EEE d MMM').format(now)
-    dateTextController = TextEditingController();
-    timeTextController = TextEditingController();
+    dateTextController = TextEditingController(text:DateFormat.yMMMd().format(now));
+    timeTextController = TextEditingController(text:DateFormat('a kk:mm').format(now));
     TaskProvider().read();
 
   }
@@ -106,6 +106,7 @@ class _NewTaskScreenState extends State<NewTaskScreen> with Helpers {
                   defaultTextFormField(
                     controller: timeTextController,
                     type: TextInputType.datetime,
+                    //initialValue: '14:05',
                     onTap: () {
                       showTimePicker(
                         context: context,
@@ -118,7 +119,7 @@ class _NewTaskScreenState extends State<NewTaskScreen> with Helpers {
                     },
                     validate: (String value) {
                       if (value.isEmpty) {
-                        return 'الرجاس ادخال الوقت';
+                        return 'الرجاء ادخال الوقت';
                       }
                       return null;
                     },

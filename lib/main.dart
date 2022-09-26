@@ -1,11 +1,13 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:todo_emp/data/DbProvider.dart';
 import 'package:todo_emp/model/location.dart';
+import 'package:todo_emp/model/taskImage.dart';
 import 'package:todo_emp/model/taskModel.dart';
 import 'package:todo_emp/preferences/user_pref.dart';
 import 'package:todo_emp/providers/TaskProvider.dart';
@@ -15,7 +17,6 @@ import 'package:todo_emp/providers/location_provider.dart';
 import 'package:todo_emp/providers/task_api_provider.dart';
 import 'package:todo_emp/screen/CalendarScreen.dart';
 import 'package:todo_emp/screen/LoginScreen.dart';
-import 'package:todo_emp/screen/ProfileScreen.dart';
 import 'package:todo_emp/screen/SplachScreen.dart';
 import 'package:todo_emp/screen/to_do_ui/AllTasksScreen.dart';
 import 'package:todo_emp/screen/to_do_ui/DetailsApiTasksScreen.dart';
@@ -29,13 +30,16 @@ List<Location>? locations;
 bool status = true;
 List<Location>? lastLocations;
 List<Location>? locationsById;
+List<taskImage>? ImagesById;
 List<Location>? totalDistance;
 List<double>? listDistance;
 // List<taskModel>? tasks;
 // List<taskModel>? completeTasks ;
 // List<taskModel>? asyncTasks;
 List<Location>? Location1;
-late int task_id;
+late int taskId;
+int? image_Id;
+
 // taskModel get taskss {
 //   taskModel task = taskModel();
 //   task.title = Provider.of<TaskProvider>(context).details.text;
@@ -72,9 +76,16 @@ void main() async {
   await UserPreferences().initPreferences();
   await CurrentLocation.fetch();
   var status = await Permission.storage.status;
+  final androidVersion = await DeviceInfoPlugin().androidInfo;
   if (!status.isGranted) {
-    await Permission.storage.request();
+    if ((androidVersion.version.sdkInt ?? 0) >= 30) {
+       await  Permission.manageExternalStorage.request();
+    } else {
+       await Permission.storage.request();
+
+    }
   }
+
 
   runApp(
     MultiProvider(
@@ -97,12 +108,12 @@ void main() async {
 }
 
 void readLocation() async {
-print('readLocation');
-final position = await CurrentLocation.fetch();
-latitude = (position.latitude).toString();
-longitude = (position.longitude).toString();
-   // print('every one minutes latitude ${position.latitude}');
-   // print('every one minutes longitude ${position.longitude}');
+  print('readLocation');
+  final position = await CurrentLocation.fetch();
+  latitude = (position.latitude).toString();
+  longitude = (position.longitude).toString();
+  // print('every one minutes latitude ${position.latitude}');
+  // print('every one minutes longitude ${position.longitude}');
   lastLocations = await LocationProvider().lastRow();
   // tasks = await TaskProvider().read();
 
@@ -115,7 +126,7 @@ longitude = (position.longitude).toString();
 
     if (Tasks[i].counter == 1) {
       if (lastLocations!.length > 0) {
-        print('every one minutes2');
+        print('every one minutes2${Tasks[i].counter}');
 
         // print(
         //     'latitude >> ${lastLocations![0].latitude} == ${latitude.toString()}');
@@ -131,8 +142,9 @@ longitude = (position.longitude).toString();
         listDistance?.add(distanceInMeters);
 
         if ((lastLocations![0].latitude == latitude.toString() &&
-                lastLocations![0].longitude == longitude.toString()) ||
-            distanceInMeters <= 10) {
+                lastLocations![0].longitude == longitude.toString())
+            // || distanceInMeters <= 3
+            ) {
           lastLocations![0].updatetime = DateTime.now().toString();
           await LocationProvider().update(location: lastLocations![0]);
           print('nothing todo');
@@ -154,7 +166,7 @@ longitude = (position.longitude).toString();
   locations = await LocationProvider().read();
   for (int i = 0; i < locations!.length; i++) {
     print(
-        'index ${i} location ${locations![i].latitude} longitude ${locations![i].longitude}  time ${locations![i].time}  updatetime ${locations![i].updatetime}task_id ${locations![i].task_id}');
+        'index ${i} location ${locations![i].latitude} longitude ${locations![i].longitude}  time ${locations![i].time}  updatetime ${locations![i].updatetime}task_id ${locations![i].task_id}image_id ${locations![i].image_id}');
   }
 }
 
@@ -164,8 +176,9 @@ Location get locationUser {
   location.longitude = longitude.toString();
   location.latitude = latitude.toString();
   location.time;
-  location.task_id = task_id;
+  location.task_id = taskId;
   location.users_id = UserPreferences().IdUser;
+  location.image_id = image_Id;
 
   return location;
 }
@@ -213,7 +226,6 @@ class MyMaterialApp extends StatelessWidget {
           // '/Map_screen': (context) => MapScreen(task),
           '/details_apiTasks_screen': (context) => DetailsApiTasksScreen(),
           '/TodoMainPage': (context) => TodoMainPage(),
-          '/profile_screen': (context) => ProfileScreen(),
           '/NewTaskScreen': (context) => NewTaskScreen(),
           '/CalenderScreen': (context) => CalenderScreen(),
           '/allTaskScreen': (context) => AllTasksScreen(),
@@ -227,19 +239,18 @@ class CurrentLocation {
   /// When the location services are not enabled or permissions
   /// are denied the `Future` will return an error.
   static Future<Position> fetch() async {
-
     bool serviceEnabled;
     LocationPermission permission;
 
     // Test if location services are enabled.
-    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    /*serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
       //false
       // Location services are not enabled don't continue
       // accessing the position and request users of the
       // App to enable the location services.
       return Future.error('Location services are disabled.');
-    }
+    }*/
 
     permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
@@ -254,11 +265,11 @@ class CurrentLocation {
       }
     }
 
-    if (permission == LocationPermission.deniedForever) {
+    /*if (permission == LocationPermission.deniedForever) {
       // Permissions are denied forever, handle appropriately.
       return Future.error(
           'Location permissions are permanently denied, we cannot request permissions.');
-    }
+    }*/
 
     // When we reach here, permissions are granted and we can
     // continue accessing the position of the device.

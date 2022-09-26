@@ -106,7 +106,7 @@ class _TaskWidgetAdminState extends State<TaskWidgetAdmin> with Helpers {
                         ),
                       ),
                       Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 20),
+                        padding: EdgeInsets.symmetric(horizontal: 40),
                         child: Row(
                           children: [
                             Text(
@@ -164,7 +164,7 @@ class _TaskWidgetAdminState extends State<TaskWidgetAdmin> with Helpers {
                                         .update(task: widget.task);
                                     widget.task.counter = 1;
                                     widget.task.status = 1;
-                                    task_id = widget.task.id ?? 0;
+                                    taskId = widget.task.id ?? 0;
                                     widget.task.chek = UserPreferences().chek;
 
                                     Provider.of<TaskProvider>(context,
@@ -248,13 +248,13 @@ class _TaskWidgetAdminState extends State<TaskWidgetAdmin> with Helpers {
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            // Text(
-                            //   widget.task.time,
-                            //   style: TextStyle(
-                            //       fontWeight: FontWeight.bold,
-                            //       fontSize: 15,
-                            //       color: Colors.blueGrey),
-                            // ),
+                            Text(
+                              widget.task.date.replaceRange(0,11, ''),
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 15,
+                                  color: Colors.blueGrey),
+                            ),
 // Checkbox(
 //   value:value ,
 //     //Provider.of<DatabaseProvider>(context).isComplete
@@ -269,7 +269,7 @@ class _TaskWidgetAdminState extends State<TaskWidgetAdmin> with Helpers {
                             ),
 
                             Text(
-                              widget.task.date,
+                              widget.task.date.replaceRange(11,19, ''),
                               style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 15,

@@ -1,8 +1,10 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:todo_emp/controller/ImageDbController.dart';
 import 'package:todo_emp/controller/TaskDbController.dart';
 import 'package:todo_emp/model/taskModel.dart';
+import 'package:todo_emp/providers/location_provider.dart';
 
 import '../main.dart';
 
@@ -155,6 +157,7 @@ class TaskProvider extends ChangeNotifier {
     }
     return updated;
   }
+
   Future<bool> update4({required taskModel? task}) async {
     bool updated = await _taskDbController.update4(task!);
 
@@ -167,6 +170,7 @@ class TaskProvider extends ChangeNotifier {
     }
     return updated;
   }
+
   Future<bool> update1({required taskModel task}) async {
     bool updated = await _taskDbController.update1(task);
     if (updated) {
@@ -201,9 +205,16 @@ class TaskProvider extends ChangeNotifier {
     return updated;
   }
 
-  Future<bool> delete(int id) async {
-    bool deleted = await TaskDbController().delete(id);
+  Future<bool> delete2(int task_id) async {
 
+    return true;
+
+  }
+
+  Future<bool> delete(int id,int task_id) async {
+    bool deleted = await TaskDbController().delete(id);
+    await ImageDbController().delete(task_id);
+    await LocationProvider().delete(task_id);
     int index = tasks.indexWhere((element) => element.id == id);
     if (index != -1) {
       //completeTasks.removeAt(index);

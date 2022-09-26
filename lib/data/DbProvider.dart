@@ -51,11 +51,7 @@ class DbProvider {
             'image TEXT,'
             'task_id INTEGER'
             ')');
-        await db.execute('CREATE TABLE IF NOT EXISTS users ('
-            'id INTEGER PRIMARY KEY AUTOINCREMENT,'
-            'email TEXT,'
-            'password TEXT'
-            ')');
+
         await db.execute('CREATE TABLE IF NOT EXISTS location ('
             'id INTEGER PRIMARY KEY AUTOINCREMENT,'
             'latitude TEXT,'
@@ -63,7 +59,8 @@ class DbProvider {
             'time TEXT,'
             'updatetime TEXT,'
             'users_id TEXT,'
-            'task_id INTEGER'
+            'task_id INTEGER,'
+            'image_id INTEGER'
             ')');
 
       },

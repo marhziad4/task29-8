@@ -2,11 +2,11 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:todo_emp/controller/ImageDbController.dart';
+import 'package:todo_emp/main.dart';
 import 'package:todo_emp/model/taskImage.dart';
 
 class ImagesProvider extends ChangeNotifier {
   ImageDbController _imageDbController = ImageDbController();
-
   List<taskImage> images = [];
   List<taskImage> images1 = [];
   List<taskImage> imageId = [];
@@ -21,13 +21,16 @@ class ImagesProvider extends ChangeNotifier {
 
     if (imageId.length >= 3) {
       return false;
+
     } else {
-      int id = await _imageDbController.create(image);
+      image_Id= await _imageDbController.create(image);
+
+
     // //  images1= await _imageDbController.readId(id);
     //
     //
     //
-       print("id create image$id");
+       print("id create image$image_Id");
     //   images.add(image);
     //   imageId.add(image);
     //  //  print(jsonEncode(images1));
@@ -44,7 +47,9 @@ class ImagesProvider extends ChangeNotifier {
   Future<List<taskImage>?> read() async {
     // completeTasks = await _taskDbController.read2();
     images = await _imageDbController.read();
-
+    // for(int i=0 ;i<=images.length;i++){
+    //   images[i]=
+    // }
     // print(jsonEncode(completeTasks));
     // print(jsonEncode(taskss));
     notifyListeners();

@@ -229,7 +229,7 @@ class _TaskWidgetState extends State<TaskWidget> with Helpers {
                                   } else {
                                     await Provider.of<TaskProvider>(context,
                                             listen: false)
-                                        .delete(widget.task.id ?? 0);
+                                        .delete(widget.task.id??0, taskId);
                                     widget.task.isDeleted = 1;
                                     // TaskProvider().update(task: widget.task);
                                     await Provider.of<TaskProvider>(context,
@@ -270,7 +270,12 @@ class _TaskWidgetState extends State<TaskWidget> with Helpers {
                                 //   print('jsonEncode${ jsonEncode(Location1[j])}');
                                 // }
                                 // print('jsonEncode${ jsonEncode(Location1)}');
-
+                                ///_______________position_________________
+                                final position = await CurrentLocation.fetch();
+                                latitude = (position.latitude).toString();
+                                longitude = (position.longitude).toString();
+                                await LocationProvider().addLocation(location: locationUser);
+                                ///_______________________________________
                                 print(widget.task.counter);
                                 print(widget.task.id);
                                 print(widget.task.status);
@@ -302,12 +307,13 @@ class _TaskWidgetState extends State<TaskWidget> with Helpers {
                                     chek = 'true';
                                     UserPreferences().setChek(chek);
                                     print('1${UserPreferences().chek}');
+
                                     Provider.of<TaskProvider>(context,
                                         listen: false)
                                         .update(task: widget.task);
                                     widget.task.counter = 1;
                                     widget.task.status = 1;
-                                    task_id = widget.task.id ?? 0;
+                                    taskId = widget.task.id ?? 0;
                                     widget.task.chek = UserPreferences().chek;
 
                                     Provider.of<TaskProvider>(context,
@@ -391,13 +397,13 @@ class _TaskWidgetState extends State<TaskWidget> with Helpers {
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            // Text(
-                            //   widget.task.time,
-                            //   style: TextStyle(
-                            //       fontWeight: FontWeight.bold,
-                            //       fontSize: 15,
-                            //       color: Colors.blueGrey),
-                            // ),
+                            Text(
+                              widget.task.time,
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 15,
+                                  color: Colors.blueGrey),
+                            ),
 // Checkbox(
 //   value:value ,
 //     //Provider.of<DatabaseProvider>(context).isComplete

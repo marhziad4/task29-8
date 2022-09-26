@@ -1,8 +1,10 @@
 import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
-
+import 'dart:async';
+import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:gallery_saver/gallery_saver.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -64,12 +66,18 @@ class _MapScreenState extends State<MapScreen> with Helpers {
   List<LatLng> polylineCoordinates = [];
   PolylinePoints polylinePoints = PolylinePoints();
   String googleAPiKey = "AIzaSyBFkWp36uH86gss_Wt-32YNSKjXk-UFBqM";
-  late int taskId;
   late double panelHeighOpen;
 
   late double panelHeighClosed;
 
   /////polyLine///////
+  Future<Uint8List> getImages(String path, int width) async{
+    ByteData data = await rootBundle.load(path);
+    ui.Codec codec = await ui.instantiateImageCodec(data.buffer.asUint8List(), targetHeight: width);
+    ui.FrameInfo fi = await codec.getNextFrame();
+    return(await fi.image.toByteData(format: ui.ImageByteFormat.png))!.buffer.asUint8List();
+
+  }
   @override
   void initState() {
     // TODO: implement initState
@@ -439,8 +447,9 @@ class _MapScreenState extends State<MapScreen> with Helpers {
   void _onMapCreated(GoogleMapController controller) async {
     locationsById = await Provider.of<LocationProvider>(context, listen: false)
         .locationsByIdTask;
+    ImagesById = await Provider.of<ImagesProvider>(context, listen: false)
+        .imageId;
     print(jsonEncode(locationsById));
-    // locations = await LocationProvider().read();
 
     for (int i = 0; i < locationsById!.length; i++) {
       if (locationsById![i].task_id == widget.task.id) {
@@ -469,6 +478,7 @@ class _MapScreenState extends State<MapScreen> with Helpers {
                 //   Navigator.pushReplacementNamed(context, '/TodoMainPage');
                 //
                 // }),
+                //   icon:BitmapDescriptor.defaultMarker,
 
                 infoWindow: InfoWindow(
                     // title:'${distanceInMeters}',
@@ -482,6 +492,7 @@ class _MapScreenState extends State<MapScreen> with Helpers {
           }
         });
       }
+
     }
   }
 
@@ -497,7 +508,7 @@ class _MapScreenState extends State<MapScreen> with Helpers {
         source: ImageSource.camera, imageQuality: 25);
     FileImage = File(photo!.path);
     print(FileImage);
-    new File('/storage/emulated/0/Pictures/pla_todo1/${photo.name}')
+    new File('/storage/emulated/0/Pictures/pla_todo/${photo.name}')
         .create(recursive: true);
     print('file');
     FileImage2 = await FileImage!
@@ -513,6 +524,12 @@ class _MapScreenState extends State<MapScreen> with Helpers {
 
     bool saved = await Provider.of<ImagesProvider>(context, listen: false)
         .create(image: images);
+    ///_______________position_________________
+    final position = await CurrentLocation.fetch();
+    latitude = (position.latitude).toString();
+    longitude = (position.longitude).toString();
+    await LocationProvider().addLocation(location: locationUser);
+    ///_______________________________________
 
     if (saved) {
       await Provider.of<ImagesProvider>(context, listen: false).readId(taskId);

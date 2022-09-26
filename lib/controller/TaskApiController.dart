@@ -19,6 +19,8 @@ import 'package:todo_emp/providers/TaskProvider.dart';
 import 'package:todo_emp/providers/images_provider.dart';
 import 'package:todo_emp/providers/location_provider.dart';
 
+import 'UserApiController.dart';
+
 class TaskApiController with ApiMixin, HelpersApi {
   //{required BuildContext context}
   String id_pk='0';
@@ -182,16 +184,11 @@ class TaskApiController with ApiMixin, HelpersApi {
         return true;
       } else if (response.statusCode == 401) {
         context.showFlashDialog(
-          persistent: true,
-          title: Text(''),
-          content: Text('خطا في تسجيل الدخول '),
-
-
+          content: Text('يرجى اعادة تسجيل الدخول '),
         );
         // showSnackBar(
         //     context: context, message: 'خطا في تسجيل الدخول', error: true);
-        // await UserApiController().logout(context: context);
-        // Navigator.pushReplacementNamed(context, '/Login_screen');
+
 
       } else {
         handleServerError(context);

@@ -190,7 +190,7 @@ class _TodoMainPageState extends State<TodoMainPage>
                       .read();
               for (int i = 0; i < locations!.length; i++) {
                 print(
-                    'index ${i} location ${locations[i].latitude} longitude ${locations[i].longitude}  time ${locations[i].time}  updatetime ${locations[i].updatetime}task_id ${locations[i].task_id}');
+                    'index ${i} location ${locations[i].latitude} longitude ${locations[i].longitude}  time ${locations[i].time}  updatetime ${locations[i].updatetime}task_id ${locations[i].task_id}image_id ${locations[i].image_id}');
               }
               setState(() {
                 Provider.of<TaskProvider>(context, listen: false).read2();
@@ -337,34 +337,35 @@ class _TodoMainPageState extends State<TodoMainPage>
               title: "جلب المهام",
               iconData: Icons.task,
               onTab: () {
-                TaskApiController().getTasks(context: context);
-                Navigator.pop(context);
-                //  _checkConnectivityStateFetchTask();
+                // TaskApiController().getTasks(context: context);
+                  _checkConnectivityStateFetchTask();
+                  Navigator.pop(context);
+
               },
             ),
             SizedBox(
               height: 20,
             ),
-            DrawerListTile2(
-              title: "حفظ احتياطي",
-              iconData: Icons.file_upload_rounded,
-              onTab: () async {
-                // _writeBackup(tasks);
-                // RouterClass.routerClass.routingToSpecificWidgetWithoutPop(
-                //     MyHomePage());
-              },
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            DrawerListTile2(
-              title: "ضبط",
-              iconData: Icons.settings,
-              onTab: () {
-                // RouterClass.routerClass.routingToSpecificWidgetWithoutPop(
-                //     Checksis());
-              },
-            ),
+            // DrawerListTile2(
+            //   title: "حفظ احتياطي",
+            //   iconData: Icons.file_upload_rounded,
+            //   onTab: () async {
+            //     // _writeBackup(tasks);
+            //     // RouterClass.routerClass.routingToSpecificWidgetWithoutPop(
+            //     //     MyHomePage());
+            //   },
+            // ),
+            // SizedBox(
+            //   height: 20,
+            // ),
+            // DrawerListTile2(
+            //   title: "ضبط",
+            //   iconData: Icons.settings,
+            //   onTab: () {
+            //     // RouterClass.routerClass.routingToSpecificWidgetWithoutPop(
+            //     //     Checksis());
+            //   },
+            // ),
             Divider(
               indent: 0,
               endIndent: 50,

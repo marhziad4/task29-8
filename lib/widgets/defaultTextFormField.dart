@@ -6,6 +6,7 @@ Widget defaultTextFormField({
   String Function(String?)? onSubmit,
   Function(String)? onChange,
   Function()? onTap,
+  String? initialValue,
   required Function validate,
    String? label,
   required IconData prefix,
@@ -16,6 +17,7 @@ Widget defaultTextFormField({
 }) =>
     TextFormField(
       controller: controller,
+      initialValue: initialValue, // <-- SEE HERE
       keyboardType: type,
       obscureText: isPassword,
       onFieldSubmitted: onSubmit,

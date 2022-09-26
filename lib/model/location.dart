@@ -2,6 +2,7 @@ class Location {
    int? id;
   String ? users_id;
   int? task_id;
+  int? image_id;
   String? latitude='0';
   String? longitude='0';
   String? time = DateTime.now().toString();
@@ -12,6 +13,7 @@ class Location {
     id = map['id'];
     users_id = map['users_id'];
     task_id = map['task_id'];
+    image_id = map['image_id'];
     latitude = map['latitude'];
     longitude = map['longitude'];
     time = map['time'];
@@ -23,6 +25,7 @@ class Location {
     data['id'] = this.id;
     data['users_id'] = this.users_id;
     data['task_id'] = this.task_id;
+    data['image_id'] = this.image_id;
     data['latitude'] = this.latitude;
     data['longitude'] = this.longitude;
     data['time'] = this.time;
@@ -45,6 +48,7 @@ class Location {
     data['id'] = this.id;
     data['users_id'] = this.users_id;
     data['task_id'] = this.task_id;
+    data['image_id'] = this.image_id;
     data['latitude'] = this.latitude;
     data['longitude'] = this.longitude;
     data['time'] = this.time;
