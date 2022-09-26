@@ -21,9 +21,7 @@ class taskModel implements BackupModel {
   late String end_date;
   late String create_date;
    String ?details;
-
-  String? image;
-  int status = 0;
+   int status = 0;
   int? isDeleted = 0;
 
   // bool async = false;
@@ -48,7 +46,6 @@ class taskModel implements BackupModel {
     this.time = rowMap['time'];
     this.date = rowMap['date'];
     this.details = rowMap['details'];
-    this.image = rowMap['image'];
     this.counter = rowMap['counter'];
     this.async = rowMap['async'];
     this.status = rowMap['status'];
@@ -80,7 +77,6 @@ class taskModel implements BackupModel {
     map['time'] = this.time;
     map['date'] = this.date;
     map['details'] = this.details;
-    map['image'] = this.image;
     map['status'] = this.status;
     map['counter'] = this.counter;
     map['async'] = this.async;

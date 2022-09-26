@@ -35,7 +35,6 @@ class DbProvider {
             'time TEXT,'
             'date TEXT,'
             'isDeleted INTEGER,'
-            'image TEXT,'
             'details TEXT,'
             'status INTEGER,'
             'counter INTEGER,'

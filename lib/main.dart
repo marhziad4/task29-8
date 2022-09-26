@@ -38,7 +38,6 @@ List<double>? listDistance;
 // List<taskModel>? asyncTasks;
 List<Location>? Location1;
 late int taskId;
-int? image_Id;
 
 // taskModel get taskss {
 //   taskModel task = taskModel();
@@ -70,6 +69,8 @@ int? image_Id;
 //   debugPrint('position.latitude${position.latitude}');
 // }
 // late var position ;
+int? image_Id;
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await DbProvider().initDatabase();
@@ -178,7 +179,7 @@ Location get locationUser {
   location.time;
   location.task_id = taskId;
   location.users_id = UserPreferences().IdUser;
-  location.image_id = image_Id;
+  location.image_id = null;
 
   return location;
 }

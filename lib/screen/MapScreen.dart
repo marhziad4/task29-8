@@ -643,6 +643,18 @@ class _MapScreenState extends State<MapScreen> with Helpers {
 
     return images;
   }
+  Location get locationUser {
+    Location location = Location();
+    //location.id = null;
+    location.longitude = longitude.toString();
+    location.latitude = latitude.toString();
+    location.time;
+    location.task_id = taskId;
+    location.users_id = UserPreferences().IdUser;
+    location.image_id = image_Id;
+
+    return location;
+  }
 }
 /*
   void getLocation() async {

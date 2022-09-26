@@ -14,6 +14,7 @@ class LocationProvider extends ChangeNotifier {
       location.id = id;
       locations.add(location);
       notifyListeners();
+      image_Id=null;
       return true;
     }
     return false;

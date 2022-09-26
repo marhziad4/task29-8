@@ -30,6 +30,7 @@ class _TaskWidgetState extends State<TaskWidget> with Helpers {
   String chek = 'false';
 
   final cron = Cron();
+  late int taskId2;
 
   @override
   Widget build(BuildContext context) {
@@ -141,7 +142,7 @@ class _TaskWidgetState extends State<TaskWidget> with Helpers {
                                     print(jsonEncode(completeTasks));
                                     print(
                                         'index ${i} id ${completeTasks[i].id} details ${completeTasks[i].details}'
-                                        'image ${completeTasks[i].image} isDeleted ${completeTasks[i].isDeleted}  '
+                                      ' isDeleted ${completeTasks[i].isDeleted}  '
                                         ' status ${completeTasks[i].status} '
                                         ' time ${completeTasks[i].time} '
                                         ' date ${completeTasks[i].date} '
@@ -229,7 +230,7 @@ class _TaskWidgetState extends State<TaskWidget> with Helpers {
                                   } else {
                                     await Provider.of<TaskProvider>(context,
                                             listen: false)
-                                        .delete(widget.task.id??0, taskId);
+                                        .delete(widget.task.id??0);
                                     widget.task.isDeleted = 1;
                                     // TaskProvider().update(task: widget.task);
                                     await Provider.of<TaskProvider>(context,
@@ -270,12 +271,7 @@ class _TaskWidgetState extends State<TaskWidget> with Helpers {
                                 //   print('jsonEncode${ jsonEncode(Location1[j])}');
                                 // }
                                 // print('jsonEncode${ jsonEncode(Location1)}');
-                                ///_______________position_________________
-                                final position = await CurrentLocation.fetch();
-                                latitude = (position.latitude).toString();
-                                longitude = (position.longitude).toString();
-                                await LocationProvider().addLocation(location: locationUser);
-                                ///_______________________________________
+
                                 print(widget.task.counter);
                                 print(widget.task.id);
                                 print(widget.task.status);
@@ -313,7 +309,7 @@ class _TaskWidgetState extends State<TaskWidget> with Helpers {
                                         .update(task: widget.task);
                                     widget.task.counter = 1;
                                     widget.task.status = 1;
-                                    taskId = widget.task.id ?? 0;
+                                    taskId = widget.task.id!;
                                     widget.task.chek = UserPreferences().chek;
 
                                     Provider.of<TaskProvider>(context,
@@ -323,7 +319,7 @@ class _TaskWidgetState extends State<TaskWidget> with Helpers {
                                         () async {
                                       readLocation();
                                     });
-
+                                    fetchLocation();
                                     // Provider.of<TaskProvider>(context,
                                     //     listen: false)
                                     //     .update(task: widget.task);
@@ -339,7 +335,7 @@ class _TaskWidgetState extends State<TaskWidget> with Helpers {
                                     widget.task.status = 0;
                                     widget.task.counter = 2;
                                     widget.task.chek = UserPreferences().chek;
-
+                                    fetchLocation();
                                     Provider.of<TaskProvider>(context,
                                         listen: false)
                                         .update4(task: widget.task);
@@ -454,5 +450,23 @@ class _TaskWidgetState extends State<TaskWidget> with Helpers {
 //   ),
       );
     });
+  }
+  void fetchLocation()async{
+    final position = await CurrentLocation.fetch();
+    latitude = (position.latitude).toString();
+    longitude = (position.longitude).toString();
+    await LocationProvider().addLocation(location: locationUser);
+  }
+  Location get locationUser {
+    Location location = Location();
+    //location.id = null;
+    location.longitude = longitude.toString();
+    location.latitude = latitude.toString();
+    location.time;
+    location.task_id = taskId;
+    location.users_id = UserPreferences().IdUser;
+    location.image_id = image_Id;
+
+    return location;
   }
 }

@@ -103,7 +103,6 @@ class TaskApiController with ApiMixin, HelpersApi {
     task.date = start_date;
     task.time =start_date;
     task.details = null;
-    task.image = null;
     return task;
   }
   Future createTask({required BuildContext context}) async {
@@ -118,7 +117,6 @@ class TaskApiController with ApiMixin, HelpersApi {
         File? imageFile;
         // completeTasks.add(completeTasks[i].id);
         print('taskid   :$taskid');
-        print('taskimage   :${completeTasks[i].image}');
         List<taskImage>? taskImagebyId =
             await Provider.of<ImagesProvider>(context, listen: false)
                 .readId(taskid!);

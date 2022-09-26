@@ -306,7 +306,6 @@ class _NewTaskScreenState extends State<NewTaskScreen> with Helpers {
     task.date = dateTextController.text.toString();
     task.time = timeTextController.text.toString();
     task.details = null;
-    task.image = null;
     return task;
   }
 }
