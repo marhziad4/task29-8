@@ -105,15 +105,7 @@ class TaskDbController extends DbOperations<taskModel> {
     return [];
   }
 
-  //AND isDelete= false
-  // @override
-  // Future<List<taskModel>> read2() async {
-  //   List<Map<String, dynamic>> rows = await _database.rawQuery('SELECT counter from tasks WHERE counter > 1 ');
-  //   if (rows.isNotEmpty ) {
-  //     return rows.map((e) => taskModel.fromJson(e)).toList();
-  //   }
-  //   return [];
-  // }
+
   Future<List<taskModel>?> updateRow() async {
     //SELECT * FROM categories;
     List<Map<String, dynamic>> rows = await _database.query('tasks');
@@ -157,15 +149,7 @@ class TaskDbController extends DbOperations<taskModel> {
 
     return countOfUpdatedRows != 0;
   }
-/*
-  Future<dynamic> alterTable(String details ) async {
 
-    var count = await _database.execute("ALTER TABLE tasks ADD "
-        "COLUMN detailsLocation TEXT;");
-    print('detailsll');
-    print(await _database.query('tasks'));
-    return count;
-  }*/
 
   @override
   Future<bool> update1(taskModel task) async {
@@ -196,13 +180,4 @@ class TaskDbController extends DbOperations<taskModel> {
     throw UnimplementedError();
   }
 
-// @override
-// Future<bool> updateRow(taskModel task) async {
-//
-//   // TODO: implement update
-//   int countOfUpdatedRows = await _database.update(
-//       'tasks', task.toMap1(),
-//       where: 'id = ?', whereArgs: [task.id]);
-//   return countOfUpdatedRows != 0;
-// }
 }

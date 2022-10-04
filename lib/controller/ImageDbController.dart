@@ -2,10 +2,7 @@ import 'package:todo_emp/data/DbOperations.dart';
 import 'package:todo_emp/data/DbProvider.dart';
 import 'package:todo_emp/model/taskImage.dart';
 import 'package:sqflite/sqflite.dart';
-import 'package:todo_emp/data/DbOperations.dart';
-import 'package:todo_emp/data/DbProvider.dart';
-import 'package:todo_emp/model/taskModel.dart';
-import 'package:todo_emp/preferences/user_pref.dart';
+
 
 class ImageDbController extends DbOperations<taskImage> {
   Database _database = DbProvider().database;
@@ -73,4 +70,6 @@ class ImageDbController extends DbOperations<taskImage> {
     // TODO: implement show2
     throw UnimplementedError();
   }
+
+
 }

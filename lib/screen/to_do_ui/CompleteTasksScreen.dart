@@ -5,6 +5,8 @@ import 'package:todo_emp/providers/TaskProvider.dart';
 import 'package:todo_emp/utils/helpers.dart';
 import 'package:todo_emp/widgets/task_widget.dart';
 
+import '../../widgets/task_widget_admin.dart';
+
 class CompleteTasksScreen extends StatefulWidget {
   @override
   State<CompleteTasksScreen> createState() => _CompleteTasksScreenState();

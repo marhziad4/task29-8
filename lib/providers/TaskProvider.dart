@@ -1,12 +1,9 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:todo_emp/controller/ImageDbController.dart';
 import 'package:todo_emp/controller/TaskDbController.dart';
 import 'package:todo_emp/model/taskModel.dart';
+import 'package:todo_emp/providers/images_provider.dart';
 import 'package:todo_emp/providers/location_provider.dart';
 
-import '../main.dart';
 
 class TaskProvider extends ChangeNotifier {
   List<taskModel> tasks = <taskModel>[];
@@ -22,13 +19,10 @@ class TaskProvider extends ChangeNotifier {
   int? counterCmp;
 
   TaskProvider() {
-    // print('TaskProvider');
-    //print(jsonEncode(taskss));
+
 
     read();
-    read2();
-    // readCounter(counter);
-  }
+    read2();}
 
   Future<bool> readAll() async {
     taskss.clear();
@@ -53,12 +47,6 @@ class TaskProvider extends ChangeNotifier {
     return true;
   }
 
-  // fillTasksLists(List<taskModel> tasks) {
-  //   taskss = tasks;
-  //   completeTasks = tasks.where((element) => element.counter==2).toList();
-  //   asyncTasks = tasks.where((element) => element.async==0).toList();
-  //   notifyListeners();
-  // }
 
   Future<bool> create({required taskModel task}) async {
     //  taskModel task = taskModel()
@@ -213,8 +201,10 @@ class TaskProvider extends ChangeNotifier {
 
   Future<bool> delete(int id) async {
     bool deleted = await TaskDbController().delete(id);
-
+    LocationProvider().delete(id);
+    ImagesProvider().delete2(id);
     int index = tasks.indexWhere((element) => element.id == id);
+   // int index2 = locations?.indexWhere((element) => element.task_id == task_id);
     if (index != -1) {
       //completeTasks.removeAt(index);
       readAll();

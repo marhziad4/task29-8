@@ -31,10 +31,11 @@ class _NewTaskScreenState extends State<NewTaskScreen> with Helpers {
     descriptionTextController = TextEditingController();
     DateTime now = DateTime.now();
 //text:DateFormat('kk:mm:ss').format(now),text:DateFormat('EEE d MMM').format(now)
-    dateTextController = TextEditingController(text:DateFormat.yMMMd().format(now));
-    timeTextController = TextEditingController(text:DateFormat('a kk:mm').format(now));
+    dateTextController =
+        TextEditingController(text: DateFormat.yMMMd().format(now));
+    timeTextController =
+        TextEditingController(text: DateFormat('a kk:mm').format(now));
     TaskProvider().read();
-
   }
 
   @override
@@ -111,6 +112,7 @@ class _NewTaskScreenState extends State<NewTaskScreen> with Helpers {
                       showTimePicker(
                         context: context,
                         initialTime: TimeOfDay.now(),
+                        initialEntryMode: TimePickerEntryMode.input,
                       ).then((value) {
                         timeTextController.text =
                             value!.format(context).toString();
@@ -155,91 +157,18 @@ class _NewTaskScreenState extends State<NewTaskScreen> with Helpers {
                   SizedBox(
                     height: 20.0,
                   ),
-                  // Row(
-                  //   children: [
-                  //     Text('حالة المهمة',style: TextStyle(fontSize: 15),),
-                  //     Spacer(),
-                  //     DropdownButton(
-                  //       // Initial Value
-                  //       value: StateValue,
-                  //       hint: Text('Select state'),
-                  //
-                  //       // Down Arrow Icon
-                  //       icon: const Icon(
-                  //           Icons.keyboard_arrow_down),
-                  //
-                  //       // Array list of items
-                  //       items: States.map((String items) {
-                  //         return DropdownMenuItem(
-                  //           value: items,
-                  //           child: Text(items),
-                  //         );
-                  //       }).toList(),
-                  //       // After selecting the desired option,it will
-                  //       // change button value to selected value
-                  //       onChanged: (String? newValue) {
-                  //         if (newValue != null) {
-                  //           StateValue = newValue;
-                  //         }
-                  //         setState(() {});
-                  //       },
-                  //     ),
-                  //   ],
-                  // ),
                 ],
               ),
             ),
-            // TextField(
-            //   controller: _titleTextController,
-            //   decoration: InputDecoration(
-            //     label: Text(
-            //       'عنوان المهة',
-            //       style: TextStyle(fontSize: 25),
-            //     ),
-            //     focusedBorder: OutlineInputBorder(
-            //       borderSide: new BorderSide(color: Colors.grey),
-            //       borderRadius: new BorderRadius.circular(25.7),
-            //     ),
-            //     enabledBorder: OutlineInputBorder(
-            //       borderSide: new BorderSide(color: Color(0xff0f31dc)),
-            //       borderRadius: new BorderRadius.circular(25.7),
-            //     ),
-            //   ),
-            // ),
-            // SizedBox(
-            //   height: 30,
-            // ),
-            // TextField(
-            //   controller: _descriptionTextController,
-            //   decoration: InputDecoration(
-            //     label: Text(
-            //       'تفاصيل',
-            //       style: TextStyle(fontSize: 25),
-            //     ),
-            //     focusedBorder: OutlineInputBorder(
-            //       borderSide: new BorderSide(color: Colors.grey),
-            //       borderRadius: new BorderRadius.circular(25.7),
-            //     ),
-            //     enabledBorder: OutlineInputBorder(
-            //       borderSide: new BorderSide(color: Color(0xff0f31dc)),
-            //       borderRadius: new BorderRadius.circular(25.7),
-            //     ),
-            //   ),
-            // ),
-            // SizedBox(
-            //   height: 15,
-            // ),
             SizedBox(
               height: 60,
             ),
             AppButtonMain(
               onPressed: () async {
-
                 await perform();
               },
               title: 'حفظ',
             ),
-
             SizedBox(
               height: 15,
             ),
@@ -254,19 +183,6 @@ class _NewTaskScreenState extends State<NewTaskScreen> with Helpers {
       ),
     );
   }
-
-  // Future<void> save() async {
-  //   bool saved = await Provider.of<TaskProvider>(context, listen: false)
-  //       .create(task: task);
-  //   if (saved) {
-  //     print('تم الاضافة بنجاح');
-  //     showSnackBar(context: context, content: 'تم الاضافة بنجاح', error: false);
-  //   } else {
-  //     print('لم تتم الاضافة بنجاح');
-  //     showSnackBar(
-  //         context: context, content: 'لم تتم الاضافة بنجاح', error: true);
-  //   }
-  // }
 
   bool checkData() {
     if (titleTextController.text.trim().isNotEmpty &&
@@ -288,6 +204,7 @@ class _NewTaskScreenState extends State<NewTaskScreen> with Helpers {
       Navigator.pushNamed(context, '/TodoMainPage');
     }
   }
+
   static final _defaultDate = DateTime.now().toString();
 
   taskModel get tasks {
@@ -302,7 +219,7 @@ class _NewTaskScreenState extends State<NewTaskScreen> with Helpers {
     task.status = 0;
     task.counter = 0;
     task.isDeleted = 0;
-    task.chek =UserPreferences().chek;
+    task.chek = UserPreferences().chek;
     task.date = dateTextController.text.toString();
     task.time = timeTextController.text.toString();
     task.details = null;

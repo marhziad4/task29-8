@@ -1,8 +1,6 @@
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:todo_emp/data/DbOperations.dart';
 import 'package:todo_emp/data/DbProvider.dart';
-import 'package:todo_emp/main.dart';
 import 'package:todo_emp/model/location.dart';
 
 
@@ -16,11 +14,6 @@ class LocationDbController implements DbOperations<Location> {
     return await _database.insert('location', object.toMap());
   }
 
-  // @override
-  // Future<int> createLocation(Location object) async {
-  //   //SQL:: INSERT INTO categories (name) VALUES ('NEW NAME');
-  //   return await _database.insert('users', object.toMap());
-  // }
 
   @override
   Future<bool> update(Location object) async {
@@ -63,15 +56,6 @@ class LocationDbController implements DbOperations<Location> {
     }
     return [];
   }
-  // @override
-  // Future<List<Location>> read() async {
-  //   //SELECT * FROM categories;
-  //   List<Map<String, dynamic>> rows = await _database.query('location',where: 'task_id = ?', whereArgs: [task_id]);
-  //   if (rows.isNotEmpty) {
-  //     return rows.map((rowMap) => Location.fromMap(rowMap)).toList();
-  //   }
-  //   return [];
-  // }
 
 
 

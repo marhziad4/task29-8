@@ -18,7 +18,7 @@ class ImagesProvider extends ChangeNotifier {
   }
   Future<bool> create({required taskImage image}) async {
     //  taskModel task = taskModel()
-
+print('image');
     if (imageId.length >= 3) {
       return false;
 
@@ -64,13 +64,31 @@ class ImagesProvider extends ChangeNotifier {
     notifyListeners();
     return imageId;
   }
-
   Future<bool> delete(int id) async {
 
     print("delete id image>>$id");
     bool deleted = await _imageDbController.delete(id);
 
     int index = imageId.indexWhere((element) => element.id == id);
+    if (index != -1) {
+      imageId.removeAt(index);
+      //read();
+      notifyListeners();
+      print('del true');
+
+      return true;
+    }
+    notifyListeners();
+
+    print('del false');
+    return false;
+  }
+  Future<bool> delete2(int id) async {
+
+    print("delete id image>>$id");
+    bool deleted = await _imageDbController.delete(id);
+
+    int index = imageId.indexWhere((element) => element.task_id == id);
     if (index != -1) {
       imageId.removeAt(index);
        //read();

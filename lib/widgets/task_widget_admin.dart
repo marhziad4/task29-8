@@ -87,13 +87,13 @@ class _TaskWidgetAdminState extends State<TaskWidgetAdmin> with Helpers {
                         padding: EdgeInsets.symmetric(horizontal: 25),
                         child: Row(
                           children: [
-                            Text(
-                              widget.task.id.toString() + ") ",
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 25,
-                                  color: Colors.black87),
-                            ),
+                            // Text(
+                            //   widget.task.id.toString() + ") ",
+                            //   style: TextStyle(
+                            //       fontWeight: FontWeight.bold,
+                            //       fontSize: 25,
+                            //       color: Colors.black87),
+                            // ),
                             Text(
                               widget.task.title,
                               style: TextStyle(
@@ -106,7 +106,7 @@ class _TaskWidgetAdminState extends State<TaskWidgetAdmin> with Helpers {
                         ),
                       ),
                       Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 40),
+                        padding: EdgeInsets.symmetric(horizontal: 35),
                         child: Row(
                           children: [
                             Text(
@@ -244,17 +244,31 @@ class _TaskWidgetAdminState extends State<TaskWidgetAdmin> with Helpers {
                       ),
                       Padding(
                         padding:
-                            EdgeInsets.symmetric(horizontal: 90, vertical: 20),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text(
-                              widget.task.date.replaceRange(0,11, ''),
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 15,
-                                  color: Colors.blueGrey),
-                            ),
+                            EdgeInsets.symmetric(horizontal:90, vertical: 20),
+                       child: Row(
+                         children: [
+                           //.replaceRange(0,11, '')
+                           Text(
+                             widget.task.time,
+                             style: TextStyle(
+                                 fontWeight: FontWeight.bold,
+                                 fontSize: 15,
+                                 color: Colors.blueGrey),
+                           ),
+                           SizedBox(
+                             width: 20,
+                           ),
+                           Text(
+                             widget.task.date,
+                             style: TextStyle(
+                                 fontWeight: FontWeight.bold,
+                                 fontSize: 15,
+                                 color: Colors.blueGrey),
+                           ),
+
+
+                         ],
+                       ),
 // Checkbox(
 //   value:value ,
 //     //Provider.of<DatabaseProvider>(context).isComplete
@@ -264,20 +278,7 @@ class _TaskWidgetAdminState extends State<TaskWidgetAdmin> with Helpers {
 //   },
 //   title: Text('I have complete this task'),
 // ),
-                            SizedBox(
-                              width: 20,
-                            ),
-
-                            Text(
-                              widget.task.date.replaceRange(11,19, ''),
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 15,
-                                  color: Colors.blueGrey),
-                            ),
-                          ],
                         ),
-                      ),
 // const SizedBox(
 //   height: 25,
 //   width: 0,

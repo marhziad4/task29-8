@@ -8,7 +8,7 @@ Widget defaultTextFormField({
   Function()? onTap,
   String? initialValue,
   required Function validate,
-   String? label,
+  String? label,
   required IconData prefix,
   bool isPassword = false,
   bool isClickable = true,
@@ -17,7 +17,8 @@ Widget defaultTextFormField({
 }) =>
     TextFormField(
       controller: controller,
-      initialValue: initialValue, // <-- SEE HERE
+      initialValue: initialValue,
+      // <-- SEE HERE
       keyboardType: type,
       obscureText: isPassword,
       onFieldSubmitted: onSubmit,
@@ -35,13 +36,13 @@ Widget defaultTextFormField({
         ),
         suffixIcon: suffix != null
             ? IconButton(
-          onPressed: () {
-            suffixPressed!();
-          },
-          icon: Icon(
-            suffix,
-          ),
-        )
+                onPressed: () {
+                  suffixPressed!();
+                },
+                icon: Icon(
+                  suffix,
+                ),
+              )
             : null,
         border: const OutlineInputBorder(),
       ),

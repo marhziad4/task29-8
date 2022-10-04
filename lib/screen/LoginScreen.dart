@@ -1,15 +1,9 @@
 import 'dart:async';
-
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flash/flash.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:todo_emp/controller/UserApiController.dart';
-import 'package:todo_emp/data/DbProvider.dart';
-import 'package:todo_emp/model/users.dart';
 import 'package:todo_emp/preferences/user_pref.dart';
-import 'package:todo_emp/providers/UserProvider.dart';
-import 'package:todo_emp/responsive/size_config.dart';
 import 'package:todo_emp/utils/helpers.dart';
 import '../widgets/app_text_field.dart';
 import '../widgets/loading2.dart';
@@ -62,7 +56,6 @@ class _LoginScreenState extends State<LoginScreen> with Helpers {
 
   @override
   Widget build(BuildContext context) {
-    SizeConfig().designWidth(4.14).designHeight(8.96).init(context);
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: Stack(children: [
@@ -75,9 +68,7 @@ class _LoginScreenState extends State<LoginScreen> with Helpers {
           ),
           child: Container(
               // margin: EdgeInsets.symmetric(horizontal:40, vertical: 160),
-              padding: EdgeInsets.symmetric(
-                  horizontal: SizeConfig().scaleWidth(20),
-                  vertical: SizeConfig().scaleHeight(90)),
+              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 90),
               child: Center(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -142,8 +133,8 @@ class _LoginScreenState extends State<LoginScreen> with Helpers {
                         alignment: Alignment.center,
                         margin:
                             EdgeInsets.symmetric(horizontal: 30, vertical: 40),
-                        height: SizeConfig().scaleHeight(60),
-                        width: SizeConfig().scaleWidth(900),
+                        height: 60,
+                        width: 900,
                         child: visible
                             ? Text(
                                 'تسجيل الدخول',
@@ -156,19 +147,6 @@ class _LoginScreenState extends State<LoginScreen> with Helpers {
                             borderRadius: BorderRadius.circular(15)),
                       ),
                     ),
-                    // ElevatedButton(
-                    //   onPressed: () {
-                    //     DbProvider().backup();
-                    //   },
-                    //   child: const Text('Copy DB'),
-                    // ),
-                    //
-                    // ElevatedButton(
-                    //   onPressed: () async {
-                    //     DbProvider().backup();
-                    //   },
-                    //   child: const Text('Restore DB'),
-                    // ),
                   ],
                 ),
               )),
@@ -219,11 +197,12 @@ class _LoginScreenState extends State<LoginScreen> with Helpers {
     if (status) {
       debugPrint("here token send to server ===> ${UserPreferences().token}");
       debugPrint("here save IdUser ===> ${UserPreferences().IdUser}");
-      Navigator.pushReplacementNamed(context, '/TodoMainPage');
-
-      // setState(() {
-      //   visible = true;
-      // });
+      // bool login =UserPreferences().save(token) ;
+      if (UserPreferences().isLoggedIn == false) {
+        Navigator.pushReplacementNamed(context, '/Login_screen');
+        print('false login');
+      } else
+        Navigator.pushReplacementNamed(context, '/TodoMainPage');
     } else {
       setState(() {
         visible = true;
@@ -231,58 +210,6 @@ class _LoginScreenState extends State<LoginScreen> with Helpers {
     }
   }
 
-  //
-  // Future<void> save() async {
-  //   bool saved = await Provider.of<UserProvider>(context, listen: false)
-  //       .addUser(user: user);
-  //   if (saved) {
-  //     print('تم الاضافة بنجاح');
-  //     showSnackBar(context: context, content: 'تم الاضافة بنجاح', error: false);
-  //     Navigator.pushReplacementNamed(context, '/TodoMainPage');
-  //   } else {
-  //     print('لم تتم الاضافة بنجاح');
-  //     showSnackBar(
-  //         context: context, content: 'لم تتم الاضافة بنجاح', error: true);
-  //   }
-  // }
-
-  // Future<List<LatLng>> getListMarker() async {
-  //   List<LatLng> maps = <LatLng>[];
-  //   await _firebaseFirestore.collection("RealState").get().then((value) {
-  //     for (int i = 0; i < value.docs.length; i++) {
-  //       double lat = double.parse(value.docs[i]
-  //           .get('mapRealState')
-  //           .substring(0, value.docs[i].get('mapRealState').indexOf(',')));
-  //
-  //       double lng = double.parse(value.docs[i]
-  //           .get('mapRealState')
-  //           .substring(value.docs[i].get('mapRealState').indexOf(',') + 1));
-  //
-  //       debugPrint("we are in get latLng Firebase $lat$lng");
-  //
-  //       LatLng latLng = LatLng(lat, lng);
-  //       maps.add(latLng);
-  //     }
-  //   });
-  //   return maps;
-  // }
-  // Future<void> location() async {
-  //   final cron = Cron();
-  //   cron.schedule(Schedule.parse('*/1 * * * *'), () async {
-  //     final position = await CurrentLocation.fetch();
-  //      latitude=(position.latitude).toString();
-  //      longitude=(position.longitude).toString();
-  //   await Provider.of<LocationProvider>(context, listen: false)
-  //         .addLocation(location: locationUser);
-  //     print('every one minutes latitude ${position.latitude}');
-  //     print('every one minutes longitude ${position.longitude}');
-  //     // TaskProvider.postUpdateDriverLocarionRequset(
-  //     //     latitude: position.latitude, longitude: position.longitude);
-  //     // bool saved = await Provider.of<UserProvider>(context, listen: false)
-  //     //     .addLocation(location: locationUser);
-  //   });
-  //
-  // }
   Future<bool> _checkConnectivityState() async {
     final ConnectivityResult result = await Connectivity().checkConnectivity();
 
@@ -308,40 +235,5 @@ class _LoginScreenState extends State<LoginScreen> with Helpers {
 
       return false;
     }
-
-    setState(() {
-      _connectivityResult = result;
-    });
   }
-
-  User get user {
-    User user = User();
-    // user.title= _titleTextController.text;
-    user.email = _userNum.text;
-    user.password = _password.text;
-    return user;
-  }
-
-// Future<void> login() async {
-//   if (checkData()) {
-//     bool status = await UserApiController().login(
-//         context: context,
-//         phone: _phone.text.trim(),
-//         password: _password.text.trim(),
-//         deviceToken: token!);
-//     if (status) {
-//       debugPrint("here token send to server ===> $token");
-//       debugPrint("here status send to server ===> $status");
-//
-//       setState(() {
-//         visible = true;
-//       });
-//     } else {
-//       setState(() {
-//         visible = true;
-//       });
-//     }
-//   }
-// }
-
 }

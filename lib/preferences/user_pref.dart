@@ -16,8 +16,9 @@ class UserPreferences {
   }
   //       UserPreferences().setPlace(latLng.latitude.toString() +
 
-  Future<void> save(loginUser token) async {
-    await _sharedPreferences.setBool('logged_in', true);
+  Future<bool> save(loginUser token) async {
+    bool login=await _sharedPreferences.setBool('logged_in', true);
+    return login;
   }
   Future<void> setToken(String token) async {
     await _sharedPreferences.setString('token', token);

@@ -1,14 +1,4 @@
-import 'dart:convert';
-
-import 'package:flutter/material.dart';
-import 'package:lit_backup_service/lit_backup_service.dart';
-import 'package:todo_emp/preferences/user_pref.dart';
-
-// List<taskModel> taskFromJson(String str) =>
-//     List<taskModel>.from(json.decode(str).map((x) => taskModel.fromJson(x)));
-//
-
-class taskModel implements BackupModel {
+class taskModel {
    int? id;
   late String userId;
    late String id_pk;

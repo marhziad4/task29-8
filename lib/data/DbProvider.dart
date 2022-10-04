@@ -65,56 +65,5 @@ class DbProvider {
       },
     );
   }
-  Future<void> backup()async{
-    var databasesPath = await getDatabasesPath();
-    File source1 = File('$databasesPath/app_database.db');
-print(source1);
 
-   // Directory copyTo = await getApplicationDocumentsDirectory();
-    Directory copyTo =
-    Directory("/storage/emulated/0/Download/MyOrganization2");
-
-    if ((await copyTo.exists())) {
-      print("Path exist");
-      var status = await Permission.storage.status;
-      if (!status.isGranted) {
-        await Permission.storage.request();
-      }
-    } else {
-      print("not exist");
-      if (await Permission.storage.request().isGranted) {
-        // Either the permission was already granted before or the user just granted it.
-      try{
-        await copyTo.create();
-
-      }catch(e){
-        print("object$e");
-      }
-
-      } else {
-        print('Please give permission');
-      }
-    }
-
-    String newPath = "${copyTo.path}/app_database.db";
-    print(newPath);
-    await source1.copy(newPath);
-  }
-
-  Future<void> restore()async{
-    var databasesPath = await getDatabasesPath();
-    var dbPath = join(databasesPath,'app_database.db');
-    FilePickerResult? result =
-    await FilePicker.platform.pickFiles();
-    if (result != null) {
-      File source = File(result.files.single.path!);
-      await source.copy(dbPath);
-
-      print('Successfully Restored DB');
-    } else {
-      print('User canceled the picker');
-
-      // User canceled the picker
-    }
-  }
 }

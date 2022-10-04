@@ -19,18 +19,11 @@ class UserApiController with Helpers {
         .post(url, body: {'username': username, 'password': password});
     var jsonResponse = jsonDecode(response.body);
     print(jsonResponse);
-    //   print('${jsonResponse['access_token']}');
 
 
 
     if (response.statusCode == 200) {
-      // if(jsonResponse['token']== null){
-      //   context.showFlashDialog(
-      //     persistent: true,
-      //     title: Text(''),
-      //     content: Text('${jsonResponse['message']}'),
-      //   );
-      // }else{
+
         loginUser users = loginUser.fromJson(jsonDecode(response.body));
         var user = await UserPreferences().save(users);
         var token = await UserPreferences().setToken(jsonResponse['token']);
@@ -38,7 +31,6 @@ class UserApiController with Helpers {
         await UserPreferences().setimage(jsonResponse['image']);
         Cron cron = Cron();
         cron.schedule(Schedule.parse('* */23 * * *'), () async {
-          //  print('Cron');
           print(UserPreferences().token);
 
           var url = Uri.parse(ApiSettings.refresh);

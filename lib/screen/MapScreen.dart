@@ -5,7 +5,6 @@ import 'dart:async';
 import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:gallery_saver/gallery_saver.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_picker/image_picker.dart';
@@ -20,7 +19,6 @@ import 'package:todo_emp/providers/TaskProvider.dart';
 import 'package:todo_emp/providers/images_provider.dart';
 import 'package:todo_emp/providers/location_provider.dart';
 import 'package:todo_emp/utils/helpers.dart';
-import 'package:todo_emp/widgets/Utility.dart';
 import 'package:todo_emp/widgets/app_button_main.dart';
 import 'package:todo_emp/widgets/app_text_field.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
@@ -59,8 +57,6 @@ class _MapScreenState extends State<MapScreen> with Helpers {
       List.generate(100000, (index) => {"id": 1, "name": "Product yy"})
           .toList();
 
-  // _timeTextController = TextEditingController(text: widget.task.time);
-
   /////polyLine///////
   Map<PolylineId, Polyline> polylines = {};
   List<LatLng> polylineCoordinates = [];
@@ -71,44 +67,29 @@ class _MapScreenState extends State<MapScreen> with Helpers {
   late double panelHeighClosed;
 
   /////polyLine///////
-  Future<Uint8List> getImages(String path, int width) async{
+  Future<Uint8List> getImages(String path, int width) async {
     ByteData data = await rootBundle.load(path);
-    ui.Codec codec = await ui.instantiateImageCodec(data.buffer.asUint8List(), targetHeight: width);
+    ui.Codec codec = await ui.instantiateImageCodec(data.buffer.asUint8List(),
+        targetHeight: width);
     ui.FrameInfo fi = await codec.getNextFrame();
-    return(await fi.image.toByteData(format: ui.ImageByteFormat.png))!.buffer.asUint8List();
-
+    return (await fi.image.toByteData(format: ui.ImageByteFormat.png))!
+        .buffer
+        .asUint8List();
   }
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     taskId = widget.task.id!;
     Provider.of<LocationProvider>(context, listen: false).readByTask(taskId);
-    // listMarker();
     _cameraPosition =
         CameraPosition(target: LatLng(31.520088, 34.4347784), zoom: 11);
     details = TextEditingController(text: widget.task.details);
     _getPolyline();
-   _marker.addAll(_list);
-    // _marker.add(
-    //   Marker(markerId: MarkerId('place_name'),
-    //     position: LatLng(37.4219999, -122.0862462),
-    //   ),
-    //
-    //   );
-    // _marker.add(
-    //   Marker(markerId: MarkerId('place_name2'),
-    //     position: LatLng(38.6619999, -122.552462),
-    //   ),
-    //
-    // );
-    print(_marker);
-    //listMarker();
-    // _cameraPosition = CameraPosition(target: LatLng(31.568836, 34.564535),
-    //   zoom: 5,
-    // );
+    _marker.addAll(_list);
 
-    // googleMap=createMapOptions();
+    print(_marker);
   }
 
   @override
@@ -252,11 +233,30 @@ class _MapScreenState extends State<MapScreen> with Helpers {
 
                                         return Stack(
                                           children: [
-                                            Container(
-                                              width: 130,
-                                              height: 170,
-                                              child: Image.file(File(
-                                                  '/storage/emulated/0/Pictures/pla_todo/${provider.imageId.toList()[index].image}')),
+                                            InkWell(
+                                              onTap: () {
+                                                Navigator.of(context).push(
+                                                    MaterialPageRoute(
+                                                        builder:
+                                                            (context) =>
+                                                                Scaffold(
+                                                                  body: Center(
+                                                                    child: Hero(
+                                                                      tag:
+                                                                          '2121',
+                                                                      child: Image
+                                                                          .file(
+                                                                              File('/storage/emulated/0/Pictures/pla_todo/${provider.imageId.toList()[index].image}')),
+                                                                    ),
+                                                                  ),
+                                                                )));
+                                              },
+                                              child: Container(
+                                                width: 130,
+                                                height: 170,
+                                                child: Image.file(File(
+                                                    '/storage/emulated/0/Pictures/pla_todo/${provider.imageId.toList()[index].image}')),
+                                              ),
                                             ),
                                             IconButton(
                                                 icon: Icon(
@@ -444,11 +444,13 @@ class _MapScreenState extends State<MapScreen> with Helpers {
     }
   }
 */
+  List<Location>? locationsById;
+  List<taskImage>? ImagesById;
   void _onMapCreated(GoogleMapController controller) async {
     locationsById = await Provider.of<LocationProvider>(context, listen: false)
-        .locationsByIdTask;
+        .readByTask(taskId);
     ImagesById = await Provider.of<ImagesProvider>(context, listen: false)
-        .imageId;
+        .readId(taskId);
     print(jsonEncode(locationsById));
 
     for (int i = 0; i < locationsById!.length; i++) {
@@ -459,8 +461,8 @@ class _MapScreenState extends State<MapScreen> with Helpers {
         print(
             'Marker >> latitude :${locationsById![i].latitude} longitude:${locationsById![i].longitude}task_idmark:${locationsById![i].task_id}');
         setState(() {
+         // locationsById =  LocationProvider().readByTask(taskId);
           for (int i = 0; i < locationsById!.length; i++) {
-            print('here');
             print('length${locationsById!.length}');
             LatLng latlng = LatLng(
                 double.parse('${locationsById![i].latitude}'),
@@ -492,7 +494,6 @@ class _MapScreenState extends State<MapScreen> with Helpers {
           }
         });
       }
-
     }
   }
 
@@ -524,6 +525,8 @@ class _MapScreenState extends State<MapScreen> with Helpers {
 
     bool saved = await Provider.of<ImagesProvider>(context, listen: false)
         .create(image: images);
+    await Provider.of<ImagesProvider>(context, listen: false).readId(taskId);
+
     ///_______________position_________________
     final position = await CurrentLocation.fetch();
     latitude = (position.latitude).toString();
@@ -637,15 +640,14 @@ class _MapScreenState extends State<MapScreen> with Helpers {
 
   taskImage get images {
     taskImage images = taskImage();
-    // images.id=null;
     images.image = photoName.toString();
     images.task_id = taskId;
 
     return images;
   }
+
   Location get locationUser {
     Location location = Location();
-    //location.id = null;
     location.longitude = longitude.toString();
     location.latitude = latitude.toString();
     location.time;
@@ -656,30 +658,3 @@ class _MapScreenState extends State<MapScreen> with Helpers {
     return location;
   }
 }
-/*
-  void getLocation() async {
-    Position position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high);
-    debugPrint('position.latitude${position.latitude}');
-    if (mounted) {
-      setState(() {
-        AppPreferences().setPlace(
-            position.latitude.toString() + ',' + position.longitude.toString());
-      });
-    }
-<<<<<<< HEAD
- */
-
-// onTap: () => _onTap(locations),
-// draggable: false,
-
-// icon: locationas![i] == 0
-//     ? BitmapDescriptor.defaultMarkerWithHue(
-//         BitmapDescriptor.hueCyan)
-//     : BitmapDescriptor.defaultMarkerWithHue(
-//         BitmapDescriptor.hueGreen),
-
-// icon:
-//     BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
-// // locationas![i]==0 ? BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueCyan)
-// //     :BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),

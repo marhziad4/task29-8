@@ -57,10 +57,10 @@ class LocationProvider extends ChangeNotifier {
     return false;
   }
 
-  Future<bool> delete(int task_id) async {
-    bool deleted = await _locationDbController.delete(task_id);
+  Future<bool> delete(int id) async {
+    bool deleted = await _locationDbController.delete(id);
     if (deleted) {
-      int index = locations.indexWhere((element) => element.task_id == task_id);
+      int index = locations.indexWhere((element) => element.task_id == id);
       if (index != -1) {
         locations.removeAt(index);
         notifyListeners();

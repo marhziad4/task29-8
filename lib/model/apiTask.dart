@@ -7,8 +7,7 @@ class apiTask {
   String? updatedAt;
 
   apiTask(
-      {this.id,
-        this.title,
+      {this.id,        this.title,
         this.description,
         this.userId,
         this.createdAt,

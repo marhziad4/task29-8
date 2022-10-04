@@ -5,7 +5,6 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flash/flash.dart';
 import 'package:flutter/material.dart';
 import 'package:future_progress_dialog/future_progress_dialog.dart';
-import 'package:lit_backup_service/lit_backup_service.dart';
 import 'package:provider/provider.dart';
 import 'package:todo_emp/controller/TaskApiController.dart';
 import 'package:todo_emp/controller/UserApiController.dart';
@@ -202,10 +201,10 @@ class _TodoMainPageState extends State<TodoMainPage>
                     .length;
               });
 
-              print(
-                  '${Provider.of<TaskProvider>(context, listen: false).completeTasks.length}');
-
-              print('${counter}');
+              // print(
+              //     '${Provider.of<TaskProvider>(context, listen: false).completeTasks.length}');
+              //
+              // print('${counter}');
             }),
       ),
       drawer: Drawer(
@@ -400,23 +399,6 @@ class _TodoMainPageState extends State<TodoMainPage>
     );
   }
 
-  final BackupStorage _backupStorage = BackupStorage(
-    organizationName: "MyOrganization",
-    applicationName: "LitBackupService",
-    fileName: "examplebackup",
-    // The installationID should be generated only once after the initial app
-    // startup and be stored on a persisten data storage (such as `SQLite`) to
-    // ensure the file name matches on each app startup.
-    installationID: DateTime.now().millisecondsSinceEpoch.toRadixString(16),
-  );
-
-  Future<void> _writeBackup(taskModel backup) async {
-    setState(
-      () => {
-        _backupStorage.writeBackup(backup),
-      },
-    );
-  }
 
   Tasks get tasks {
     Tasks task = Tasks();
@@ -435,35 +417,6 @@ class _TodoMainPageState extends State<TodoMainPage>
     return task;
   }
 
-  // Future createTask() async {
-  //   bool task = await  Provider.of<TasksApiProvider>(context, listen: false).createTask(context: context, newTask: tasks);
-  //   if (task != null) {
-  //     // tasks.add(task);
-  //     // notifyListeners();
-  //     print('object');
-  //
-  //
-  //   }
-  //   print('object');
-  //
-  // }
-  Tasks get tasksApi {
-    Tasks task = Tasks();
-    task.title = 'title';
-    task.description = 'description';
-    task.status = 0;
-    task.done = 0;
-    task.create_dept = 22;
-    task.create_user = 22;
-    task.end_date = '22';
-    task.start_date = '22';
-    task.priority = 22;
-    task.to_dept = 22;
-    task.update_user = 22;
-    task.userId = UserPreferences().IdUser;
-
-    return task;
-  }
 
   Future<void> logout() async {
     print('log');

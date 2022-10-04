@@ -3,7 +3,6 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:todo_emp/model/taskModel.dart';
 import 'package:todo_emp/providers/TaskProvider.dart';
-import 'package:todo_emp/responsive/size_config.dart';
 import 'package:todo_emp/utils/helpers.dart';
 import 'package:todo_emp/widgets/app_button_main.dart';
 import 'package:todo_emp/widgets/defaultTextFormField.dart';
@@ -50,8 +49,6 @@ class _EditTaskScreenState extends State<EditTaskScreen> with Helpers {
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
-    SizeConfig().designWidth(4.14).designHeight(8.96).init(context);
-
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(

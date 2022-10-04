@@ -8,7 +8,6 @@ import 'package:todo_emp/providers/TaskProvider.dart';
 import 'package:todo_emp/widgets/task_widget.dart';
 import 'package:todo_emp/widgets/task_widget_admin.dart';
 
-import '../../providers/task_api_provider.dart';
 
 
 class ApiTasksScreen extends StatefulWidget {
@@ -29,14 +28,14 @@ class _ApiTasksScreenState extends State<ApiTasksScreen> {
     refreshTasks();
   }
   Future refreshTasks()async{
-
+    TaskApiController().getTasks(context: context);
     await Provider.of<TaskProvider>(context, listen: false).readTaskAd();
 
   }
   @override
   Widget build(BuildContext context) {
      Provider.of<TaskProvider>(context, listen: false).readTaskAd();
-     TaskApiController().getTasks(context: context);
+     // TaskApiController().getTasks(context: context);
 
     //Provider.of<TaskProvider>(context, listen: false).readAll();
     // TODO: implement build
@@ -50,15 +49,24 @@ class _ApiTasksScreenState extends State<ApiTasksScreen> {
             ) {
           if (provider.readTaskAdmin.isNotEmpty) {
             // ListView.clear();
-            return ListView.builder(
-                itemCount: provider.readTaskAdmin.length,
-                itemBuilder: (context, index) {
-                  taskModel task = provider.readTaskAdmin[index];
+            return RefreshIndicator(
+              onRefresh: ()async{
+                Future.delayed(Duration(seconds: 1)).then((v) {
+                  TaskApiController().getTasks(context: context);
 
-                  return TaskWidgetAdmin(
-                    provider.readTaskAdmin.toList()[index],
-                  );
                 });
+              },
+
+              child: ListView.builder(
+                  itemCount: provider.readTaskAdmin.length,
+                  itemBuilder: (context, index) {
+                    taskModel task = provider.readTaskAdmin[index];
+
+                    return TaskWidgetAdmin(
+                      provider.readTaskAdmin.toList()[index],
+                    );
+                  }),
+            );
           } else {
             return Center(
               child: Column(
