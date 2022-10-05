@@ -6,11 +6,11 @@ class DrawerListTile2 extends StatelessWidget {
   void Function() onTab;
   String? counter;
 
-  DrawerListTile2(
-      {required this.iconData,
-      required this.title,
-      required this.onTab,
-          });
+  DrawerListTile2({
+    required this.iconData,
+    required this.title,
+    required this.onTab,
+  });
 
   @override
   Widget build(BuildContext context) {

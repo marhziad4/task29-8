@@ -83,12 +83,6 @@ class UserApiController with Helpers {
     print('token:${UserPreferences().token}');
     if (response.statusCode != 400) {
       await UserPreferences().logout();
-
-      showSnackBar(
-        context: context,
-        content: '   تم تسجيل الخروج بنجاح',
-      );
-
       return true;
     } else if (response.statusCode != 500) {
       showSnackBar(

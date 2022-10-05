@@ -6,7 +6,6 @@ import 'package:todo_emp/preferences/user_pref.dart';
 import 'package:todo_emp/providers/TaskProvider.dart';
 import 'package:todo_emp/utils/helpers.dart';
 import 'package:todo_emp/widgets/defaultTextFormField.dart';
-
 import '../../../widgets/app_button_main.dart';
 
 class NewTaskScreen extends StatefulWidget {

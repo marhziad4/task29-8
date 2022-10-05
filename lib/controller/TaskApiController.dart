@@ -54,7 +54,16 @@ class TaskApiController with ApiMixin, HelpersApi {
           print(v['id_pk']);
         });
         return tasksList;
+      }else if (response.statusCode == 401) {
+        context.showFlashDialog(
+          content: Text('يرجى اعادة تسجيل الدخول '),
+        );
+
       }
+    }else if(jsonResponseBody.isNotEmpty){
+      context.showFlashDialog(
+        content: Text('لا يوجد مهام '),
+      );
     }
 
     return [];

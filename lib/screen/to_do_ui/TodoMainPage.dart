@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flash/flash.dart';
@@ -9,7 +7,6 @@ import 'package:provider/provider.dart';
 import 'package:todo_emp/controller/TaskApiController.dart';
 import 'package:todo_emp/controller/UserApiController.dart';
 import 'package:todo_emp/model/location.dart';
-import 'package:todo_emp/model/taskModel.dart';
 import 'package:todo_emp/model/tasks.dart';
 import 'package:todo_emp/preferences/user_pref.dart';
 import 'package:todo_emp/providers/TaskProvider.dart';
@@ -21,8 +18,6 @@ import 'package:todo_emp/screen/to_do_ui/control/NewTaskScreen.dart';
 import 'package:todo_emp/utils/helpers.dart';
 import 'package:todo_emp/widgets/drawer_list_tile.dart';
 import 'package:todo_emp/widgets/drawer_list_tile2.dart';
-import 'package:todo_emp/widgets/loading2.dart';
-
 import '../../providers/location_provider.dart';
 
 class TodoMainPage extends StatefulWidget {
@@ -48,14 +43,9 @@ class _TodoMainPageState extends State<TodoMainPage>
     super.initState();
     initTabController();
     refreshTasks();
-
-//     counter= await Provider.of<TaskProvider>(context, listen: false).counterCmp;
-// print('$counter');
   }
 
   Future refreshTasks() async {
-    // print('ctini 456');
-    //completeTasks=await TaskProvider().read2();
     await Provider.of<TaskProvider>(context, listen: false).readAll();
     await Provider.of<TaskProvider>(context, listen: false).read2();
 
@@ -63,17 +53,11 @@ class _TodoMainPageState extends State<TodoMainPage>
     void setState(VoidCallback fn) {
       // TODO: implement setState
       super.setState(fn);
-      // =Provider.of<TaskProvider>(context, listen: true).counterCmp;
       Provider.of<TaskProvider>(context, listen: false).read2();
 
       counter = Provider.of<TaskProvider>(context, listen: false)
           .completeTasks
           .length;
-
-      // List<taskModel> completeTasks = <taskModel>[];
-      //
-      // completeTasks= TaskProvider().completeTasks;
-      // _index = completeTasks.length;
     }
   }
 
@@ -82,24 +66,9 @@ class _TodoMainPageState extends State<TodoMainPage>
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
-    // setState(() {
-    //   counter = Provider.of<TaskProvider>(context, listen: false)
-    //       .completeTasks
-    //       .length;
-    // });
+
     return Scaffold(
       backgroundColor: Color(0xffEBF0F9),
-      // floatingActionButton: Padding(
-      //   padding: const EdgeInsets.all(10),
-      //   child: FloatingActionButton(
-      //       child: Icon(Icons.add),
-      //       backgroundColor: Color(0xff0f31dc),
-      //       onPressed: () async {
-      //         Navigator.push(
-      //             context, MaterialPageRoute(builder: (_) => NewTaskScreen()));
-      //         // print(TaskProvider().completeTasks);
-      //       }),
-      // ),
       key: _scaffoldKey,
       appBar: AppBar(
         elevation: 0,
@@ -112,14 +81,7 @@ class _TodoMainPageState extends State<TodoMainPage>
                 size: 25.0,
               ),
               onPressed: () async {
-                // setState(() { TaskProvider.  });
-                // late Future<List<taskModel>> _future;
-                //  await TaskProvider().update2(task: task);
-
-                // await TaskApiController().getTasks();
-                // print(jsonEncode(_future));
                 print(" ${UserPreferences().chek}");
-
                 Navigator.push(context,
                     MaterialPageRoute(builder: (_) => NewTaskScreen()));
               },
@@ -127,19 +89,6 @@ class _TodoMainPageState extends State<TodoMainPage>
           )
         ],
 
-        // IconButton(
-        // icon: Icon(
-        // Icons.calendar_month_outlined,
-        //   color: Colors.white,
-        // ),
-        //   onPressed: () {
-        //     TableCalendar(
-        //       firstDay: DateTime.utc(2010, 10, 16),
-        //       lastDay: DateTime.utc(2030, 3, 14),
-        //       focusedDay: DateTime.now(),
-        //     );
-        //   },
-        // )
         centerTitle: true,
         backgroundColor: Color(0xff0f31dc),
         // backgroundColor: Colors.white,
@@ -219,33 +168,17 @@ class _TodoMainPageState extends State<TodoMainPage>
                 decoration: BoxDecoration(
                   color: Colors.white,
                 ),
-                currentAccountPicture:
-
-                    // CircleAvatar(
-                    //   radius: 30,
-                    //   child: Image.network(
-                    //       '${UserPreferences().image}',width: 50,height: 50,),
-                    // ),
-                //     CircleAvatar(
-                //   radius: 30,
-                //   backgroundImage: NetworkImage('${UserPreferences().image}'),
-                // ),
-                ClipRRect(
-                borderRadius:
-                BorderRadius.circular(50),
-        child: CachedNetworkImage(
-
-
-          imageUrl:
-          '${UserPreferences().image}',
-          height:20,
-          width: 20,
-            fit: BoxFit.fill,
-            placeholder: (context, url) => CircularProgressIndicator(),
-              errorWidget: (context, url, error) => Icon(Icons.error),
-        ),
-      ),
-
+                currentAccountPicture: ClipRRect(
+                  borderRadius: BorderRadius.circular(50),
+                  child: CachedNetworkImage(
+                    imageUrl: '${UserPreferences().image}',
+                    height: 20,
+                    width: 20,
+                    fit: BoxFit.fill,
+                    placeholder: (context, url) => CircularProgressIndicator(),
+                    errorWidget: (context, url, error) => Icon(Icons.error),
+                  ),
+                ),
                 accountName: Text(
                   '${UserPreferences().name}',
                   style: TextStyle(
@@ -260,12 +193,6 @@ class _TodoMainPageState extends State<TodoMainPage>
                     color: Colors.black,
                   ),
                 )),
-            // Divider(
-            //   indent: 0,
-            //   endIndent: 50,
-            //   thickness: 1,
-            //   color: Colors.grey.shade300,
-            // ),
             DrawerListTile2(
               title: "الرئيسية",
               iconData: Icons.home,
@@ -286,7 +213,6 @@ class _TodoMainPageState extends State<TodoMainPage>
                 Navigator.pushNamed(context, '/NewTaskScreen');
               },
             ),
-
             SizedBox(
               height: 20,
             ),
@@ -296,37 +222,6 @@ class _TodoMainPageState extends State<TodoMainPage>
               counter: '${counter}',
               onTab: () async {
                 _checkConnectivityState();
-                // if(async==false){
-                //   TaskApiController()
-                //       .createTask(context: context);
-                // }else{
-                //   showSnackBar(
-                //       context: context,
-                //       content: 'تم ترحيل البيانات سابقا',
-                //       error: true);
-                // }
-                // setState(() {
-                //   async=true;
-                // });
-
-                // var response = await http.post(
-                //   Uri.parse('http://10.12.161.8:82/api/public/api/store'),
-                //
-                // );
-                // var jsonResponse = jsonDecode(response.body);
-                // print("hhhh>>${jsonResponse}");
-
-                //
-                // var url = Uri.parse(ApiSettings.ADDTASKS);
-                // var response = await http.post((url),body: {
-                //
-                // },
-                //     headers: {
-                //       'authorization':UserPreferences().token
-                //     });
-                // TaskApiController().createTask();
-                // RouterClass.routerClass.routingToSpecificWidgetWithoutPop(
-                //     MyHomePage());
               },
             ),
             SizedBox(
@@ -336,35 +231,13 @@ class _TodoMainPageState extends State<TodoMainPage>
               title: "جلب المهام",
               iconData: Icons.task,
               onTab: () {
-                // TaskApiController().getTasks(context: context);
-                  _checkConnectivityStateFetchTask();
-                  Navigator.pop(context);
-
+                _checkConnectivityStateFetchTask();
+                Navigator.pop(context);
               },
             ),
             SizedBox(
               height: 20,
             ),
-            // DrawerListTile2(
-            //   title: "حفظ احتياطي",
-            //   iconData: Icons.file_upload_rounded,
-            //   onTab: () async {
-            //     // _writeBackup(tasks);
-            //     // RouterClass.routerClass.routingToSpecificWidgetWithoutPop(
-            //     //     MyHomePage());
-            //   },
-            // ),
-            // SizedBox(
-            //   height: 20,
-            // ),
-            // DrawerListTile2(
-            //   title: "ضبط",
-            //   iconData: Icons.settings,
-            //   onTab: () {
-            //     // RouterClass.routerClass.routingToSpecificWidgetWithoutPop(
-            //     //     Checksis());
-            //   },
-            // ),
             Divider(
               indent: 0,
               endIndent: 50,
@@ -375,13 +248,10 @@ class _TodoMainPageState extends State<TodoMainPage>
                 iconData: Icons.logout,
                 title: "تسجيل خروج",
                 onTab: () async {
-                  logout();
-                  print('object');
-                  // Provider.of<AppProvider>(context, listen: false).logOut();
-
-                  // await logout();
-                  // showSnackBar(
-                  //     context: context, content: 'Logout successfully');
+                  showLogoutDialog(
+                      context: context,
+                      title: 'تسجيل خروج',
+                      subTittle: 'هل تريد تسجيل الخروج ؟');
                 }),
           ],
         ),
@@ -399,7 +269,6 @@ class _TodoMainPageState extends State<TodoMainPage>
     );
   }
 
-
   Tasks get tasks {
     Tasks task = Tasks();
     task.title = 'title';
@@ -416,7 +285,6 @@ class _TodoMainPageState extends State<TodoMainPage>
     task.userId = UserPreferences().IdUser;
     return task;
   }
-
 
   Future<void> logout() async {
     print('log');
@@ -460,6 +328,7 @@ class _TodoMainPageState extends State<TodoMainPage>
       return false;
     }
   }
+
   Future<bool> _checkConnectivityStateFetchTask() async {
     final ConnectivityResult result = await Connectivity().checkConnectivity();
 

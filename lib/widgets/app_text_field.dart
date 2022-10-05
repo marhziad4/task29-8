@@ -18,8 +18,7 @@ class AppTextField1 extends StatefulWidget {
       this.prefixIcon,
       this.suffixIcon,
       this.minLines,
-      this.maxLines
-      });
+      this.maxLines});
 
   @override
   _AppTextField1State createState() => _AppTextField1State();

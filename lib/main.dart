@@ -6,7 +6,6 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:todo_emp/data/DbProvider.dart';
 import 'package:todo_emp/model/location.dart';
-import 'package:todo_emp/model/taskImage.dart';
 import 'package:todo_emp/model/taskModel.dart';
 import 'package:todo_emp/preferences/user_pref.dart';
 import 'package:todo_emp/providers/TaskProvider.dart';
@@ -58,38 +57,26 @@ void main() async {
       builder: (BuildContext context, Widget? child) {
         return MyMaterialApp();
       },
-
     ),
   );
 }
 
 void readLocation() async {
-  print('readLocation');
-  Position userLocation = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
-  print('readLocation :$userLocation');
+
   final position = await CurrentLocation.fetch();
   latitude = (position.latitude).toString();
   longitude = (position.longitude).toString();
-  // print('every one minutes latitude ${position.latitude}');
-  // print('every one minutes longitude ${position.longitude}');
+
   lastLocations = await LocationProvider().lastRow();
-  // tasks = await TaskProvider().read();
 
   print('lastLocations${jsonEncode(lastLocations)}');
   List<taskModel>? Tasks;
   Tasks = await TaskProvider().read();
 
   for (int i = 0; i < Tasks!.length; i++) {
-    // print('taskds${jsonEncode(Tasks)}');
 
     if (Tasks[i].counter == 1) {
       if (lastLocations!.length > 0) {
-        print('every one minutes2${Tasks[i].counter}');
-        // print(
-        //     'latitude >> ${lastLocations![0].latitude} == ${latitude.toString()}');
-        // print(
-        //     'longitude >> ${lastLocations![0].longitude} == ${longitude.toString()}');
-
         double distanceInMeters = Geolocator.distanceBetween(
             double.parse('${lastLocations![0].latitude}'),
             double.parse('${lastLocations![0].longitude}'),
@@ -110,15 +97,8 @@ void readLocation() async {
       } else
         await LocationProvider().addLocation(location: locationUser);
       await LocationProvider().update(location: locationUser);
-      //   else{
-      //     print('لا يوجد مهام قيد التنفيذ');
-      //   }
-      //
     }
   }
-  // print('material');
-  // print('every one minutes latitude ${position.latitude}');
-  // print('every one minutes longitude ${position.longitude}');
 
   locations = await LocationProvider().read();
   for (int i = 0; i < locations!.length; i++) {
@@ -169,7 +149,6 @@ class CurrentLocation {
   /// When the location services are not enabled or permissions
   /// are denied the `Future` will return an error.
   static Future<Position> fetch() async {
-    bool serviceEnabled;
     LocationPermission permission;
     permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {

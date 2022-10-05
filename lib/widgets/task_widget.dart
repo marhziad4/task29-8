@@ -318,13 +318,15 @@ class _TaskWidgetState extends State<TaskWidget> with Helpers {
                                             listen: false)
                                         .update4(task: widget.task);
 
-                                    // Provider.of<TaskProvider>(context,
-                                    //     listen: false)
-                                    //     .read();
-                                    // Provider.of<TaskProvider>(context,
-                                    //     listen: false)
-                                    //     .read2();
-
+                                    Provider.of<TaskProvider>(context,
+                                        listen: false)
+                                        .update(task: widget.task);
+                                    Provider.of<TaskProvider>(context,
+                                        listen: false)
+                                        .read();
+                                    Provider.of<TaskProvider>(context,
+                                        listen: false)
+                                        .read2();
                                   }
                                 });
                                 await Provider.of<TaskProvider>(context,

@@ -8,18 +8,13 @@ import 'package:todo_emp/providers/TaskProvider.dart';
 import 'package:todo_emp/widgets/task_widget.dart';
 import 'package:todo_emp/widgets/task_widget_admin.dart';
 
-
-
 class ApiTasksScreen extends StatefulWidget {
   @override
   State<ApiTasksScreen> createState() => _ApiTasksScreenState();
 }
 
 class _ApiTasksScreenState extends State<ApiTasksScreen> {
-
-// late taskModel tasks;
   bool isLoading = false;
-
 
   @override
   void initState() {
@@ -27,36 +22,30 @@ class _ApiTasksScreenState extends State<ApiTasksScreen> {
     super.initState();
     refreshTasks();
   }
-  Future refreshTasks()async{
+
+  Future refreshTasks() async {
     TaskApiController().getTasks(context: context);
     await Provider.of<TaskProvider>(context, listen: false).readTaskAd();
-
   }
+
   @override
   Widget build(BuildContext context) {
-     Provider.of<TaskProvider>(context, listen: false).readTaskAd();
-     // TaskApiController().getTasks(context: context);
-
-    //Provider.of<TaskProvider>(context, listen: false).readAll();
+    Provider.of<TaskProvider>(context, listen: false).readTaskAd();
     // TODO: implement build
     return Container(
-
       child: Consumer<TaskProvider>(
         builder: (
-            BuildContext context,
-            TaskProvider provider,
-            Widget? child,
-            ) {
+          BuildContext context,
+          TaskProvider provider,
+          Widget? child,
+        ) {
           if (provider.readTaskAdmin.isNotEmpty) {
-            // ListView.clear();
             return RefreshIndicator(
-              onRefresh: ()async{
+              onRefresh: () async {
                 Future.delayed(Duration(seconds: 1)).then((v) {
                   TaskApiController().getTasks(context: context);
-
                 });
               },
-
               child: ListView.builder(
                   itemCount: provider.readTaskAdmin.length,
                   itemBuilder: (context, index) {
@@ -92,6 +81,4 @@ class _ApiTasksScreenState extends State<ApiTasksScreen> {
       ),
     );
   }
-
-
 }

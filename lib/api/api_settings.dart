@@ -1,5 +1,5 @@
 class ApiSettings{
-   static final String _BASE_URL = 'http://10.12.161.8:82/api/public/api/';
+   static final String _BASE_URL = 'https://portal.pla.gov.ps/api/auth/';
   static final String LOGIN = _BASE_URL + 'login';
   static final String LOGOUT = _BASE_URL + 'logout';
   static final String TASKS = _BASE_URL + 'products';

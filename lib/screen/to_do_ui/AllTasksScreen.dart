@@ -1,10 +1,7 @@
-import 'package:cron/cron.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:todo_emp/main.dart';
 import 'package:todo_emp/model/taskModel.dart';
 import 'package:todo_emp/providers/TaskProvider.dart';
-import 'package:todo_emp/screen/MapScreen.dart';
 import 'package:todo_emp/utils/helpers.dart';
 import 'package:todo_emp/widgets/task_widget.dart';
 
@@ -17,7 +14,6 @@ class AllTasksScreen extends StatefulWidget {
 
 class _AllTasksScreenState extends State<AllTasksScreen> with Helpers {
 
-// late taskModel tasks;
 bool isLoading = false;
 
 
@@ -37,8 +33,6 @@ bool isLoading = false;
   @override
   Widget build(BuildContext context) {
     Provider.of<TaskProvider>(context, listen: false).readAll();
-
-    //Provider.of<TaskProvider>(context, listen: false).readAll();
     // TODO: implement build
     return Container(
 
@@ -85,19 +79,5 @@ bool isLoading = false;
     );
   }
 
-  // Future<bool> chekPress() async {
-  //   tasks = (await TaskProvider().read())!;
-  //   for (int i = 0; i < tasks!.length; i++) {
-  //     if (tasks![i].status == false) {
-  //       _isButtonDisabled = true;
-  //       showSnackBar(
-  //           context: context, content: 'هناك مهمة قيد العمل', error: true);
-  //
-  //       return false;
-  //     } else {
-  //       _isButtonDisabled = false;
-  //     }
-  //   }
-  //   return true;
-  // }
+
 }

@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:todo_emp/main.dart';
 import 'package:todo_emp/providers/TaskProvider.dart';
 import 'package:todo_emp/utils/helpers.dart';
-import 'package:todo_emp/widgets/task_widget.dart';
 import 'package:todo_emp/widgets/task_widget_admin.dart';
 
 class AsyncTasksScreen extends StatefulWidget {
@@ -11,10 +9,11 @@ class AsyncTasksScreen extends StatefulWidget {
   State<AsyncTasksScreen> createState() => _AsyncTasksScreenState();
 }
 
-class _AsyncTasksScreenState extends State<AsyncTasksScreen>  with Helpers {
+class _AsyncTasksScreenState extends State<AsyncTasksScreen> with Helpers {
   bool isLoading = false;
   bool visible = true;
   bool chek = true;
+
   @override
   void initState() {
     // TODO: implement initState
@@ -22,24 +21,23 @@ class _AsyncTasksScreenState extends State<AsyncTasksScreen>  with Helpers {
 
     refreshTasks();
   }
-  Future refreshTasks()async{
+
+  Future refreshTasks() async {
     await Provider.of<TaskProvider>(context, listen: false).readAsync();
-
-
   }
+
   @override
   Widget build(BuildContext context) {
     Provider.of<TaskProvider>(context, listen: false).readAll();
 
     // TODO: implement build
     return Container(
-
       child: Consumer<TaskProvider>(
         builder: (
-            BuildContext context,
-            TaskProvider provider,
-            Widget? child,
-            ) {
+          BuildContext context,
+          TaskProvider provider,
+          Widget? child,
+        ) {
           if (provider.doneAsync.isNotEmpty) {
             return ListView.builder(
                 itemCount: provider.doneAsync.length,

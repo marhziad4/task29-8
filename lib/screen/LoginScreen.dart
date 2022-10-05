@@ -20,27 +20,12 @@ class _LoginScreenState extends State<LoginScreen> with Helpers {
   late TextEditingController _password;
   bool _passwordVisible = true;
   late bool visible = true;
-
-  // String? token = '';
   String? longitude;
   String? latitude;
-  ConnectivityResult? _connectivityResult;
-  late StreamSubscription _connectivitySubscription;
-  bool? _isConnectionSuccessful;
 
   @override
   void initState() {
     super.initState();
-    // TaskApiController().getTasks(context: context);
-    _connectivitySubscription = Connectivity()
-        .onConnectivityChanged
-        .listen((ConnectivityResult result) {
-      print('Current connectivity status: $result');
-      setState(() {
-        _connectivityResult = result;
-      });
-    });
-    // location();
     _userNum = TextEditingController();
     _password = TextEditingController();
   }
@@ -48,8 +33,6 @@ class _LoginScreenState extends State<LoginScreen> with Helpers {
   @override
   void dispose() {
     super.dispose();
-    _connectivitySubscription.cancel();
-
     _userNum.dispose();
     _password.dispose();
   }
@@ -67,7 +50,6 @@ class _LoginScreenState extends State<LoginScreen> with Helpers {
             ),
           ),
           child: Container(
-              // margin: EdgeInsets.symmetric(horizontal:40, vertical: 160),
               padding: EdgeInsets.symmetric(horizontal: 20, vertical: 90),
               child: Center(
                 child: Column(
@@ -125,9 +107,7 @@ class _LoginScreenState extends State<LoginScreen> with Helpers {
                       onTap: () async {
                         visible = true;
 
-                        // performLogin();
                         _checkConnectivityState();
-                        //  Navigator.pushNamed(context, '/TodoMainPage');
                       },
                       child: Container(
                         alignment: Alignment.center,
@@ -189,10 +169,6 @@ class _LoginScreenState extends State<LoginScreen> with Helpers {
         username: _userNum.text.trim(),
         password: _password.text.trim());
     UserPreferences().setIdUser(_userNum.text);
-    // bool loogedIn = await UserApiController().login(
-    //     context: context,
-    //     email: _userNum.text,
-    //     password: _password.text);
 
     if (status) {
       debugPrint("here token send to server ===> ${UserPreferences().token}");

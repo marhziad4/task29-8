@@ -14,7 +14,6 @@ class AppButtonMain extends StatelessWidget {
         borderRadius: BorderRadius.circular(10),
       ),
       child: ElevatedButton(
-
         onPressed: onPressed,
         child: Text(
           title ?? "",

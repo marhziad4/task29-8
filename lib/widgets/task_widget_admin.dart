@@ -5,15 +5,11 @@ import 'package:flash/flash.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:todo_emp/main.dart';
-import 'package:todo_emp/model/location.dart';
-import 'package:todo_emp/model/taskImage.dart';
 import 'package:todo_emp/model/taskModel.dart';
 import 'package:todo_emp/preferences/user_pref.dart';
 import 'package:todo_emp/providers/TaskProvider.dart';
 import 'package:todo_emp/providers/images_provider.dart';
-import 'package:todo_emp/providers/location_provider.dart';
 import 'package:todo_emp/screen/MapScreen.dart';
-import 'package:todo_emp/screen/to_do_ui/control/EditTaskScreen.dart';
 import 'package:todo_emp/utils/helpers.dart';
 
 class TaskWidgetAdmin extends StatefulWidget {
@@ -101,7 +97,6 @@ class _TaskWidgetAdminState extends State<TaskWidgetAdmin> with Helpers {
                                   fontSize: 25,
                                   color: Colors.black87),
                             ),
-
                           ],
                         ),
                       ),
@@ -160,7 +155,7 @@ class _TaskWidgetAdminState extends State<TaskWidgetAdmin> with Helpers {
                                     UserPreferences().setChek(chek);
                                     print('1${UserPreferences().chek}');
                                     Provider.of<TaskProvider>(context,
-                                        listen: false)
+                                            listen: false)
                                         .update(task: widget.task);
                                     widget.task.counter = 1;
                                     widget.task.status = 1;
@@ -168,7 +163,7 @@ class _TaskWidgetAdminState extends State<TaskWidgetAdmin> with Helpers {
                                     widget.task.chek = UserPreferences().chek;
 
                                     Provider.of<TaskProvider>(context,
-                                        listen: false)
+                                            listen: false)
                                         .update3(task: widget.task);
                                     cron.schedule(Schedule.parse('*/1 * * * *'),
                                         () async {
@@ -192,7 +187,7 @@ class _TaskWidgetAdminState extends State<TaskWidgetAdmin> with Helpers {
                                     widget.task.chek = UserPreferences().chek;
 
                                     Provider.of<TaskProvider>(context,
-                                        listen: false)
+                                            listen: false)
                                         .update4(task: widget.task);
 
                                     // Provider.of<TaskProvider>(context,
@@ -204,7 +199,9 @@ class _TaskWidgetAdminState extends State<TaskWidgetAdmin> with Helpers {
 
                                   }
                                 });
-                       await Provider.of<TaskProvider>(context, listen: false).readAll();
+                                await Provider.of<TaskProvider>(context,
+                                        listen: false)
+                                    .readAll();
                               },
                               child: Container(
                                 alignment: Alignment.center,
@@ -244,31 +241,29 @@ class _TaskWidgetAdminState extends State<TaskWidgetAdmin> with Helpers {
                       ),
                       Padding(
                         padding:
-                            EdgeInsets.symmetric(horizontal:90, vertical: 20),
-                       child: Row(
-                         children: [
-                           //.replaceRange(0,11, '')
-                           Text(
-                             widget.task.time,
-                             style: TextStyle(
-                                 fontWeight: FontWeight.bold,
-                                 fontSize: 15,
-                                 color: Colors.blueGrey),
-                           ),
-                           SizedBox(
-                             width: 20,
-                           ),
-                           Text(
-                             widget.task.date,
-                             style: TextStyle(
-                                 fontWeight: FontWeight.bold,
-                                 fontSize: 15,
-                                 color: Colors.blueGrey),
-                           ),
-
-
-                         ],
-                       ),
+                            EdgeInsets.symmetric(horizontal: 90, vertical: 30),
+                        child: Row(
+                          children: [
+                            //.replaceRange(0,11, '')
+                            Text(
+                              widget.task.time,
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 15,
+                                  color: Colors.blueGrey),
+                            ),
+                            SizedBox(
+                              width: 20,
+                            ),
+                            Text(
+                              widget.task.date,
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 15,
+                                  color: Colors.blueGrey),
+                            ),
+                          ],
+                        ),
 // Checkbox(
 //   value:value ,
 //     //Provider.of<DatabaseProvider>(context).isComplete
@@ -278,7 +273,7 @@ class _TaskWidgetAdminState extends State<TaskWidgetAdmin> with Helpers {
 //   },
 //   title: Text('I have complete this task'),
 // ),
-                        ),
+                      ),
 // const SizedBox(
 //   height: 25,
 //   width: 0,
