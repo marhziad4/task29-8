@@ -29,42 +29,46 @@ class TaskApiController with ApiMixin, HelpersApi {
     var response = await http.get(url, headers: requestHeaders);
     print("no ${response.statusCode}");
     print("no ${response.body}");
-    var jsonResponseBody = jsonDecode(response.body)['tasks'] as List;
-    if (jsonResponseBody.isNotEmpty) {
+
       if (response.statusCode == 200) {
-        var jsonResponse = jsonDecode(response.body);
         var jsonResponseBody = jsonDecode(response.body)['tasks'] as List;
-        id_pk = jsonResponse['tasks'][0]['id_pk'];
-        print(jsonResponseBody);
-        List<taskModel> tasksList = <taskModel>[];
-        jsonResponseBody.forEach((v) async {
-          print(v);
-          tasksList.add(new taskModel.fromJson2(v));
 
-          id_pk = v['id_pk'];
-          title = v['title'];
-          description = v['description'];
-          start_date = v['start_date'];
-          end_date = v['end_date'];
-          create_date = v['create_date'];
-          update_date = v['update_date'];
-          bool saved = await TaskProvider().create(task: tasks);
-          await Provider.of<TaskProvider>(context, listen: false).readTaskAd();
+        if (jsonResponseBody.isNotEmpty) {
+          var jsonResponse = jsonDecode(response.body);
+          var jsonResponseBody = jsonDecode(response.body)['tasks'] as List;
+          id_pk = jsonResponse['tasks'][0]['id_pk'];
+          print(jsonResponseBody);
+          List<taskModel> tasksList = <taskModel>[];
+          jsonResponseBody.forEach((v) async {
+            print(v);
+            tasksList.add(new taskModel.fromJson2(v));
 
-          print(v['id_pk']);
-        });
-        return tasksList;
-      }else if (response.statusCode == 401) {
+            id_pk = v['id_pk'];
+            title = v['title'];
+            description = v['description'];
+            start_date = v['start_date'];
+            end_date = v['end_date'];
+            create_date = v['create_date'];
+            update_date = v['update_date'];
+            bool saved = await TaskProvider().create(task: tasks);
+            await Provider.of<TaskProvider>(context, listen: false)
+                .readTaskAd();
+
+            print(v['id_pk']);
+          });
+          return tasksList;
+        }else if(jsonResponseBody.isNotEmpty){
+          context.showFlashDialog(
+            content: Text('لا يوجد مهام '),
+          );
+        }
+      } else if (response.statusCode == 401) {
+        print('no login');
         context.showFlashDialog(
           content: Text('يرجى اعادة تسجيل الدخول '),
         );
 
       }
-    }else if(jsonResponseBody.isNotEmpty){
-      context.showFlashDialog(
-        content: Text('لا يوجد مهام '),
-      );
-    }
 
     return [];
   }

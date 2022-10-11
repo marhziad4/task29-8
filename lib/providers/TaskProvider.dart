@@ -200,9 +200,9 @@ class TaskProvider extends ChangeNotifier {
   }
 
   Future<bool> delete(int id) async {
-    bool deleted = await TaskDbController().delete(id);
-    LocationProvider().delete(id);
-    ImagesProvider().delete2(id);
+    // bool deleted = await TaskDbController().delete(id);
+    // LocationProvider().delete(id);
+    // ImagesProvider().delete2(id);
     int index = tasks.indexWhere((element) => element.id == id);
    // int index2 = locations?.indexWhere((element) => element.task_id == task_id);
     if (index != -1) {

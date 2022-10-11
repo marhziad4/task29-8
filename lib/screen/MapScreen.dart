@@ -36,7 +36,7 @@ class _MapScreenState extends State<MapScreen> with Helpers {
   final Set<Polyline> _polyline = {};
   List<Marker> _marker = [];
   List<Marker> _list = [];
-  late GoogleMapController googleMapController;
+  late GoogleMapController _googleMapController;
   late CameraPosition _cameraPosition;
   late GoogleMap googleMap;
   int x = 0;
@@ -51,9 +51,7 @@ class _MapScreenState extends State<MapScreen> with Helpers {
   var firstAddress;
   var tapped;
   late TextEditingController details;
-  final List<Map> myProducts =
-      List.generate(100000, (index) => {"id": 1, "name": "Product yy"})
-          .toList();
+
 
   /////polyLine///////
   Map<PolylineId, Polyline> polylines = {};
@@ -65,35 +63,40 @@ class _MapScreenState extends State<MapScreen> with Helpers {
   late double panelHeighClosed;
 
   /////polyLine///////
-  Future<Uint8List> getImages(String path, int width) async {
-    ByteData data = await rootBundle.load(path);
-    ui.Codec codec = await ui.instantiateImageCodec(data.buffer.asUint8List(),
-        targetHeight: width);
-    ui.FrameInfo fi = await codec.getNextFrame();
-    return (await fi.image.toByteData(format: ui.ImageByteFormat.png))!
-        .buffer
-        .asUint8List();
-  }
+void location()async{
+  locationsById = await Provider.of<LocationProvider>(context, listen: false)
+      .readByTask(taskId);
+  ImagesById = await Provider.of<ImagesProvider>(context, listen: false)
+      .readId(taskId);
+  setState(() {
+    _marker.addAll(_list);
+    addMarker();
+  });
+  print('location kk');
+}
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    location();
     taskId = widget.task.id!;
     Provider.of<LocationProvider>(context, listen: false).readByTask(taskId);
     _cameraPosition =
         CameraPosition(target: LatLng(31.520088, 34.4347784), zoom: 11);
     details = TextEditingController(text: widget.task.details);
     _getPolyline();
-    _marker.addAll(_list);
+
 
     print(_marker);
   }
 
   @override
   void dispose() {
-    super.dispose();
+    _googleMapController.dispose();
     details.dispose();
+    super.dispose();
+
   }
 
   @override
@@ -191,17 +194,19 @@ class _MapScreenState extends State<MapScreen> with Helpers {
                       ),
                       AppButtonMain(
                         onPressed: () async {
-                          await Provider.of<TaskProvider>(context,
-                                  listen: false)
-                              .update(task: task);
-                          locations = await Provider.of<LocationProvider>(
-                                  context,
-                                  listen: false)
-                              .read();
-                          for (int i = 0; i < locations!.length; i++) {
-                            print(
-                                'index ${i} location ${locations![i].latitude} longitude ${locations![i].longitude}  time ${locations![i].time}  updatetime ${locations![i].updatetime}task_id ${locations![i].task_id}');
-                          }
+                           await Provider.of<TaskProvider>(context,
+                                   listen: false)
+                               .update(task: task);
+                           locations = await Provider.of<LocationProvider>(
+                                   context,
+                                   listen: false)
+                               .read();
+                          // for (int i = 0; i < locations!.length; i++) {
+                          //   print(
+                          //       'index ${i} location ${locations![i].latitude} longitude ${locations![i].longitude}  time ${locations![i].time}  updatetime ${locations![i].updatetime}task_id ${locations![i].task_id}');
+                          // }
+
+
                           Navigator.pop(context);
                         },
                         title: 'حفظ',
@@ -258,21 +263,6 @@ class _MapScreenState extends State<MapScreen> with Helpers {
                                                     Colors.white, //<-- SEE HERE
 
                                                 onPressed: () async {
-                                                  // print('dele');
-
-                                                  // List<taskImage>?image2= await Provider.of<ImagesProvider>(context,
-                                                  //         listen: false)
-                                                  //         .imageId;
-                                                  // print('${provider.imageId.toList()[index].id}');
-                                                  // List<taskImage>?image =await Provider.of<ImagesProvider>(context,
-                                                  //     listen: false)
-                                                  // //     .read();
-                                                  // for(int i = 0; i < image2.length; i++) {
-                                                  //   print('image id ${image2[i].id}');
-                                                  //   print('image image ${image2[i].image}');
-                                                  //
-                                                  // }
-                                                  // print(Imagetask.id);
                                                   await Provider.of<
                                                               ImagesProvider>(
                                                           context,
@@ -291,43 +281,6 @@ class _MapScreenState extends State<MapScreen> with Helpers {
                                   child: Text(''),
                                 )),
 
-                      // widget.task.image
-                      // widget.task.image
-                      //6ca5e1f6-c582-4575-9611-dd7ad8e442356687349653389249750.jpg
-                      //data/user/0/com.example.todo_emp/cache/
-                      /*
-                        //Image imageFile= Image.file(File('/storage/emulated/0/Pictures/pla_todo'));
-                      //'/data/user/0/com.example.todo_emp/cache/${widget.task.image}'
-                       */
-
-                      // Container(
-                      //     child: widget.task.image != null
-                      //         ? Container(
-                      //       width: 200,
-                      //       height: 200,
-                      //       child: Image.file(File(
-                      //           '/data/user/0/com.example.todo_emp/cache/${widget.task.image}')),
-                      //     )
-                      //         : photoName==null?
-                      //     Text(' ')
-                      //         :
-                      //     Container(
-                      //       width: 200,
-                      //       height: 200,
-                      //       child: Image.file(File(
-                      //           '/data/user/0/com.example.todo_emp/cache/${photoName}')),
-                      //     )
-                      /*
-                                  : Container(
-                                        width: 200,
-                                        height: 200,
-                                        child: Utility.imageFromBase64String(
-                                            widget.task.image!),
-                                      )
-                                 */
-                      //
-                      //         ),
-                      // ),
                     ],
                   ),
                 ),
@@ -345,7 +298,6 @@ class _MapScreenState extends State<MapScreen> with Helpers {
                   compassEnabled: true,
                   mapToolbarEnabled: true,
                   indoorViewEnabled: true,
-                  // liteModeEnabled: true,
                   tiltGesturesEnabled: true,
                   buildingsEnabled: true,
                   trafficEnabled: true,
@@ -356,67 +308,32 @@ class _MapScreenState extends State<MapScreen> with Helpers {
                   polylines: Set<Polyline>.of(polylines.values),
                   initialCameraPosition: _cameraPosition,
                   onTap: (LatLng latLng) async {
-                    // getMarkers1(tapped.latitude, tapped.longitude);
-
-                    //   List<Placemark> placemarks = await placemarkFromCoordinates(
-                    //       tapped.latitude, tapped.longitude);
-                    //   print(placemarks[0].street);
-                    // },
-                    // onTap: (LatLng latLng) {
-                    //   if (mounted) {
-                    //     setState(() {
-                    //       UserPreferences().setPlace(latLng.latitude.toString() +
-                    //           ',' +
-                    //           latLng.longitude.toString());
-                    //     });
-                    //   }
-                    // googleMapController.showMarkerInfoWindow(
-                    //     MarkerId('${locations![0].longitude}'));
-
-                    googleMapController.animateCamera(
-                        CameraUpdate.newCameraPosition(
-                            CameraPosition(target: latLng, zoom: 5)));
+                    _googleMapController.animateCamera(
+                        CameraUpdate.newLatLng(latLng));
                   },
-                  onMapCreated: _onMapCreated,
-                  // onMapCreated: (GoogleMapController controller) {
-                  //   // addMarker(LatLng(31.350556, 34.452679));
-                  //   googleMapController = controller;
-                  //
-                  //   // double lat = double.parse(widget.location!
-                  //   //     .substring(0, widget.location!.indexOf(',')));
-                  //   // double lng = double.parse(widget.location!
-                  //   //     .substring(widget.location!.indexOf(',') + 1));
-                  //
-                  //   // LatLng latLng = LatLng(lat, lng);
-                  //   // googleMapController.animateCamera(
-                  //   //     CameraUpdate.newCameraPosition(
-                  //   //         CameraPosition(target: latLng, zoom: 15)));
-                  // },
+                  onMapCreated:(controller){
+                    setState(() {
+              _googleMapController=controller;
+                    });
+                    addMarker();
+                    setState(() { });
+                  },
                   markers: Set<Marker>.of(_marker),
-                  // polylines:_polyline,
                 ),
               ),
-              // markers: _markers,
               SizedBox(height: 30),
             ],
           ),
-          // panelBuilder: ,
-          // onPanelSlide: ,
+
           borderRadius: BorderRadius.vertical(top: Radius.circular(18)),
         );
       }),
     );
   }
 
-  List<Location>? locationsById;
-  List<taskImage>? ImagesById;
 
-  void _onMapCreated(GoogleMapController controller) async {
-    locationsById = await Provider.of<LocationProvider>(context, listen: false)
-        .readByTask(taskId);
-    ImagesById = await Provider.of<ImagesProvider>(context, listen: false)
-        .readId(taskId);
-    print(jsonEncode(locationsById));
+
+  void addMarker() {
 
     for (int i = 0; i < locationsById!.length; i++) {
       if (locationsById![i].task_id == widget.task.id) {
@@ -425,7 +342,7 @@ class _MapScreenState extends State<MapScreen> with Helpers {
         //     double.parse('${locations![i].longitude}'));
         print(
             'Marker >> latitude :${locationsById![i].latitude} longitude:${locationsById![i].longitude}task_idmark:${locationsById![i].task_id}');
-        setState(() {
+
           // locationsById =  LocationProvider().readByTask(taskId);
           for (int i = 0; i < locationsById!.length; i++) {
             print('length${locationsById!.length}');
@@ -452,15 +369,17 @@ class _MapScreenState extends State<MapScreen> with Helpers {
 
                     title: '${[
                       i
-                    ]} ${locationsById![i].latitude}  ${locations![i].longitude} ',
+                    ]} ',
                     snippet: locationsById![i].time),
               ),
             );
           }
-        });
+
       }
     }
-  }
+    location();
+
+}
 
   Uint8List? imageRaw;
   String? photoName;
@@ -491,18 +410,28 @@ class _MapScreenState extends State<MapScreen> with Helpers {
     bool saved = await Provider.of<ImagesProvider>(context, listen: false)
         .create(image: images);
     await Provider.of<ImagesProvider>(context, listen: false).readId(taskId);
-
+    location();
     ///_______________position_________________
     final position = await CurrentLocation.fetch();
     latitude = (position.latitude).toString();
     longitude = (position.longitude).toString();
     await LocationProvider().addLocation(location: locationUser);
+    setState(() {
+      void llocation()async {
+        locationsById =
+        await Provider.of<LocationProvider>(context, listen: false)
+            .readByTask(taskId);
+      }
+      location();
+
+    });
 
     ///_______________________________________
 
     if (saved) {
       await Provider.of<ImagesProvider>(context, listen: false).readId(taskId);
-
+      locationsById = await Provider.of<LocationProvider>(context, listen: false)
+          .readByTask(taskId);
       showSnackBar(
           context: context, content: 'تمت العملية بنجاح', error: false);
     } else {

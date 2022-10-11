@@ -161,16 +161,16 @@ class _TaskWidgetState extends State<TaskWidget> with Helpers {
                                 List<taskModel>? Tasks;
                                 Tasks = await Provider.of<TaskProvider>(context,
                                         listen: false)
-                                    .read();
+                                    .completeTasks;
                                 // asyncTasks =Provider.of<TaskProvider>(context, listen: false).asyncTasks;
-                                /*
-                                if (Tasks!.isEmpty) {
+
+                                if (Tasks.isEmpty) {
                                   print('null');
                                 } else {
                                   for (int i = 0; i < Tasks.length; i++) {
                                     print(
                                         'index ${i} id ${Tasks[i].id} details ${Tasks[i].details}'
-                                        'image ${Tasks[i].image} isDeleted ${Tasks[i].isDeleted}  '
+                                       '  isDeleted ${Tasks[i].isDeleted}  '
                                         ' status ${Tasks[i].status} '
                                         ' counter ${Tasks[i].counter} '
                                         ' async ${Tasks[i].async} '
@@ -180,7 +180,7 @@ class _TaskWidgetState extends State<TaskWidget> with Helpers {
                                         ' title ${Tasks[i].title}');
                                   }
                                 }
-*/
+
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(

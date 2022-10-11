@@ -56,6 +56,18 @@ class LocationProvider extends ChangeNotifier {
     }
     return false;
   }
+  Future<bool> update2({required Location location}) async {
+    bool updated = await _locationDbController.update1(location);
+    if (updated) {
+      int index = locations.indexWhere((element) => element.id == location.id);
+      if (index != -1) {
+        locations[index] = location;
+        notifyListeners();
+        return true;
+      }
+    }
+    return false;
+  }
 
   Future<bool> delete(int id) async {
     bool deleted = await _locationDbController.delete(id);

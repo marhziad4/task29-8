@@ -6,6 +6,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:todo_emp/data/DbProvider.dart';
 import 'package:todo_emp/model/location.dart';
+import 'package:todo_emp/model/taskImage.dart';
 import 'package:todo_emp/model/taskModel.dart';
 import 'package:todo_emp/preferences/user_pref.dart';
 import 'package:todo_emp/providers/TaskProvider.dart';
@@ -24,7 +25,8 @@ String? latitude;
 List<Location>? locations;
 bool status = true;
 List<Location>? lastLocations;
-
+List<Location>? locationsById;
+List<taskImage>? ImagesById;
 List<Location>? totalDistance;
 List<double>? listDistance;
 List<Location>? Location1;
@@ -62,7 +64,6 @@ void main() async {
 }
 
 void readLocation() async {
-
   final position = await CurrentLocation.fetch();
   latitude = (position.latitude).toString();
   longitude = (position.longitude).toString();
@@ -74,7 +75,6 @@ void readLocation() async {
   Tasks = await TaskProvider().read();
 
   for (int i = 0; i < Tasks!.length; i++) {
-
     if (Tasks[i].counter == 1) {
       if (lastLocations!.length > 0) {
         double distanceInMeters = Geolocator.distanceBetween(
@@ -87,16 +87,25 @@ void readLocation() async {
 
         if ((lastLocations![0].latitude == latitude.toString() &&
                 lastLocations![0].longitude == longitude.toString())
-            // || distanceInMeters <= 3
+           // || distanceInMeters <= 3
             ) {
           lastLocations![0].updatetime = DateTime.now().toString();
           await LocationProvider().update(location: lastLocations![0]);
           print('nothing todo');
-        } else
+        } else {
           await LocationProvider().addLocation(location: locationUser);
-      } else
+          await LocationProvider().update(location: locationUser);
+          locationsById = await LocationProvider().readByTask(taskId);
+          print('main here');
+
+        }
+      } else {
         await LocationProvider().addLocation(location: locationUser);
-      await LocationProvider().update(location: locationUser);
+        await LocationProvider().update(location: locationUser);
+        locationsById = await LocationProvider().readByTask(taskId);
+        print('main here1');
+
+      }
     }
   }
 

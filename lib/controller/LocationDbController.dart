@@ -24,7 +24,15 @@ class LocationDbController implements DbOperations<Location> {
         where: 'id = ?', whereArgs: [object.id]);
     return countOfUpdatedRows > 0;
   }
-
+  @override
+  Future<bool> update1(Location object) async {
+    //UPDATE categories SET name = 'NEW NAME';
+    //UPDATE categories SET name = 'NEW NAME' WHERE id = 1;
+    int countOfUpdatedRows = await _database.update(
+        'location', object.toMap(),
+        where: 'id = ?', whereArgs: [object.id]);
+    return countOfUpdatedRows > 0;
+  }
   @override
   Future<bool> delete(int task_id) async {
     //DELETE FROM categories;
