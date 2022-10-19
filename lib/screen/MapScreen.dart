@@ -1,10 +1,7 @@
-import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 import 'dart:async';
-import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_picker/image_picker.dart';
@@ -70,16 +67,19 @@ void location()async{
       .readId(taskId);
   setState(() {
     _marker.addAll(_list);
+   // addMarker();
+  });
+  Future.delayed(Duration(minutes: 1)).then((v) {
     addMarker();
   });
-  print('location kk');
 }
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    location();
+    addMarker();
+ //   location();
     taskId = widget.task.id!;
     Provider.of<LocationProvider>(context, listen: false).readByTask(taskId);
     _cameraPosition =
@@ -93,7 +93,7 @@ void location()async{
 
   @override
   void dispose() {
-    _googleMapController.dispose();
+   // _googleMapController.dispose();
     details.dispose();
     super.dispose();
 
@@ -298,25 +298,31 @@ void location()async{
                   compassEnabled: true,
                   mapToolbarEnabled: true,
                   indoorViewEnabled: true,
-                  tiltGesturesEnabled: true,
                   buildingsEnabled: true,
                   trafficEnabled: true,
                   rotateGesturesEnabled: true,
                   scrollGesturesEnabled: true,
-                  zoomGesturesEnabled: true,
                   zoomControlsEnabled: true,
                   polylines: Set<Polyline>.of(polylines.values),
                   initialCameraPosition: _cameraPosition,
+                  zoomGesturesEnabled: true,
+                  tiltGesturesEnabled: false,
+                  onCameraMove:(CameraPosition cameraPosition){
+                    print(cameraPosition.zoom);
+                  },
                   onTap: (LatLng latLng) async {
                     _googleMapController.animateCamera(
                         CameraUpdate.newLatLng(latLng));
                   },
                   onMapCreated:(controller){
+                    if (!mounted) {
+                      return;
+                    }
                     setState(() {
               _googleMapController=controller;
                     });
-                    addMarker();
-                    setState(() { });
+                    // addMarker();
+                    // setState(() { });
                   },
                   markers: Set<Marker>.of(_marker),
                 ),
@@ -340,18 +346,18 @@ void location()async{
         // LatLng latlng;
         // latlng = LatLng(double.parse('${locations![i].latitude}'),
         //     double.parse('${locations![i].longitude}'));
-        print(
-            'Marker >> latitude :${locationsById![i].latitude} longitude:${locationsById![i].longitude}task_idmark:${locationsById![i].task_id}');
+        // print(
+        //     'Marker >> latitude :${locationsById![i].latitude} longitude:${locationsById![i].longitude}task_idmark:${locationsById![i].task_id}');
 
           // locationsById =  LocationProvider().readByTask(taskId);
           for (int i = 0; i < locationsById!.length; i++) {
-            print('length${locationsById!.length}');
+            // print('length${locationsById!.length}');
             LatLng latlng = LatLng(
                 double.parse('${locationsById![i].latitude}'),
                 double.parse('${locationsById![i].longitude}'));
 
-            print(
-                'Marker1 >> latitude :${locationsById![i].latitude} longitude:${locationsById![i].longitude} time:${locationsById![i].time} updatetime:${locationsById![i].updatetime}task_id:${locationsById![i].task_id}');
+            // print(
+            //     'Marker1 >> latitude :${locationsById![i].latitude} longitude:${locationsById![i].longitude} time:${locationsById![i].time} updatetime:${locationsById![i].updatetime}task_id:${locationsById![i].task_id}');
 
             _marker.add(
               Marker(
@@ -399,7 +405,9 @@ void location()async{
     FileImage2 = await FileImage!
         .copy('/storage/emulated/0/Pictures/pla_todo/${photo.name}');
     print(FileImage2);
-
+    if (!mounted) {
+      return;
+    }
     setState(() {
       // GallerySaver.saveImage(photo.path, albumName: 'pla_todo'); //
       print('pla_todo');

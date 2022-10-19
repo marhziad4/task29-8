@@ -11,10 +11,7 @@ class ImagesProvider extends ChangeNotifier {
   List<taskImage> images1 = [];
   List<taskImage> imageId = [];
   ImagesProvider() {
-
     read();
-    // readId();
-    // readCounter(counter);
   }
   Future<bool> create({required taskImage image}) async {
     //  taskModel task = taskModel()
@@ -59,20 +56,15 @@ print('image');
   Future<List<taskImage>?> readId(int id) async {
     // completeTasks = await _taskDbController.read2();
     imageId = await _imageDbController.readTaskId(id);
-    print('here');
-    print(jsonEncode(imageId));
     notifyListeners();
     return imageId;
   }
   Future<bool> delete(int id) async {
-
-    print("delete id image>>$id");
     bool deleted = await _imageDbController.delete(id);
 
     int index = imageId.indexWhere((element) => element.id == id);
     if (index != -1) {
       imageId.removeAt(index);
-      //read();
       notifyListeners();
       print('del true');
 
@@ -91,7 +83,6 @@ print('image');
     int index = imageId.indexWhere((element) => element.task_id == id);
     if (index != -1) {
       imageId.removeAt(index);
-       //read();
       notifyListeners();
       print('del true');
 

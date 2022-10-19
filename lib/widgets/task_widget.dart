@@ -303,6 +303,7 @@ class _TaskWidgetState extends State<TaskWidget> with Helpers {
                                         .update3(task: widget.task);
                                     cron.schedule(Schedule.parse('*/1 * * * *'),
                                         () async {
+                                      print('cron');
                                       readLocation();
                                     });
                                     fetchLocation();
@@ -412,6 +413,8 @@ class _TaskWidgetState extends State<TaskWidget> with Helpers {
     latitude = (position.latitude).toString();
     longitude = (position.longitude).toString();
     await LocationProvider().addLocation(location: locationUser);
+    Provider.of<LocationProvider>(context, listen: false).readByTask(taskId);
+
   }
 
   Location get locationUser {

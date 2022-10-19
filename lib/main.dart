@@ -12,7 +12,6 @@ import 'package:todo_emp/preferences/user_pref.dart';
 import 'package:todo_emp/providers/TaskProvider.dart';
 import 'package:todo_emp/providers/images_provider.dart';
 import 'package:todo_emp/providers/location_provider.dart';
-import 'package:todo_emp/providers/task_api_provider.dart';
 import 'package:todo_emp/screen/LoginScreen.dart';
 import 'package:todo_emp/screen/SplachScreen.dart';
 import 'package:todo_emp/screen/to_do_ui/AllTasksScreen.dart';
@@ -53,8 +52,7 @@ void main() async {
             create: (context) => ImagesProvider()),
         ChangeNotifierProvider<LocationProvider>(
             create: (_) => LocationProvider()),
-        ChangeNotifierProvider<TasksApiProvider>(
-            create: (_) => TasksApiProvider()),
+
       ],
       builder: (BuildContext context, Widget? child) {
         return MyMaterialApp();
@@ -113,6 +111,9 @@ void readLocation() async {
   for (int i = 0; i < locations!.length; i++) {
     print(
         'index ${i} location ${locations![i].latitude} longitude ${locations![i].longitude}  time ${locations![i].time}  updatetime ${locations![i].updatetime}task_id ${locations![i].task_id}image_id ${locations![i].image_id}');
+
+
+    locationsById = await LocationProvider().readByTask(taskId);
   }
 }
 

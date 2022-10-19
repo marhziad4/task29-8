@@ -44,7 +44,6 @@ dependencies:
   path_provider: ^2.0.10
   future_progress_dialog: ^0.2.0
   connectivity_plus: ^2.3.6+1
-  file_picker: ^4.6.1
   flash: ^2.0.3
   http: ^0.13.4
   shared_preferences: ^2.0.15
